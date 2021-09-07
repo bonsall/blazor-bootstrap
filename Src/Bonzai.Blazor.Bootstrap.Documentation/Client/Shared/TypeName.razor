@@ -1,0 +1,15 @@
+﻿<div class="fs-6 fst-italic fw-light @ConditionalClasses">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public bool Inline { get; set; }
+
+    private string ConditionalClasses => Inline
+        ? "d-inline-block"
+        : "mb-2";
+}

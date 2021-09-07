@@ -1,0 +1,10 @@
+﻿<li class="list-group-item">
+    <div class="p-2">
+        @ChildContent
+    </div>
+</li>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

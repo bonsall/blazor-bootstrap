@@ -1,0 +1,73 @@
+﻿@page "/layout"
+
+<PageTitle>Layout</PageTitle>
+<hr />
+<ComponentDoc Type="typeof(Bonzai.Blazor.Bootstrap.Layout.Container)"
+              Description="Use the container component to create a container that wraps the content of your page.">
+    <Properties>
+        <ParameterDescription Name="Type"
+                              Type="typeof(string)">
+            Specify one of the variants for the container.
+            <Button Variance="link" onclick="@(() => UpdateContainer(sm))">@sm</Button>
+            <Button Variance="link" onclick="@(() => UpdateContainer(md))">@md</Button>
+            <Button Variance="link" onclick="@(() => UpdateContainer(lg))">@lg</Button>
+            <Button Variance="link" onclick="@(() => UpdateContainer(xl))">@xl</Button>
+            <Button Variance="link" onclick="@(() => UpdateContainer(xxl))">@xxl</Button>
+            <Button Variance="link" onclick="@(() => UpdateContainer(fluid))">@fluid</Button>
+        </ParameterDescription>
+    </Properties>
+</ComponentDoc>
+<ComponentDoc Type="typeof(Row)"
+              Description="The building block for bootstraps grid system. Wrap your columns in a row. Add row-col-* classes by specifying them in the class attribute">
+    <Properties>
+        <ParameterDescription Name="Align"
+                              Type="typeof(string)">
+            Set the alignment for the children of this row. Bootstrap defines these variants "start", "center", "end".
+        </ParameterDescription>
+        <ParameterDescription Name="Justify"
+                              Type="typeof(string)">
+            Set the justification for the children of this row. Bootstrap defines these variants "start", "center", "end", "around", "between", "evenly".
+        </ParameterDescription>
+    </Properties>
+</ComponentDoc>
+<ComponentDoc Type="typeof(Column)"
+              Description="Creates a column in the bootstrap grid system. Add col-* classes by specifying them in the class attribute">
+    <Properties>
+        <ParameterDescription Name="Breakpoint"
+                              Type="typeof(string)">
+            Specify a responsive breakpoint for the column. Bootstrap defines these breakpoints "sm", "md", "lg", "xl", "xxl".
+        </ParameterDescription>
+        <ParameterDescription Name="Width"
+                              Type="typeof(string)">
+            Specify a width for the column (1 - 12).
+        </ParameterDescription>
+        <ParameterDescription Name="Align"
+                              Type="typeof(string)">
+            Set the alignment for this column. Bootstrap defines these variants "start", "center", "end".
+        </ParameterDescription>
+        <ParameterDescription Name="Justify"
+                              Type="typeof(string)">
+            Set the justification for this column. Bootstrap defines these variants "start", "center", "end", "around", "between", "evenly".
+        </ParameterDescription>
+    </Properties>
+</ComponentDoc>
+<ComponentDoc Type="typeof(ColumnBreak)"
+              Description="Forces the next column to wrap onto the next line.">
+    <Properties>
+        <ParameterDescription Name="@nameof(ColumnBreak.Breakpoint)"
+                              Type="typeof(string)">
+            Specify a responsive breakpoint to force the wrapping at. Bootstrap defines these breakpoints "sm", "md", "lg", "xl", "xxl".
+        </ParameterDescription>
+    </Properties>
+</ComponentDoc>
+
+@code {
+    private const string sm = "sm";
+    private const string md = "md";
+    private const string lg = "lg";
+    private const string xl = "xl";
+    private const string xxl = "xxl";
+    private const string fluid = "fluid";
+
+    private void UpdateContainer(string type) => MainLayout.ContainerType = type;
+}

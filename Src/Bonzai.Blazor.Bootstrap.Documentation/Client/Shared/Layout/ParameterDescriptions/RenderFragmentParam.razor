@@ -1,0 +1,26 @@
+﻿@using System.Linq.Expressions
+@using System.Reflection
+@using System.Text.RegularExpressions
+
+<ParameterDescription Name="@Name"
+                      Type="@typeof(RenderFragment)">
+    The @PropertyDescription content for this item.
+</ParameterDescription>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    private string PropertyDescription
+    {
+        get;
+        set;
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        PropertyDescription = Regex.Replace(Name, "([a-z])([A-Z])", "$1 $2").ToLower();
+    }
+}

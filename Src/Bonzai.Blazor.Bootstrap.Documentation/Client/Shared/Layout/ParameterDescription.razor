@@ -1,0 +1,22 @@
+﻿<DescriptionItem>
+    <h5 class="h-5 mb-2 fw-bold">
+        <em>@Name:</em>
+    </h5>
+    <div class="ps-4">
+        <TypeName>
+            @Type.GetFriendlyName()
+        </TypeName>
+        @ChildContent
+    </div>
+</DescriptionItem>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public Type Type { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

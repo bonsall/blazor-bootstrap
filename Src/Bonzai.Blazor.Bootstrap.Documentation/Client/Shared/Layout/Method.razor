@@ -1,0 +1,128 @@
+﻿@using System.Linq.Expressions
+@using System.Reflection
+@using System.Text
+
+@typeparam TSource
+<div class="text-muted fs-6 fst-italic">
+    @MethodModifiers
+</div>
+<h5 class="h5">
+    @MethodInfo.Name@(GenericArgs)(
+    @if (Arguments != null && Arguments.Any())
+    {
+        <span class="fw-normal fs-6">@Arguments[0].ParameterType.GetFriendlyName()</span>
+        if (Arguments.Length <= 3)
+        {
+            for (var idx = 1; idx < Arguments.Length; ++idx)
+            {
+                <span class="fw-normal">, @Arguments[idx].ParameterType.GetFriendlyName()</span>
+            }
+        }
+        else
+        {
+            for (var idx = 1; idx < Arguments.Length; ++idx)
+            {
+                <div class="ml-6 fw-normal">, @Arguments[idx].ParameterType.GetFriendlyName()</div>
+            }
+        }
+    }
+    )
+</h5>
+<div class="ps-4">
+    <TypeName>
+        <h6 class="h6 d-inline-block fw-normal fst-normal">Returns:</h6>
+        @MethodInfo.ReturnType.GetFriendlyName()
+    </TypeName>
+    <Row>
+        <Column>
+            <p>
+                @Description
+            </p>
+        </Column>
+    </Row>
+    @if (Parameters != null)
+    {
+        <Row>
+            <Column>
+                <h6 class="h6">Parameters</h6>
+                <ul class="list-group list-group-flush">
+                    @Parameters
+                </ul>
+            </Column>
+        </Row>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Expression<Action<TSource>> MethodExpression { get; set; }
+
+    [Parameter]
+    public RenderFragment Parameters { get; set; }
+
+    [Parameter]
+    public RenderFragment Description { get; set; }
+
+    private MethodInfo MethodInfo { get; set; }
+
+    private ParameterInfo[] Arguments { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        var member = MethodExpression.Body as MethodCallExpression;
+
+        if (member == null)
+            throw new ArgumentException("Expression is not a method", nameof(MethodExpression));
+
+        MethodInfo = member.Method;
+        Arguments = MethodInfo.GetParameters();
+    }
+
+    private string MethodModifiers
+    {
+        get
+        {
+            var builder = new StringBuilder();
+
+            if (MethodInfo.IsPublic)
+                builder.Append("public ");
+            else if (MethodInfo.IsPrivate)
+                builder.Append("private ");
+            else if (MethodInfo.IsAssembly)
+                builder.Append("internal ");
+            if (MethodInfo.IsFamily)
+                builder.Append("protected ");
+            if (MethodInfo.IsStatic)
+                builder.Append("static ");
+
+            return builder.ToString();
+        }
+    }
+
+    private string GenericArgs
+    {
+        get
+        {
+            var builder = new StringBuilder();
+
+            if (MethodInfo.IsGenericMethod)
+            {
+                builder.Append("<");
+                bool firstParam = true;
+                foreach (var genericArgument in MethodInfo.GetGenericArguments())
+                {
+                    if (firstParam)
+                        firstParam = false;
+                    else
+                        builder.Append(", ");
+                    builder.Append(genericArgument.GetFriendlyName());
+                }
+                builder.Append(">");
+            }
+
+            return builder.ToString();
+        }
+    }
+}

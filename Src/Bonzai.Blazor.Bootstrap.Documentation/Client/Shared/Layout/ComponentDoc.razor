@@ -1,0 +1,67 @@
+﻿<div class="mb-2 mt-5">
+    @if (Content != null)
+    {
+        @:@Content
+    }
+    else
+    {
+        <ComponentName Name="@Type.Name" />
+        <ComponentDescription>
+            @if (CustomDescription != null)
+            {
+                @:@CustomDescription
+            }
+            else
+            {
+                @:@Description
+            }
+        </ComponentDescription>
+
+        @if (Properties != null)
+        {
+            <div class="card mt-2 mb-5">
+                <h5 class="card-header">Properties</h5>
+                <ul class="list-group list-group-flush">
+                    @Properties
+                </ul>
+            </div>
+        }
+
+        @if (Methods != null)
+        {
+            <div class="card my-5">
+                <h5 class="card-header">Methods</h5>
+                <ul class="list-group list-group-flush">
+                    @Methods
+                </ul>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    /// <summary>
+    /// Custom html for this this documentation.
+    /// All other parameters will not be used when this is specified.
+    /// </summary>
+    [Parameter]
+    public RenderFragment Content { get; set; }
+
+    /// <summary>
+    /// The name of the component
+    /// </summary>
+    [Parameter]
+    public Type Type { get; set; }
+
+    [Parameter]
+    public string Description { get; set; }
+
+    [Parameter]
+    public RenderFragment CustomDescription { get; set; }
+
+    [Parameter]
+    public RenderFragment Properties { get; set; }
+
+    [Parameter]
+    public RenderFragment Methods { get; set; }
+}

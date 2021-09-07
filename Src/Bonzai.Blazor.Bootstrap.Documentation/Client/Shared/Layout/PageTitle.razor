@@ -1,0 +1,11 @@
+﻿<div class="row">
+    <div class="col">
+        <h1 class="display-2">
+            @ChildContent
+        </h1>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

@@ -1,0 +1,72 @@
+﻿@page "/components/accordion-item"
+@using Microsoft.AspNetCore.Components.Web
+
+<ComponentDoc Type="typeof(AccordionItem)"
+              Description="The individual item that expands and collapses in an accordion">
+    <Properties>
+        <ParameterDescription Name="@nameof(AccordionItem.Expanded)"
+                              Type="@typeof(bool)">
+            Controls whether or not the item is showing it's body content. true is open, false is closed.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(AccordionItem.ExpandedChanged)"
+                              Type="@typeof(EventCallback<bool>)">
+            An action to excute when the value of expanded is changed.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(AccordionItem.ButtonClicked)"
+                              Type="@typeof(EventCallback<MouseEventArgs>)">
+            A callback to execute when the header button of the accordion is pressed.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(AccordionItem.Accordion)"
+                              Type="@typeof(Accordion)">
+            A reference to the parent Accordion class this item is a part of.
+        </ParameterDescription>
+        <RenderFragmentParam Name="@nameof(AccordionItem.Body)" />
+        <StringParam Name="@nameof(AccordionItem.BodyClasses)">
+            A classname for the body.
+        </StringParam>
+        <StringParam Name="@nameof(AccordionItem.BodyId)">
+            The id for the body content. This will be generated if not specified.
+        </StringParam>
+        <RenderFragmentParam Name="@nameof(AccordionItem.Header)" />
+        <StringParam Name="@nameof(AccordionItem.HeaderButtonClasses)">
+            Any additional classes to add to the header button.
+        </StringParam>
+        <RenderFragmentParam Name="@nameof(AccordionItem.Header)" />
+        <StringParam Name="@nameof(AccordionItem.HeaderId)">
+            The id for the header. This will be generated if not specified.
+        </StringParam>
+        <AdditionalAttributes />
+    </Properties>
+    <Methods>
+        <MethodItem TSource="AccordionItem"
+                    MethodExpression="x => x.SetExpandedAsync(default)">
+            <Description>
+                Opens or closes the accordion item by updating the value of the <PropertyReference Name="@nameof(AccordionItem.Expanded)" />
+                property.
+            </Description>
+            <Parameters>
+                <MethodParameterItem Name="expanded"
+                                     Type="typeof(bool)">
+                    true to open the accordion, false to close it.
+                </MethodParameterItem>
+            </Parameters>
+        </MethodItem>
+        <MethodItem TSource="AccordionItem"
+                    MethodExpression="x => x.SetStableStateStylesAndUpdateState()">
+            <Description>
+                Invoked from javascript when the css transitions complete
+            </Description>
+        </MethodItem>
+    </Methods>
+</ComponentDoc>
+<ExampleHeading />
+<Example ExampleNumber="1">
+    <Description>
+        Using the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> to open and close the accordion
+    </Description>
+    <LiveExample>
+    </LiveExample>
+</Example>
+@code {
+
+}

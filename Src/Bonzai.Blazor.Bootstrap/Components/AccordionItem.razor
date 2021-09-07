@@ -1,0 +1,27 @@
+﻿@inherits BootstrapComponentBase
+
+<div @attributes="AdditionalAttributes" class="@Classes">
+    <h2 class="accordion-header @HeaderClasses"
+        id="@HeaderId">
+        <button class="@AllButtonClasses"
+                type="button"
+                aria-expanded="@Expanded.ToString().ToLower()"
+                aria-controls="@BodyId"
+                @onclick=AccordionButtonClick>
+            @Header
+        </button>
+    </h2>
+    <div class="@AllBodyClasses"
+         id="@BodyId"
+         aria-labelledby="@HeaderId"
+         @ref="BodyElement"
+         style="@_accordionBodyStyle">
+        <div class="accordion-body">
+            @Body
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

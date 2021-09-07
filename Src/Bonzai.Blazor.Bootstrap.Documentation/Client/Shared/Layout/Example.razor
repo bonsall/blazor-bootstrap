@@ -1,0 +1,32 @@
+﻿<Row class="mb-4">
+    <Column>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Example @ExampleNumber</h5>
+                <div class="mb-3">
+                    @Description
+                </div>
+                <div>
+                    @LiveExample
+                </div>
+            </div>
+            <div class="card-footer">
+                <pre><code>@Code</code></pre>
+            </div>
+        </div>
+    </Column>
+</Row>
+
+@code {
+    [Parameter]
+    public RenderFragment Description { get; set; }
+
+    [Parameter]
+    public RenderFragment LiveExample { get; set; }
+
+    [Parameter]
+    public RenderFragment Code { get; set; }
+
+    [Parameter]
+    public int ExampleNumber { get; set; }
+}

@@ -1,0 +1,16 @@
+﻿@inherits BootstrapVariantContainerBase
+
+<button @attributes="AdditionalAttributes"
+        class="@Classes"
+        @onclick="onclick">
+    @ChildContent
+</button>
+
+@code {
+    public Button() : base("primary") { }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> onclick { get; set; }
+
+    protected override string DefaultClass => $"btn btn-{Variance}";
+}

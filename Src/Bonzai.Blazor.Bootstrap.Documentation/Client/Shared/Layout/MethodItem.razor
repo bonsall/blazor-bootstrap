@@ -1,0 +1,14 @@
+﻿@typeparam TSource
+
+@inherits Method<TSource>
+
+<DescriptionItem>
+    @Content
+</DescriptionItem>
+
+@code {
+    public RenderFragment Content => __builder =>
+    {
+        base.BuildRenderTree(__builder);
+    };
+}

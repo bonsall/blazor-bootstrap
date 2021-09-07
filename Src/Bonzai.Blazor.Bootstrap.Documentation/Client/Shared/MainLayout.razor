@@ -1,0 +1,25 @@
+﻿@inherits LayoutComponentBase
+
+<Container Variance="@ContainerType">
+    @Body
+</Container>
+
+@code{
+    private static string _containerType;
+    public static string ContainerType
+    {
+        get => _containerType;
+        set
+        {
+            _containerType = value;
+            Instance.StateHasChanged();
+        }
+    }
+
+    private static MainLayout Instance { get; set; }
+
+    public MainLayout()
+    {
+        Instance = this;
+    }
+}

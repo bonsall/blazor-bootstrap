@@ -1,0 +1,12 @@
+﻿<ParameterDescription Name="@Name"
+                      Type="@typeof(string)">
+    @ChildContent
+</ParameterDescription>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+}

@@ -1,0 +1,112 @@
+﻿@page "/components/accordion"
+
+<ComponentDoc Type="typeof(Accordion)"
+              Description="An expandable/collapsable component for displaying content under different headers">
+    <Properties>
+        <ParameterDescription Name="@nameof(Accordion.AlwaysOpen)"
+                              Type="@typeof(bool)">
+            When set to true it allows multiple items to be expanded at one time.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Accordion.ChildContent)"
+                              Type="@typeof(bool)">
+            The child content of the accordion. This should only consist of <span class="bg-secondary bg-opacity-50">@nameof(AccordionItem)</span> components.
+        </ParameterDescription>
+        <AdditionalAttributes />
+    </Properties>
+</ComponentDoc>
+
+<ExampleHeading />
+<Example ExampleNumber="1">
+    <Description>
+        Simplest form where the Accordion is self contained and only the content is specified. The first item is open by default.
+        For more complex examples please view the <a href="/components/accordion-item">AccordionItem</a> page.
+    </Description>
+    <LiveExample>
+        <Accordion>
+            <AccordionItem>
+                <Header>This is item 1</Header>
+                <Body>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
+
+                    Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
+                </Body>
+            </AccordionItem>
+            <AccordionItem>
+                <Header>This is item 2</Header>
+                <Body>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
+
+                    Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
+                </Body>
+            </AccordionItem>
+            <AccordionItem>
+                <Header>This is item 3</Header>
+                <Body>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
+
+                    Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
+                </Body>
+            </AccordionItem>
+        </Accordion>
+    </LiveExample>
+    <Code>
+        @(@"<Accordion>
+    <AccordionItem>
+        <Header>This is item 1</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 2</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 3</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+</Accordion>")
+    </Code>
+</Example>
+
+@code {
+    private bool _state1, _state2;
+    public bool State1
+    {
+        get => _state1;
+        set
+        {
+            Console.WriteLine($"Setting state1 {value}");
+            _state1 = value;
+        }
+    }
+    public bool State2
+    {
+        get => _state2;
+        set
+        {
+            Console.WriteLine($"Setting state2 {value}");
+            _state2 = value;
+        }
+    }
+    public bool State3 { get; set; }
+    public void Open1()
+    {
+        State1 = true;
+    }
+    public void Close1() { State1 = false; }
+    public void Open2() { State2 = true; }
+    public void Close2() { State2 = false; }
+    public void Open3() { State3 = true; }
+    public void Close3() { State3 = false; }
+
+    private void ExpandedChanged(bool expanded)
+    {
+        Console.WriteLine($"ExpandedChanged: {expanded}");
+        _state1 = expanded;
+    }
+}

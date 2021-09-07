@@ -1,0 +1,66 @@
+﻿@inherits BootstrapContainerBase
+<div @attributes="AdditionalAttributes" class="@Classes">
+    @ChildContent
+</div>
+
+@code {
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classNameBuilder = new ClassNameBuilder(BuildDefaultClassName());
+
+            if (!string.IsNullOrWhiteSpace(Align))
+            {
+                classNameBuilder.AddClassName($"align-items-{Align}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(Justify))
+            {
+                classNameBuilder.AddClassName($"justify-content-{Justify}");
+            }
+
+            return classNameBuilder.GetClassNames();
+        }
+    }
+
+    /// <summary>
+    /// Specify a responsive breakpoint for the column.
+    /// </summary>
+    [Parameter]
+    public string Breakpoint { get; set; }
+
+    /// <summary>
+    /// Specify a width for the column (1 - 12).
+    /// </summary>
+    [Parameter]
+    public string Width { get; set; }
+
+    /// <summary>
+    /// Set the alignment for this column. Bootstrap defines these variants "start", "center", "end".
+    /// </summary>
+    [Parameter]
+    public string Align { get; set; }
+
+    /// <summary>
+    /// Set the justification for this column. Bootstrap defines these variants "start", "center", "end", "around", "between", "evenly".
+    /// </summary>
+    [Parameter]
+    public string Justify { get; set; }
+
+    private string BuildDefaultClassName()
+    {
+        var className = "col";
+        if (!string.IsNullOrWhiteSpace(Breakpoint))
+        {
+            className += $"-{Breakpoint}";
+        }
+
+        if (!string.IsNullOrWhiteSpace(Width))
+        {
+            className += $"-{Width}";
+        }
+
+        return className;
+    }
+}

@@ -1,0 +1,38 @@
+﻿@inherits BootstrapContainerBase
+
+<div @attributes="AdditionalAttributes" class="@Classes">
+    @ChildContent
+</div>
+@code {      
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classNameBuilder = new ClassNameBuilder("row");
+
+            if(!string.IsNullOrWhiteSpace(Align))
+            {
+                classNameBuilder.AddClassName($"align-items-{Align}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(Justify))
+            {
+                classNameBuilder.AddClassName($"justify-content-{Justify}");
+            }
+
+            return classNameBuilder.GetClassNames();
+        }
+    }
+
+    /// <summary>
+    /// Sets the flex alignment for child elements. Values defined in bootstrat are "start", "center", or "end".
+    /// </summary>
+    [Parameter]
+    public string Align { get; set; }
+
+    /// <summary>
+    /// Sets the flex justification for child elements. Values defined in bootstrat are "start", "center", or "end".
+    /// </summary>
+    [Parameter]
+    public string Justify { get; set; }
+}

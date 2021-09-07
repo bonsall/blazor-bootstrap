@@ -1,0 +1,18 @@
+﻿@page "/"
+
+<div class="row">
+    <div class="col">
+        <EditForm Model="Model">
+            <TextInput Label="Test"
+                       @bind-Value="Input"/>
+        </EditForm>
+    </div>
+</div>
+
+@code{
+    private IndexModel Model { get; set; } = new IndexModel();
+
+    string Input { get; set; }
+
+    private class IndexModel { }
+}

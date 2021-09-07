@@ -1,0 +1,11 @@
+﻿@inherits BootstrapVariantContainerBase
+
+<div class="@Classes">
+    @ChildContent
+</div>
+
+@code {
+    protected override string DefaultClass => string.IsNullOrWhiteSpace(Variance)
+        ? "container"
+        : $"container-{Variance}";
+}

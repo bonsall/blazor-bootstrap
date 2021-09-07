@@ -1,0 +1,22 @@
+﻿@inherits BootstrapComponentBase
+
+<div class="@Classes"></div>
+@code {
+    [Parameter]
+    public string Breakpoint { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classNameBuilder = new ClassNameBuilder("w-100");
+
+            if(!string.IsNullOrWhiteSpace(Breakpoint))
+            {
+                classNameBuilder.AddClassName($"d-none d-{Breakpoint}-block");
+            }
+
+            return classNameBuilder.GetClassNames();
+        }
+    }
+}

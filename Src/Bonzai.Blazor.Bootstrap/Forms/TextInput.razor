@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+@inherits BootstrapInputBase<string>
+
+@if (LabelContent != null)
+{
+    @:@LabelContent
+}
+else if (!string.IsNullOrWhiteSpace(Label))
+{
+    <label for="@AdditionalAttributes["id"]" class="form-label">@Label</label>
+}
+
+<InputText Value="@Value"
+           ValueChanged="ValueChanged"
+           ValueExpression="ValueExpression"
+           DisplayName="@DisplayName"
+           @attributes="AdditionalAttributes"
+           class="@Classes" />
+
+@if (FormTextContent != null)
+{
+    @:@FormTextContent
+}
+else if (!string.IsNullOrWhiteSpace(FormText))
+{
+    <div class="form-text" id="@FormTextId">@FormText</div>
+}
+@code { 
+    protected override string DefaultClass => "form-control";
+}
