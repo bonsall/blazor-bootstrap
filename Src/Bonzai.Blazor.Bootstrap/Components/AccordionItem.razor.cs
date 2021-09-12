@@ -45,11 +45,7 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
                 _expanded = value;
 
-                // don't run any transitions until after the compnent has rendered.
-                if (_hasRendered)
-                {
-                    UpdateStylesForExpandedChange();
-                }
+                UpdateStylesForExpandedChange(true);
             }
         }
 
@@ -85,6 +81,8 @@ namespace Bonzai.Blazor.Bootstrap.Components
         private bool _isTransitioning;
 
         private bool _hasRendered;
+
+        private bool _isSynchronousUpdate;
 
         private string AllBodyClasses
         {
@@ -124,7 +122,6 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
         public async Task SetExpandedAsync(bool expanded)
         {
-            Console.WriteLine($"CurrentValue {Expanded}");
             if (expanded == Expanded)
                 return;
 
@@ -134,7 +131,8 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
         private async Task SetCollapsingStyle()
         {
-            _isTransitioning = true;
+            _isTransitioning = !_isSynchronousUpdate;
+
             if (Expanded)
             {
                 _accordionStateClass = "collapsing";
@@ -180,6 +178,14 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
             await _jsService.AddEventListenerAsync(BodyElement, this, "transitionend", nameof(SetStableStateStylesAndUpdateState));
 
+            if (_isSynchronousUpdate)
+            {
+                _isSynchronousUpdate = false;
+                _isTransitioning = true;
+                StateHasChanged();
+                return;
+            }
+
             if (_isTransitioning)
             {
                 if (Expanded)
@@ -210,16 +216,7 @@ namespace Bonzai.Blazor.Bootstrap.Components
             _expanded = expanded;
             await ExpandedChanged.InvokeAsync(expanded);
 
-            Console.WriteLine($"_hasRendered: {_hasRendered}");
-            if (_hasRendered)
-            {
-                await SetCollapsingStyle();
-                await RegisterExpandedWithAccordion();
-            }
-            else
-            {
-                SetStableStateStyles();
-            }
+            await UpdateStylesForExpandedChange();
         }
 
         private async Task RegisterExpandedWithAccordion()
@@ -230,10 +227,20 @@ namespace Bonzai.Blazor.Bootstrap.Components
             }
         }
 
-        private async Task UpdateStylesForExpandedChange()
+        private async Task UpdateStylesForExpandedChange(bool isSynchronousUpdate = false)
         {
-            await SetCollapsingStyle();
-            await RegisterExpandedWithAccordion();
+            // don't run any transitions until after the compnent has rendered.
+            if (_hasRendered)
+            {
+                _isSynchronousUpdate = isSynchronousUpdate;
+                await SetCollapsingStyle();
+                await RegisterExpandedWithAccordion();
+            }
+            else
+            {
+                Console.WriteLine("Setting unrendered styles");
+                SetStableStateStyles();
+            }
         }
     }
 }

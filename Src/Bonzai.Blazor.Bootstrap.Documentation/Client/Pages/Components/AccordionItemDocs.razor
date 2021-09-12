@@ -1,5 +1,7 @@
-﻿@page "/components/accordion-item"
-@using Microsoft.AspNetCore.Components.Web
+﻿@using Microsoft.AspNetCore.Components.Web
+@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.AccordionItemExamples
+
+@page "/components/accordion-item"
 
 <ComponentDoc Type="typeof(AccordionItem)"
               Description="The individual item that expands and collapses in an accordion">
@@ -60,13 +62,64 @@
     </Methods>
 </ComponentDoc>
 <ExampleHeading />
-<Example ExampleNumber="1">
+<Example ExampleNumber="ExampleNumber">
     <Description>
-        Using the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> to open and close the accordion
+        Bind to the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> property to open and close the accordion.
     </Description>
     <LiveExample>
+        <BindExpandedProperty />
     </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column class=""mb-2"">
+        <Button Variance=""primary"" onclick=""ButtonClick"">
+            @ButtonText Item 1
+        </Button>
+    </Column>
+</Row>
+<Accordion>
+    <AccordionItem @bind-Expanded=""ExpandItem1"">
+        <Header>This is item 1</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 2</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 3</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+</Accordion>
+
+@code {
+    private bool ExpandItem1 { get; set; }
+
+    private string ButtonText => ExpandItem1
+        ? ""Close""
+        : ""Open"";
+
+    private void ButtonClick()
+    {
+        ExpandItem1 = !ExpandItem1;
+    }
+}")
+    </Code>
 </Example>
 @code {
+    private int _exampleNumber;
 
+    private int ExampleNumber
+    {
+        get
+        {
+            return ++_exampleNumber;
+        }
+    }
 }
