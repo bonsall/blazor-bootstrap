@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonzai.Blazor.Bootstrap.Doc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonzai.Blazor.Bootstrap.Documentation.Shared", "Bonzai.Blazor.Bootstrap.Documentation\Shared\Bonzai.Blazor.Bootstrap.Documentation.Shared.csproj", "{DD14137D-6DEB-48DE-86D8-8FDA59C6EAD4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DAAD8184-E0AC-4E03-B65E-43320B1BEFFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonzai.Blazor.Bootstrap.Test", "Test\Bonzai.Blazor.Bootstrap.Test\Bonzai.Blazor.Bootstrap.Test.csproj", "{2066291D-62BE-4864-9B80-9F6FD0BE9824}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +39,10 @@ Global
 		{DD14137D-6DEB-48DE-86D8-8FDA59C6EAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD14137D-6DEB-48DE-86D8-8FDA59C6EAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD14137D-6DEB-48DE-86D8-8FDA59C6EAD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2066291D-62BE-4864-9B80-9F6FD0BE9824}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2066291D-62BE-4864-9B80-9F6FD0BE9824}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2066291D-62BE-4864-9B80-9F6FD0BE9824}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2066291D-62BE-4864-9B80-9F6FD0BE9824}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 		{B686EB36-138E-4BE3-93B9-AABF47EF7903} = {5A8C7C3F-772A-49E4-9334-32CB7A0A2C4A}
 		{448E5FB4-239A-4F0F-BA8C-D431ED951620} = {5A8C7C3F-772A-49E4-9334-32CB7A0A2C4A}
 		{DD14137D-6DEB-48DE-86D8-8FDA59C6EAD4} = {5A8C7C3F-772A-49E4-9334-32CB7A0A2C4A}
+		{2066291D-62BE-4864-9B80-9F6FD0BE9824} = {DAAD8184-E0AC-4E03-B65E-43320B1BEFFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F9F0BA5-CA3C-4160-A8EA-A553495A5F46}
