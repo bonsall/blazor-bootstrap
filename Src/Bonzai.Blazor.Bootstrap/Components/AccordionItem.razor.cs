@@ -11,7 +11,7 @@ namespace Bonzai.Blazor.Bootstrap.Components
     // Need to set this upto use "collapsing" class to transition to/from a collapsed state.
     // Also need to figure out why it's not seeing the inherited properties
 
-    public partial class AccordionItem : BootstrapComponentBase
+    public partial class AccordionItem : BootstrapComponentBase, IAsyncDisposable
     {
         public AccordionItem()
         {
@@ -118,6 +118,14 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
                 return classNameBuilder.GetClassNames();
             }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            Accordion.RemoveAccordionItem(this);
+            await _jsService.RemoveEventListenerAsync(BodyElement,
+                "transitionend",
+                nameof(SetStableStateStylesAndUpdateState));
         }
 
         public async Task SetExpandedAsync(bool expanded)

@@ -1,0 +1,68 @@
+﻿<Row class="mb-2">
+    <Column class="justify-content-between">
+        @ItemButton(ItemModel1)
+        @ItemButton(ItemModel2)
+        @ItemButton(ItemModel3)
+    </Column>
+</Row>
+<Accordion>
+    @RenderItem(ItemModel1)
+    @RenderItem(ItemModel2)
+    @RenderItem(ItemModel3)
+</Accordion>
+
+@code {
+    private RenderFragment ItemButton(ConditionalItemModel itemModel) => __builder =>
+    {
+    <Button Variance="primary"
+            onclick="() => ToggleItem(itemModel)">
+        @itemModel.ButtonText
+    </Button>
+    };
+
+    private RenderFragment RenderItem(ConditionalItemModel itemModel) => __builder =>
+    {
+    @if (itemModel.IsShown)
+        {
+        <AccordionItem>
+            <Header>This is item @itemModel.ItemNumber</Header>
+            <Body>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
+
+                Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
+            </Body>
+        </AccordionItem>
+        }
+    };
+
+    private ConditionalItemModel ItemModel1 = new()
+    {
+        ItemNumber = 1
+    };
+
+    private ConditionalItemModel ItemModel2 = new()
+    {
+        ItemNumber = 2
+    };
+
+    private ConditionalItemModel ItemModel3 = new()
+    {
+        ItemNumber = 3
+    };
+
+    private void ToggleItem(ConditionalItemModel itemModel)
+    {
+        itemModel.IsShown = !itemModel.IsShown;
+    }
+
+    private class ConditionalItemModel
+    {
+        public int ItemNumber { get; set; }
+
+        public bool IsShown { get; set; } = true;
+
+        public string ButtonText => IsShown
+            ? $"Hide item {ItemNumber}"
+            : $"Show item {ItemNumber}";
+    }
+}

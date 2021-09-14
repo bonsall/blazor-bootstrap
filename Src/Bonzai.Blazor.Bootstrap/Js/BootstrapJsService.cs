@@ -14,6 +14,8 @@ namespace Bonzai.Blazor.Bootstrap.Js
         Task<BoundingClientRect> GetBoundingClientRect(ElementReference elementReference);
 
         Task ReflowAsync(ElementReference elementReference);
+
+        Task RemoveEventListenerAsync(ElementReference elementReference, string eventName, string methodToCall);
     }
 
     public class BootstrapJsService : IBootstrapJsService
@@ -53,6 +55,15 @@ namespace Bonzai.Blazor.Bootstrap.Js
         {
             var jsReference = await _bonzaiBootstrapJsReference;
             await jsReference.InvokeVoidAsync("reflow", elementReference);
+        }
+
+        public async Task RemoveEventListenerAsync(ElementReference elementReference, string eventName, string methodToCall)
+        {
+            var jsReference = await _bonzaiBootstrapJsReference;
+            await jsReference.InvokeVoidAsync("removeEventListener",
+                elementReference,
+                eventName,
+                methodToCall);
         }
     }
 }

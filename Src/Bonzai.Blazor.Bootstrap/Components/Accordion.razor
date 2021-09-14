@@ -16,9 +16,14 @@
 
     private bool _isUpdatingItems;
 
-    public void RegisterAccordionItem(AccordionItem accordionItem)
+    internal void RegisterAccordionItem(AccordionItem accordionItem)
     {
         AccordionItems.Add(accordionItem);
+    }
+
+    internal void RemoveAccordionItem(AccordionItem accordionItem)
+    {
+        AccordionItems.Remove(accordionItem);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -50,11 +55,10 @@
     private async Task OpenFirstItemByDefault()
     {
         // this accordion could be recreated or the user may have a preference on which
-        // item they want to open first, so don't set this if it's already set.
+        // item they want to open first, so don't set Expanded if it's already set.
         if (AccordionItems.Any(x => x.Expanded))
             return;
         var first = AccordionItems.First();
-        Console.WriteLine(first.Id);
         await first.SetExpandedAsync(true);
     }
 }

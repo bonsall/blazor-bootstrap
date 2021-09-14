@@ -49,3 +49,34 @@
 </Accordion>")
     </Code>
 </Example>
+
+<Example ExampleNumber="2">
+    <Description>
+        Set <PropertyReference Name="@nameof(Accordion.AlwaysOpen)" /> to true to prevent auto-closing of individual items.
+    </Description>
+    <LiveExample>
+        <AlwaysOpen />
+    </LiveExample>
+    <Code>
+        @(@"<Accordion AlwaysOpen=""true"">
+    <AccordionItem>
+        <Header>This is item 1</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 2</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+    <AccordionItem>
+        <Header>This is item 3</Header>
+        <Body>
+            ...
+        </Body>
+    </AccordionItem>
+</Accordion>")
+    </Code>
+</Example>
