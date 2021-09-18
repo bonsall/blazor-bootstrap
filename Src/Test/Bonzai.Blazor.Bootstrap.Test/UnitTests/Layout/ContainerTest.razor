@@ -1,0 +1,22 @@
+﻿@inherits TestBase<Container>
+
+@code {
+    [Fact]
+    public void VarianceNotSet_ContainerClassAdded()
+    {
+        var cut = RenderComponent(@<Container />);
+
+        AssertClassName(cut, "container");
+    }
+
+    [Fact]
+    public void VarianceSet_ContainerVarianceClassAdded()
+    {
+        var cut = RenderComponent(@<Container Variance="fluid" />);
+
+        AssertClassName(cut, "container-fluid");
+    }
+
+    private void AssertClassName(IRenderedComponent<Container> cut, string classNames) =>
+        cut.MarkupMatches($"<div class=\"{classNames}\"></div>");
+}
