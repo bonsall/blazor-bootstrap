@@ -1,0 +1,22 @@
+﻿@inherits TestBase<ColumnBreak>
+
+@code {
+    [Fact]
+    public void AddsFullWidthClass()
+    {
+        var cut = RenderComponent(@<ColumnBreak />);
+
+        AssertClassName(cut, "w-100");
+    }
+
+    [Fact]
+    public void BreakpointIsSet_AddsDisplayClasses()
+    {
+        var cut = RenderComponent(@<ColumnBreak Breakpoint="md" />);
+
+        AssertClassName(cut, "w-100 d-none d-md-block");
+    }
+
+    private void AssertClassName(IRenderedComponent<ColumnBreak> cut, string classNames) =>
+        cut.MarkupMatches($"<div class=\"{classNames}\"></div>");
+}
