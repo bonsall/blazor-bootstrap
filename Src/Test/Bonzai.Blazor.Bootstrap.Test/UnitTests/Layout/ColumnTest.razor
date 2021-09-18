@@ -1,0 +1,55 @@
+﻿@inherits TestBase<Column>
+
+@code {
+    [Fact]
+    public void NoParametersSet_AddsColClass()
+    {
+        var cut = RenderComponent(@<Column />);
+
+        AssertClassName(cut, "col");
+    }
+
+    [Fact]
+    public void BreakpointIsSet_AddsBreakpointToClassName()
+    {
+        var cut = RenderComponent(@<Column Breakpoint="md" />);
+
+        AssertClassName(cut, "col-md");
+    }
+
+    [Fact]
+    public void WidthIsSet_AddsWidthToClassName()
+    {
+        var cut = RenderComponent(@<Column Width="1" />);
+
+        AssertClassName(cut, "col-1");
+    }
+
+    [Fact]
+    public void BreakpointAndWidthAreSet_AddsBreakpointThenWidthToClassName()
+    {
+        var cut = RenderComponent(@<Column Width="1"
+                                           Breakpoint="md"/>);
+
+        AssertClassName(cut, "col-md-1");
+    }
+
+    [Fact]
+    public void AlignIsSet_AddsAlignItemClass()
+    {
+        var cut = RenderComponent(@<Column Align="center"/>);
+
+        AssertClassName(cut, "col align-items-center");
+    }
+
+    [Fact]
+    public void JustifyIsSet_AddsJustifyContentClass()
+    {
+        var cut = RenderComponent(@<Column Justify="start"/>);
+
+        AssertClassName(cut, "col justify-content-start");
+    }
+
+    private void AssertClassName(IRenderedComponent<Column> cut, string classNames) =>
+        cut.MarkupMatches($"<div class=\"{classNames}\"></div>");
+}
