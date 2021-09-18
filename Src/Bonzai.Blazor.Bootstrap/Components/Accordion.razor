@@ -10,6 +10,8 @@
     [Parameter]
     public bool AlwaysOpen { get; set; }
 
+    public int AccordionItemCount => AccordionItems.Count;
+
     protected override string DefaultClass { get; } = "accordion";
 
     private List<AccordionItem> AccordionItems { get; set; } = new List<AccordionItem>();
@@ -56,7 +58,7 @@
     {
         // this accordion could be recreated or the user may have a preference on which
         // item they want to open first, so don't set Expanded if it's already set.
-        if (AccordionItems.Any(x => x.Expanded))
+        if (!AccordionItems.Any() || AccordionItems.Any(x => x.Expanded))
             return;
         var first = AccordionItems.First();
         await first.SetExpandedAsync(true);

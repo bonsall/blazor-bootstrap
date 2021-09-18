@@ -1,0 +1,178 @@
+﻿@using Moq;
+@inherits TestContext
+
+
+@code {
+    private Mock<IBootstrapJsService> _mockBootstrapJsService;
+
+    public AccordionTest()
+    {
+        _mockBootstrapJsService = new Mock<IBootstrapJsService>();
+
+        Services.AddTransient<IBootstrapJsService>(services => _mockBootstrapJsService.Object);
+    }
+
+    [Fact]
+    public void NoParametersOrChildContent_ComponentIsRendered()
+    {
+        var cut = RenderAccordion(@<Accordion />);
+
+        cut.MarkupMatches(@<div class="accordion"></div>);
+    }
+
+    [Fact]
+    public void AccordionItemChildIsRegisteredWithAccordion()
+    {
+        var cut = RenderAccordion(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>
+        );
+
+        Assert.Equal(1, cut.Instance.AccordionItemCount);
+    }
+
+    [Fact]
+    public void NoAccordionItemsAreOpen_ExpandsFirstItem()
+    {
+        var cut = RenderAccordion(
+        @<Accordion>
+            <AccordionItem></AccordionItem>
+            <AccordionItem></AccordionItem>
+            <AccordionItem></AccordionItem>
+        </Accordion>
+        );
+
+        var itemFragments = cut.FindComponents<AccordionItem>();
+        Assert.True(itemFragments.First().Instance.Expanded);
+
+        foreach (var itemFragment in itemFragments.Skip(1))
+        {
+            Assert.False(itemFragment.Instance.Expanded);
+        }
+    }
+
+    [Fact]
+    public void ItemIsAlreadyExpanded_DoesNotExpandAnyItems()
+    {
+        var cut = RenderAccordion(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+                <AccordionItem Expanded="true"></AccordionItem>
+                <AccordionItem></AccordionItem>
+            </Accordion>
+        );
+
+        var itemFragments = cut.FindComponents<AccordionItem>();
+        Assert.True(itemFragments[1].Instance.Expanded);
+        Assert.False(itemFragments[0].Instance.Expanded);
+        Assert.False(itemFragments[2].Instance.Expanded);
+    }
+
+    [Fact]
+    public async Task IsNotFirstRender_DoesNotExpandItems()
+    {
+        SetupToReturnBoundingRect();
+
+        var cut = RenderAccordion(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+                <AccordionItem></AccordionItem>
+                <AccordionItem></AccordionItem>
+            </Accordion>
+        );
+
+        foreach(var itemFragment in cut.FindComponents<AccordionItem>())
+        {
+            await cut.InvokeAsync(() => itemFragment.Instance.SetExpandedAsync(false));
+        }
+
+        cut.Render();
+
+        foreach(var itemFragment in cut.FindComponents<AccordionItem>())
+        {
+            Assert.False(itemFragment.Instance.Expanded);
+        }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ItemIsExpandedAndAlwaysOpenIsFalse_ClosesOtherItems(bool useMethod)
+    {
+        // arrange
+        SetupToReturnBoundingRect();
+
+        var cut = RenderAccordion(
+            @<Accordion AlwaysOpen="false">
+                <AccordionItem Expanded="false"></AccordionItem>
+                <AccordionItem Expanded="false"></AccordionItem>
+                <AccordionItem Expanded="true"></AccordionItem>
+            </Accordion>
+        );
+
+        // act
+        await cut.InvokeAsync(async () =>
+        {
+            if(useMethod)
+            {
+                await cut.FindComponent<AccordionItem>().Instance.SetExpandedAsync(true);
+            }
+            else
+            {
+#pragma warning disable BL0005
+                cut.FindComponent<AccordionItem>().Instance.Expanded = true;
+#pragma warning restore BL0005
+            }
+        });
+
+
+        // assert
+        foreach (var itemComponent in cut.FindComponents<AccordionItem>().Skip(1))
+        {
+            Assert.False(itemComponent.Instance.Expanded);
+        }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ItemExpandedAndAlwaysOpenTrue_DoesNotCloseOtherItems(bool useMethod)
+    {
+        SetupToReturnBoundingRect();
+
+        var cut = RenderAccordion(
+            @<Accordion AlwaysOpen="true">
+                <AccordionItem Expanded="false"></AccordionItem>
+                <AccordionItem Expanded="false"></AccordionItem>
+                <AccordionItem Expanded="true"></AccordionItem>
+            </Accordion>
+        );
+
+        // act
+        await cut.InvokeAsync(async () =>
+        {
+            if(useMethod)
+            {
+                await cut.FindComponent<AccordionItem>().Instance.SetExpandedAsync(true);
+            }
+            else
+            {
+#pragma warning disable BL0005
+                cut.FindComponent<AccordionItem>().Instance.Expanded = true;
+#pragma warning restore BL0005
+            }
+        });
+
+
+        // assert
+        Assert.True(cut.FindComponents<AccordionItem>()[2].Instance.Expanded);
+    }
+
+    private IRenderedComponent<Accordion> RenderAccordion(RenderFragment renderFragment)
+        => Render<Accordion>(renderFragment);
+
+    private void SetupToReturnBoundingRect() => _mockBootstrapJsService
+            .Setup(x => x.GetBoundingClientRect(It.IsAny<ElementReference>()))
+            .ReturnsAsync(new BoundingClientRect());
+}
