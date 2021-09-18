@@ -1,0 +1,368 @@
+﻿@inherits TestContext
+
+@code {
+    const string ExpectedClassName = "unit-test";
+
+    private MockBootstrapJsService _mockBootstrapJsService;
+
+    public AccordionItemTest()
+    {
+        _mockBootstrapJsService = new(Services);
+        _mockBootstrapJsService.SetupGetBoundingClientRect(new BoundingClientRect());
+    }
+
+    [Fact]
+    public void AccordionItemRenderedOutsideOfAccordion_ThrowsException()
+    {
+        Assert.Throws<ArgumentNullException>(() => Render(
+            @<AccordionItem />
+        ));
+    }
+
+    [Fact]
+    public void RegistersItselfWithparentAccordion()
+    {
+        var cut = RenderAccordion(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>
+        );
+
+        Assert.Equal(1, cut.Instance.AccordionItemCount);
+    }
+
+    [Fact]
+    public void InitialRender_SetsCollapseClasses_DoesNotSetCollapseStyles()
+    {
+        var cut = RenderAndFindItems(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+                <AccordionItem></AccordionItem>
+            </Accordion>
+        );
+
+        foreach(var accordionItem in cut)
+        {
+            AssertBodyHasNoStyle(accordionItem);
+        }
+
+        Assert.True(
+            FindCollapse(cut[0]).ClassList.Contains("collapse show".Split(" ")));
+        Assert.True(
+            FindCollapse(cut[1]).ClassList.Contains("collapse".Split(" ")));
+    }
+
+    [Fact]
+    public void HeaderClassesIsSet_AddsClassesToHeader()
+    {
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem HeaderClasses="@ExpectedClassName"></AccordionItem>
+            </Accordion>);
+
+        Assert.True(
+            FindHeader(cut).ClassList.Contains(ExpectedClassName));
+    }
+
+    [Fact]
+    public void HeaderButtonClassesIsSet_AddsClassesToHeaderButton()
+    {
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem HeaderButtonClasses="@ExpectedClassName"></AccordionItem>
+            </Accordion>);
+
+        var headerButton = FindHeaderButton(cut);
+        Assert.True(
+            headerButton.ClassList.Contains(ExpectedClassName));
+    }
+
+    [Fact]
+    public void CollapseClassesIsSet_AddsClassesToCollapseContainer()
+    {
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem CollapseClasses="@ExpectedClassName"></AccordionItem>
+            </Accordion>);
+
+        var collaps = FindCollapse(cut);
+        Assert.True(
+            collaps.ClassList.Contains(ExpectedClassName));
+    }
+
+    [Fact]
+    public void HeaderFragmentIsRenderedInHeaderButton()
+    {
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem>
+                    <Header>
+                        <div>unit test</div>
+                    </Header>
+                </AccordionItem>
+            </Accordion>);
+
+        var header = FindHeaderButton(cut);
+        header.FirstChild.MarkupMatches("<div>unit test</div>");
+    }
+
+    [Fact]
+    public void BodyFragmentIsRenderedInBody()
+    {
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem>
+                    <Body>
+                        <div>unit test</div>
+                    </Body>
+                </AccordionItem>
+            </Accordion>);
+
+        var body = FindBody(cut);
+        body.FirstChild.MarkupMatches("<div>unit test</div>");
+    }
+
+    /// <summary>
+    /// Since setting the Expanded property cannot be awaited from inside the property setter
+    /// the component needs to wait for an initial render so it's height can be set (via style)
+    /// before the collapsing class is added. The collapsing class has the styles for the
+    /// transition (animation) and requires a starting height in order to animate properly
+    /// </summary>
+    [Fact]
+    public void ExpandedChangedToFalse_WaitsForStyleSetBeforeAddingCollapsingClass()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+        cut.OnAfterRender += AssertWaitedForStyleSetBeforeAddingCollapseClass;
+
+        // act
+        cut.SetParametersAndRender(parameters => parameters.Add(item => item.Expanded, false));
+
+        // assert
+        cut.WaitForState(() =>
+        {
+            var collapse = FindCollapse(cut);
+            return collapse.ClassList.Contains("collapsing");
+        });
+    }
+
+    [Fact]
+    public async Task SetExpandedAsyncFalse_WaitsForStyleSetBeforeAddingCollapsingClass()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+        cut.OnAfterRender += AssertWaitedForStyleSetBeforeAddingCollapseClass;
+
+        // act
+        await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(false));
+
+        // assert
+        var collapse = FindCollapse(cut);
+        Assert.True(collapse.ClassList.Contains("collapsing"));
+    }
+
+    private void AssertWaitedForStyleSetBeforeAddingCollapseClass(object sender, EventArgs args)
+    {
+        var cut = (IRenderedComponent<AccordionItem>) sender;
+        var collapse = FindCollapse(cut);
+
+        var styleIsSet = !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        var collapseClassAdded = collapse.ClassList.Contains("collapsing");
+
+        if (collapseClassAdded) throw new Exception("collapsing class was added before the style was set");
+
+        if (styleIsSet)
+        {
+            cut.OnAfterRender -= AssertWaitedForStyleSetBeforeAddingCollapseClass;
+        }
+    }
+
+    /// <summary>
+    /// Since setting the Expanded property cannot be awaited from inside the property setter
+    /// the component needs to wait for an initial render in order to get the collapse class
+    /// set before setting it's height. If the height is set before the collapse class is
+    /// added no transition(animation) will occur since the height being set is the height
+    /// of the expanded accordion.
+    /// </summary>
+    [Fact]
+    public async Task ExpandedChangedToTrue_AddsCollapsingClassBeforeSettingStyle()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+        await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(false));
+
+        cut.OnAfterRender += AssertAddsCollapsingClassBeforeSettingStyle;
+
+        // act
+        cut.SetParametersAndRender(parameters => parameters.Add(item => item.Expanded, true));
+
+        // assert
+        cut.WaitForState(() =>
+        {
+            var collapse = FindCollapse(cut);
+            return !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        });
+    }
+
+    [Fact]
+    public async Task SetExpandedAsyncTrue_AddsCollapsingClassBeforeSettingStyle()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+        await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(false));
+        cut.OnAfterRender += AssertAddsCollapsingClassBeforeSettingStyle;
+
+        // act
+        await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(true));
+
+        // assert
+        var collapse = FindCollapse(cut);
+        Assert.True(!string.IsNullOrWhiteSpace(collapse.GetAttribute("style")));
+    }
+
+    private void AssertAddsCollapsingClassBeforeSettingStyle(object sender, EventArgs args)
+    {
+        var cut = (IRenderedComponent<AccordionItem>) sender;
+        var collapse = FindCollapse(cut);
+
+        var styleIsSet = !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        var collapseClassAdded = collapse.ClassList.Contains("collapsing");
+
+        if (styleIsSet) throw new Exception("the style was set before collapsing class was added");
+
+        if (collapseClassAdded)
+        {
+            cut.OnAfterRender -= AssertAddsCollapsingClassBeforeSettingStyle;
+        }
+    }
+
+    [Fact]
+    public async Task ItemIsNotExpanded_HeaderButtonIsClicked_ItemExpands()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+        await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(false));
+
+        var headerButton = FindHeaderButton(cut);
+
+        // act
+        headerButton.Click();
+        cut.WaitForState(() =>
+        {
+            var collapse = FindCollapse(cut);
+            return !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        });
+
+        // Simulate js ontransition end
+        await cut.InvokeAsync(cut.Instance.SetStableStateStylesAndUpdateState);
+
+        // assert
+        Assert.True(cut.Instance.Expanded);
+
+        var collapse = FindCollapse(cut);
+        Assert.True(collapse.ClassList.Contains("collapse"));
+        Assert.True(collapse.ClassList.Contains("show"));
+    }
+
+    [Fact]
+    public async Task ItemIsExpanded_ButtonIsPressed_ItemIsCollapsed()
+    {
+        // arrange
+        var cut = RenderAndFindItem(
+            @<Accordion>
+                <AccordionItem></AccordionItem>
+            </Accordion>);
+
+        var headerButton = FindHeaderButton(cut);
+
+        // act
+        headerButton.Click();
+        cut.WaitForState(() =>
+        {
+            var collapse = FindCollapse(cut);
+            return collapse.ClassList.Contains("collapsing");
+        });
+
+        // Simulate js ontransition end
+        await cut.InvokeAsync(cut.Instance.SetStableStateStylesAndUpdateState);
+
+        // assert
+        Assert.False(cut.Instance.Expanded);
+
+        var collapse = FindCollapse(cut);
+        Assert.True(collapse.ClassList.Contains("collapse"));
+        Assert.False(collapse.ClassList.Contains("show"));
+    }
+
+    [Fact]
+    public void AccordionItemRemovedFromDom_AccordionItemRemovedFromAccordion()
+    {
+        // arrange
+        var renderItem = true;
+        var cut = RenderAccordion(
+            @<Accordion>
+                @if(renderItem)
+                {
+                    <AccordionItem></AccordionItem>
+                }
+            </Accordion>);
+
+        // act
+        renderItem = false;
+        cut.Render();
+
+        // assert
+        Assert.Equal(0, cut.Instance.AccordionItemCount);
+    }
+
+    private void AssertBodyHasNoStyle(IRenderedComponent<AccordionItem> accordionItem)
+    {
+        Assert.Null(
+            FindCollapse(accordionItem).GetAttribute("style")
+        );
+    }
+
+    private IElement FindCollapse(IRenderedComponent<AccordionItem> accordionItem) =>
+        accordionItem.Find(".accordion-item .accordion-collapse");
+
+    private IElement FindBody(IRenderedComponent<AccordionItem> accordionItem) =>
+        accordionItem.Find(".accordion-item .accordion-collapse .accordion-body");
+
+    private IElement FindHeader(IRenderedComponent<AccordionItem> accordionItem) =>
+        accordionItem.Find(".accordion-item .accordion-header");
+
+    private IElement FindHeaderButton(IRenderedComponent<AccordionItem> accordionItem) =>
+        accordionItem.Find(".accordion-item .accordion-header .accordion-button");
+
+    private IReadOnlyList<IRenderedComponent<AccordionItem>> RenderAndFindItems(RenderFragment renderFragment)
+    {
+        var cut = Render<Accordion>(renderFragment);
+
+        return cut.FindComponents<AccordionItem>();
+    }
+
+    private IRenderedComponent<AccordionItem> RenderAndFindItem(RenderFragment renderFragment)
+    {
+        var cut = Render<Accordion>(renderFragment);
+
+        return cut.FindComponent<AccordionItem>();
+    }
+
+    private IRenderedComponent<Accordion> RenderAccordion(RenderFragment renderFragment) =>
+    Render<Accordion>(renderFragment);
+}

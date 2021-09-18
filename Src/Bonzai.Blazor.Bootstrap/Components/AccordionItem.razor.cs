@@ -30,7 +30,7 @@ namespace Bonzai.Blazor.Bootstrap.Components
         public string HeaderButtonClasses { get; set; }
 
         [Parameter]
-        public string BodyClasses { get; set; }
+        public string CollapseClasses { get; set; }
 
         private bool _expanded;
 
@@ -44,8 +44,9 @@ namespace Bonzai.Blazor.Bootstrap.Components
                     return;
 
                 _expanded = value;
-
+#pragma warning disable CS4014
                 UpdateStylesForExpandedChange(true);
+#pragma warning restore CS4014
             }
         }
 
@@ -91,9 +92,9 @@ namespace Bonzai.Blazor.Bootstrap.Components
                 var classNameBuilder = new ClassNameBuilder("accordion-collapse");
                 classNameBuilder.AddClassName(_accordionStateClass);
 
-                if (!string.IsNullOrWhiteSpace(BodyClasses))
+                if (!string.IsNullOrWhiteSpace(CollapseClasses))
                 {
-                    classNameBuilder.AddClassName(BodyClasses);
+                    classNameBuilder.AddClassName(CollapseClasses);
                 }
 
                 return classNameBuilder.GetClassNames();
@@ -175,6 +176,11 @@ namespace Bonzai.Blazor.Bootstrap.Components
         protected override void OnInitialized()
         {
             base.OnInitialized();
+
+            if(Accordion == null)
+            {
+                throw new ArgumentNullException(nameof(Accordion), $"{typeof(AccordionItem)} was rendered outside of an {typeof(Accordion)}");
+            }
             Accordion.RegisterAccordionItem(this);
             SetStableStateStyles();
         }
@@ -246,7 +252,6 @@ namespace Bonzai.Blazor.Bootstrap.Components
             }
             else
             {
-                Console.WriteLine("Setting unrendered styles");
                 SetStableStateStyles();
             }
         }

@@ -1,13 +1,12 @@
-﻿@using Moq;
-@inherits TestContext
+﻿@inherits TestContext
 
 
 @code {
-    private Mock<IBootstrapJsService> _mockBootstrapJsService;
+    private MockBootstrapJsService _mockBootstrapJsService;
 
     public AccordionTest()
     {
-        _mockBootstrapJsService = new Mock<IBootstrapJsService>();
+        _mockBootstrapJsService = new();
 
         Services.AddTransient<IBootstrapJsService>(services => _mockBootstrapJsService.Object);
     }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonzai.Blazor.Bootstrap.Doc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{DAAD8184-E0AC-4E03-B65E-43320B1BEFFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bonzai.Blazor.Bootstrap.Test", "Test\Bonzai.Blazor.Bootstrap.Test\Bonzai.Blazor.Bootstrap.Test.csproj", "{2066291D-62BE-4864-9B80-9F6FD0BE9824}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bonzai.Blazor.Bootstrap.Test", "Test\Bonzai.Blazor.Bootstrap.Test\Bonzai.Blazor.Bootstrap.Test.csproj", "{2066291D-62BE-4864-9B80-9F6FD0BE9824}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
