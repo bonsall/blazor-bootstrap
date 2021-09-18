@@ -1,0 +1,25 @@
+﻿@inherits TestContext
+
+@code {
+    [Fact]
+    public void DefaultClassIsAddedToClasses()
+    {
+        var cut = RenderBaseComponent(
+            @<ComponentBaseTestComponent></ComponentBaseTestComponent>);
+
+        cut.MarkupMatches($"<div class=\"{ComponentBaseTestComponent.DefaultClassName}\"></div>");
+    }
+
+    [Fact]
+    public void AdditionalClassesSpecifiedInClassAttributeAreCombinedWithDefaulClass()
+    {
+        const string expectedClassName = "unit-test";
+        var cut = RenderBaseComponent(
+            @<ComponentBaseTestComponent class="@expectedClassName"></ComponentBaseTestComponent>);
+
+        cut.MarkupMatches($"<div class=\"{ComponentBaseTestComponent.DefaultClassName} {expectedClassName}\"></div>");
+    }
+
+    private IRenderedComponent<ComponentBaseTestComponent> RenderBaseComponent(RenderFragment renderFragment) =>
+        Render<ComponentBaseTestComponent>(renderFragment);
+}

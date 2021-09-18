@@ -1,0 +1,9 @@
+﻿@inherits BootstrapComponentBase
+
+<div class="@Classes"></div>
+
+@code {
+    public const string DefaultClassName = nameof(ComponentBaseTestComponent);
+
+    protected override string DefaultClass => DefaultClassName;
+}
