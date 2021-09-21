@@ -47,7 +47,7 @@ namespace Bonzai.Blazor.Bootstrap.Documentation.Client.Extensions
             foreach (var genericType in type.GetGenericArguments())
             {
                 if (!first)
-                    stringBuilder.Append(',');
+                    stringBuilder.Append(", ");
                 stringBuilder.Append(genericType.GetFriendlyName());
                 first = false;
             }

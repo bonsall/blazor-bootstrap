@@ -1,0 +1,12 @@
+﻿@inherits BootstrapComponentBase
+<button @attributes="AdditionalAttributes"
+        type="button"
+        class="@Classes"
+        @onclick="OnClick"></button>
+
+@code {
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    protected override string DefaultClass => "btn-close";
+}

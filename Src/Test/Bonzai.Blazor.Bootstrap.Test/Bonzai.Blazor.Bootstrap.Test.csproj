@@ -25,4 +25,8 @@
     <ProjectReference Include="..\..\Bonzai.Blazor.Bootstrap\Bonzai.Blazor.Bootstrap.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTests\Forms\" />
+  </ItemGroup>
+
 </Project>

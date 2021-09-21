@@ -1,0 +1,14 @@
+﻿@foreach(var variation in BootstrapVariations.ContextualVariations)
+{
+    <Row>
+        <Column>
+            <Alert Variance="@variation">
+                This is a "@variation" alert.
+            </Alert>
+        </Column>
+    </Row>
+}
+
+@code {
+    
+}

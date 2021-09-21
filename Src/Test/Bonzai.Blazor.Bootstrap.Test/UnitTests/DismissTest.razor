@@ -1,0 +1,22 @@
+﻿@inherits TestBase<Dismiss>
+
+@code {
+    [Fact]
+    public void RendersButtonWithDismissClass()
+    {
+        var cut = RenderComponent(@<Dismiss />);
+
+        cut.MarkupMatches("<button type=\"button\" class=\"btn-close\"></button>");
+    }
+
+    [Fact]
+    public void OnClickHandlerExecutedWhenButtonClicked()
+    {
+        var clickCount = 0;
+
+        var cut = RenderComponent(@<Dismiss OnClick="() => ++clickCount" />);
+
+        cut.Find("button").Click();
+        Assert.Equal(1, clickCount);
+    }
+}

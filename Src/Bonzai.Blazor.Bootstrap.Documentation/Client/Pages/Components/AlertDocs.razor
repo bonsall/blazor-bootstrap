@@ -1,0 +1,74 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.Alert
+
+@page "/components/alert"
+
+<ComponentDoc Type="typeof(Alert)"
+              Description="Provides contextual feedback for typical user actions">
+    <Properties>
+        <ParameterDescription Name="@nameof(Alert.ChildContent)"
+                              Type="@typeof(RenderFragment)">
+            The content to be rendered in this alert.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Alert.Dismissible)"
+                              Type="@typeof(bool)">
+            Makes the alert dismissible by displaying a dismiss button in the top right corner of the alert
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Alert.Hidden)"
+                              Type="typeof(bool)">
+            Hides the alert from displaying by removing it from the dom.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Alert.HiddenChanged)"
+                              Type="typeof(EventCallback<bool>)">
+            Callback to be executed when the value of <PropertyReference Name="@nameof(Alert.Hidden)" /> is changed.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Alert.Variance)"
+                              Type="typeof(EventCallback<bool>)">
+            Callback to be executed when the value of <PropertyReference Name="@nameof(Alert.Hidden)" /> is changed.
+        </ParameterDescription>
+        <AdditionalAttributes />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        The different built in variations.
+    </Description>
+    <LiveExample>
+        <Variations />
+    </LiveExample>
+    <Code>@(@"@foreach(var variation in BootstrapVariations.ContextualVariations)
+{
+    <Row>
+        <Column>
+            <Alert Variance=""@variation"">
+                This is a ""@variation"" alert.
+            </Alert>
+        </Column>
+    </Row>
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(Alert.Dismissible)" /> parameter to allow the user to dismiss the alert.
+    </Description>
+    <LiveExample>
+        <Dismissible />
+    </LiveExample>
+    <Code>@(@"<Alert Dismissible=""true""
+       Variance=""primary"">
+    You can click the the &times; icon to dismiss this alert.
+</Alert>")</Code>
+</Example>
+
+@code {
+    private int _exampleNumber;
+
+    private int ExampleNumber
+    {
+        get
+        {
+            return ++_exampleNumber;
+        }
+    }
+}

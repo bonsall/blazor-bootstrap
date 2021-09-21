@@ -1,0 +1,47 @@
+﻿@inherits BootstrapVariantContainerBase
+
+@if(!Hidden)
+{
+    <div @attributes="AdditionalAttributes"
+         class="@Classes">
+        @if(Dismissible)
+        {
+            <Dismiss OnClick="HideAlert" />
+        }
+        @ChildContent
+    </div>
+}
+
+@code {
+    [Parameter]
+    public bool Dismissible { get; set; }
+
+    [Parameter]
+    public bool Hidden { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> HiddenChanged { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classes = new ClassNameBuilder("alert");
+
+            classes.AddClassName($"alert-{Variance}");
+
+            if(Dismissible)
+            {
+                classes.AddClassName("alert-dismissible");
+            }
+
+            return classes.GetClassNames();
+        }
+    }
+
+    private async Task HideAlert()
+    {
+        Hidden = !Hidden;
+        await HiddenChanged.InvokeAsync(Hidden);
+    }
+}

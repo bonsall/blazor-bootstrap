@@ -1,0 +1,30 @@
+﻿@inherits TestBase<Row>
+
+@code {
+    [Fact]
+    public void RowClassAdded()
+    {
+        var cut = RenderComponent(@<Row />);
+
+        AssertClassName(cut, "row");
+    }
+
+    [Fact]
+    public void AlignIsSet_AddsAlignItemClass()
+    {
+        var cut = RenderComponent(@<Row Align="center"/>);
+
+        AssertClassName(cut, "row align-items-center");
+    }
+
+    [Fact]
+    public void JustifyIsSet_AddsJustifyContentClass()
+    {
+        var cut = RenderComponent(@<Row Justify="start"/>);
+
+        AssertClassName(cut, "row justify-content-start");
+    }
+
+    private void AssertClassName(IRenderedComponent<Row> cut, string classNames) =>
+        cut.MarkupMatches($"<div class=\"{classNames}\"></div>");
+}

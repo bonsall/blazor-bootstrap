@@ -1,0 +1,49 @@
+﻿@inherits TestBase<Alert>
+
+@code {
+    [Fact]
+    public void RendersDivWithVariantClass()
+    {
+        var cut = RenderComponent(@<Alert Variance="primary" />);
+
+        cut.MarkupMatches("<div class=\"alert alert-primary\"></div>");
+    }
+
+    [Fact]
+    public void AlertIsDismissible_AlertDismissibleClassAdded()
+    {
+        var cut = RenderComponent(@<Alert Dismissible="true"
+                                          Variance="primary" />);
+
+        Assert.NotNull(cut.Find("div.alert.alert-dismissible"));
+    }
+
+    [Fact]
+    public void AlertIsDismissible_DismissButtonIsRendered()
+    {
+        var cut = RenderComponent(@<Alert Dismissible="true"
+                                          Variance="primary" />);
+
+        Assert.NotNull(cut.Find("button.btn-dismiss"));
+    }
+
+    [Fact]
+    public void HiddenIsTrue_NoContentRendered()
+    {
+        var cut = RenderComponent(@<Alert Hidden="true"
+                                          Variance="primary" />);
+
+        cut.MarkupMatches("");
+    }
+
+    [Fact]
+    public void DismissbuttonClick_HiddenChangedToTrue()
+    {
+        var cut = RenderComponent(@<Alert Dismissible="true"
+                                          Variance="primary" />);
+
+        cut.Find("button").Click();
+
+        Assert.True(cut.Instance.Hidden);
+    }
+}
