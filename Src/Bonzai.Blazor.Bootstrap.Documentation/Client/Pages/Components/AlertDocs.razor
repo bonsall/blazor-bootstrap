@@ -11,7 +11,11 @@
         </ParameterDescription>
         <ParameterDescription Name="@nameof(Alert.Dismissible)"
                               Type="@typeof(bool)">
-            Makes the alert dismissible by displaying a dismiss button in the top right corner of the alert
+            Makes the alert dismissible by displaying a dismiss button in the top right corner of the alert.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Alert.FadeOut)"
+                              Type="@typeof(bool)">
+            Causes the alert to use a fade out animation when dismissed.
         </ParameterDescription>
         <ParameterDescription Name="@nameof(Alert.Hidden)"
                               Type="typeof(bool)">
@@ -21,10 +25,7 @@
                               Type="typeof(EventCallback<bool>)">
             Callback to be executed when the value of <PropertyReference Name="@nameof(Alert.Hidden)" /> is changed.
         </ParameterDescription>
-        <ParameterDescription Name="@nameof(Alert.Variance)"
-                              Type="typeof(EventCallback<bool>)">
-            Callback to be executed when the value of <PropertyReference Name="@nameof(Alert.Hidden)" /> is changed.
-        </ParameterDescription>
+        <ContextualVariance />
         <AdditionalAttributes />
     </Properties>
 </ComponentDoc>

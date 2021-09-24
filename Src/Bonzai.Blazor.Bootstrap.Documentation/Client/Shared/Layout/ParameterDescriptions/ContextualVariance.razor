@@ -1,0 +1,8 @@
+﻿<ParameterDescription Name="Variance"
+                      Type="typeof(string)">
+    Provides visual context for the component. Bootstrap defines the following values @Variants
+</ParameterDescription>
+
+@code {
+    private string Variants => string.Join(", ", BootstrapVariations.ContextualVariations);
+}
