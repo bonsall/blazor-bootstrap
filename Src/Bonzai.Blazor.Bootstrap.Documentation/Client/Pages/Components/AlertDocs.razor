@@ -5,26 +5,21 @@
 <ComponentDoc Type="typeof(Alert)"
               Description="Provides contextual feedback for typical user actions">
     <Properties>
-        <ParameterDescription Name="@nameof(Alert.ChildContent)"
-                              Type="@typeof(RenderFragment)">
+        <ParamDescription Property="typeof(Alert).GetProperty(nameof(Alert.ChildContent))">
             The content to be rendered in this alert.
-        </ParameterDescription>
-        <ParameterDescription Name="@nameof(Alert.Dismissible)"
-                              Type="@typeof(bool)">
+        </ParamDescription>
+        <ParamDescription Property="typeof(Alert).GetProperty(nameof(Alert.Dismissible))">
             Makes the alert dismissible by displaying a dismiss button in the top right corner of the alert.
-        </ParameterDescription>
-        <ParameterDescription Name="@nameof(Alert.FadeOut)"
-                              Type="@typeof(bool)">
+        </ParamDescription>
+        <ParamDescription Property="typeof(Alert).GetProperty(nameof(Alert.FadeOut))">
             Causes the alert to use a fade out animation when dismissed.
-        </ParameterDescription>
-        <ParameterDescription Name="@nameof(Alert.Hidden)"
-                              Type="typeof(bool)">
+        </ParamDescription>
+        <ParamDescription Property="typeof(Alert).GetProperty(nameof(Alert.Hidden))">
             Hides the alert from display by removing it from the dom.
-        </ParameterDescription>
-        <ParameterDescription Name="@nameof(Alert.HiddenChanged)"
-                              Type="typeof(EventCallback<bool>)">
+        </ParamDescription>
+        <ParamDescription Property="typeof(Alert).GetProperty(nameof(Alert.HiddenChanged))">
             Callback to be executed when the value of <PropertyReference Name="@nameof(Alert.Hidden)" /> is changed.
-        </ParameterDescription>
+        </ParamDescription>
         <ContextualVariance />
         <AdditionalAttributes />
     </Properties>
