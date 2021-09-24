@@ -1,12 +1,19 @@
 ﻿@inherits TestBase<Alert>
 
 @code {
+    private MockBootstrapJsService _mockBootstrapJsService;
+
+    public AlertTest()
+    {
+        _mockBootstrapJsService = new(Services);
+    }
+
     [Fact]
     public void RendersDivWithVariantClass()
     {
         var cut = RenderComponent(@<Alert Variance="primary" />);
 
-        cut.MarkupMatches("<div class=\"alert alert-primary\"></div>");
+        cut.MarkupMatches("<div class=\"alert alert-primary\" role=\"alert\"></div>");
     }
 
     [Fact]
@@ -24,7 +31,7 @@
         var cut = RenderComponent(@<Alert Dismissible="true"
                                           Variance="primary" />);
 
-        Assert.NotNull(cut.Find("button.btn-dismiss"));
+        Assert.NotNull(FindDismissButton(cut));
     }
 
     [Fact]
@@ -33,7 +40,7 @@
         var cut = RenderComponent(@<Alert Hidden="true"
                                           Variance="primary" />);
 
-        cut.MarkupMatches("");
+        AssertNoContent(cut);
     }
 
     [Fact]
@@ -46,4 +53,78 @@
 
         Assert.True(cut.Instance.Hidden);
     }
+
+    [Fact]
+    public void FadeOutIsTrue_AddsFadeAndShowClasses()
+    {
+        var cut = RenderComponent(@<Alert FadeOut="true"
+                                          Variance="primary" />);
+
+        Assert.NotNull(cut.Find("div.alert.fade.show"));
+    }
+
+    [Fact]
+    public void FadeOutIsTrue_DismissClicked_ShowClassRemoved_AlertStillRendered()
+    {
+        var cut = RenderComponent(@<Alert FadeOut="true"
+                                          Variance="primary"
+                                          Dismissible="true" />);
+
+        FindDismissButton(cut).Click();
+
+        AssertAlertRenderedWithoutShowClass(cut);
+    }
+
+    [Fact]
+    public void FadeOutIsTrue_HiddenUpdatedToTrue_ShowClassRemoved_AlertStillRendered()
+    {
+        var cut = RenderComponent(@<Alert FadeOut="true"
+                                          Variance="primary"
+                                          Hidden="false" />);
+
+        cut.SetParametersAndRender(paramBuilder => paramBuilder.Add(x => x.Hidden, true));
+        
+        AssertAlertRenderedWithoutShowClass(cut);
+    }
+
+    [Fact]
+    public void FadeOutIsFalse_RemovesTransitionEndEventListener()
+    {
+        var cut = RenderComponent(@<Alert FadeOut="false"
+                                          Variance="primary" />);
+
+        _mockBootstrapJsService.Verify(
+            x => x.RemoveEventListenerAsync(It.IsAny<ElementReference>(), "transitionend", It.IsAny<string>()),
+            Times.AtLeastOnce);
+    }
+
+    [Fact]
+    public void FadeOutTransitionCompleted_NoContentIsRendered()
+    {
+        var cut = RenderComponent(@<Alert FadeOut="true"
+                                          Variance="primary"
+                                          Hidden="false" />);
+        cut.SetParametersAndRender(paramBuilder => paramBuilder.Add(x => x.Hidden, true));
+
+        cut.InvokeAsync(cut.Instance.StopFading);
+
+        AssertNoContent(cut);
+    }
+
+    private IElement FindDismissButton(IRenderedComponent<Alert> cut) =>
+        cut.Find("button.btn-close");
+
+    private void AssertAlertRenderedWithoutShowClass(IRenderedComponent<Alert> cut)
+    {
+        var alertElement = cut.Find("div.alert.fade");
+        Assert.NotNull(alertElement);
+
+        foreach (var className in alertElement.ClassList)
+        {
+            Assert.NotEqual("show", className);
+        }
+    }
+
+    private void AssertNoContent(IRenderedComponent<Alert> cut) =>
+        cut.MarkupMatches("");
 }

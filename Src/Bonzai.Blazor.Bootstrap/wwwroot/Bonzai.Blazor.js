@@ -5,7 +5,7 @@ function getScrollHeight(element) {
 }
 
 function addEventListener(element, event, objectReference, methodToCall) {
-   let listener = function (evt) {
+   const listener = function (evt) {
       objectReference.invokeMethodAsync(methodToCall, evt);
    }
 

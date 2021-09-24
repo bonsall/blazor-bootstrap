@@ -1,0 +1,41 @@
+﻿<Row class="mb-2">
+    <Column>
+        <Button onclick="ToggleAlert">@ButtonText Alert </Button>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Alert @bind-Hidden="Hidden"
+               Variance="primary">Use the button to toggle me.</Alert>
+    </Column>
+</Row>
+<Row class="mb-2">
+    <Column>
+        <Button onclick="ToggleAlert2">@ButtonText2 Alert </Button>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Alert @bind-Hidden="Hidden2"
+               FadeOut="true"
+               Variance="primary">Use the button to toggle me with animation.</Alert>
+    </Column>
+</Row>
+
+@code {
+    private bool Hidden { get; set; } = false;
+
+    private bool Hidden2 { get; set; } = false;
+
+    private string ButtonText => Hidden
+        ? "Show"
+        : "Hide";
+
+    private string ButtonText2 => Hidden2
+        ? "Show"
+        : "Hide";
+
+    private void ToggleAlert() => Hidden = !Hidden;
+
+    private void ToggleAlert2() => Hidden2 = !Hidden2;
+}

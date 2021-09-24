@@ -61,6 +61,88 @@
 </Alert>")</Code>
 </Example>
 
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(Alert.FadeOut)" /> property to cause a fade out animation when the alert is dismissed.
+    </Description>
+    <LiveExample>
+        <FadeOut />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column>
+        <Alert Variance=""primary""
+               Dismissible=""true""
+               FadeOut=""true"">
+            I will have a fade animation when dismissed.
+        </Alert>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Alert Variance=""info""
+               Dismissible=""true""
+               FadeOut=""false"">
+            I will <b><i>NOT</i></b> have a fade out animation when dismissed.
+        </Alert>
+    </Column>
+</Row>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        You can bind to the <PropertyReference Name="@nameof(Alert.Hidden)" /> property to control the alert.
+    </Description>
+    <LiveExample>
+        <BindHidden />
+    </LiveExample>
+    <Code>
+        @(@"<Row class=""mb-2"">
+    <Column>
+        <Button onclick=""ToggleAlert"">@ButtonText Alert </Button>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Alert @bind-Hidden=""Hidden""
+               Variance=""primary"">Use the button to toggle me.</Alert>
+    </Column>
+</Row>
+<Row class=""mb-2"">
+    <Column>
+        <Button onclick=""ToggleAlert2"">@ButtonText2 Alert </Button>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Alert @bind-Hidden=""Hidden2""
+               FadeOut=""true""
+               Variance=""primary"">Use the button to toggle me with animation.</Alert>
+    </Column>
+</Row>
+
+@code {
+    private bool Hidden { get; set; } = false;
+
+    private bool Hidden2 { get; set; } = false;
+
+    private string ButtonText => Hidden
+        ? ""Show""
+        : ""Hide"";
+
+    private string ButtonText2 => Hidden2
+        ? ""Show""
+        : ""Hide"";
+
+    private void ToggleAlert() => Hidden = !Hidden;
+
+    private void ToggleAlert2() => Hidden2 = !Hidden2;
+}
+")
+    </Code>
+</Example>
+
 @code {
     private int _exampleNumber;
 

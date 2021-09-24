@@ -1,9 +1,11 @@
 ﻿@inherits BootstrapVariantContainerBase
 
-@if(!Hidden)
+@if(!Hidden || IsFading)
 {
     <div @attributes="AdditionalAttributes"
-         class="@Classes">
+         class="@Classes"
+         role="alert"
+         @ref="AlertDiv">
         @if(Dismissible)
         {
             <Dismiss OnClick="HideAlert" />
@@ -16,23 +18,81 @@
     [Parameter]
     public bool Dismissible { get; set; }
 
+    private bool _hidden;
     [Parameter]
-    public bool Hidden { get; set; }
+    public bool Hidden
+    {
+        get => _hidden;
+        set
+        {
+            _hidden = value;
+            if(_hidden)
+            {
+                IsFading = FadeOut;
+            }
+        }
+    }
 
     [Parameter]
     public EventCallback<bool> HiddenChanged { get; set; }
+
+    [Parameter]
+    public bool FadeOut { get; set; }
+
+    [Inject]
+    private IBootstrapJsService _bootstrapJsService { get; set; }
+
+    private bool IsFading { get; set; }
+
+    private ElementReference AlertDiv { get; set; }
+
+    [JSInvokable]
+    public void StopFading()
+    {
+        IsFading = false;
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(FadeOut)
+        {
+            await _bootstrapJsService.AddEventListenerAsync(
+                AlertDiv,
+                this,
+                "transitionend",
+                nameof(StopFading));
+        }
+        else
+        {
+            await _bootstrapJsService.RemoveEventListenerAsync(
+                AlertDiv,
+                "transitionend",
+                nameof(StopFading));
+        }
+    }
 
     protected override string DefaultClass
     {
         get
         {
-            var classes = new ClassNameBuilder("alert");
-
-            classes.AddClassName($"alert-{Variance}");
+            var classes = new ClassNameBuilder($"alert alert-{Variance}");
 
             if(Dismissible)
             {
                 classes.AddClassName("alert-dismissible");
+            }
+
+            if(FadeOut)
+            {
+                classes.AddClassName("fade");
+
+                if(!IsFading)
+                {
+                    classes.AddClassName("show");
+                }
             }
 
             return classes.GetClassNames();
@@ -42,6 +102,7 @@
     private async Task HideAlert()
     {
         Hidden = !Hidden;
+
         await HiddenChanged.InvokeAsync(Hidden);
     }
 }
