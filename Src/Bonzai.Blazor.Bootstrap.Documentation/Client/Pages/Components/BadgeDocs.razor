@@ -1,0 +1,50 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.Badge
+
+@page "/components/badge"
+
+<ComponentDoc Type="typeof(Badge)"
+              Description="Small label component">
+    <Properties>
+        <ParamDescription Property="typeof(Badge).GetProperty(nameof(Badge.ChildContent))">
+            The content to be rendered in this badge.
+        </ParamDescription>
+        <ParamDescription Property="typeof(Badge).GetProperty(nameof(Badge.Rounded))">
+            Causes the badge to display more rounded.
+        </ParamDescription>
+        <AdditionalAttributes />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Basic exmaple
+    </Description>
+    <LiveExample>
+        <Basic />
+    </LiveExample>
+    <Code>@(@"<Badge class=""bg-success"">
+    Simple
+</Badge>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>Using <PropertyReference Name="@nameof(Badge.Rounded)" /></Description>
+    <LiveExample>
+        <Rounded />
+    </LiveExample>
+    <Code>@(@"<Badge Rounded=""true""
+       class=""bg-primary"">My content</Badge>")</Code>
+</Example>
+
+@code {
+    private int _exampleNumber;
+
+    private int ExampleNumber
+    {
+        get
+        {
+            return ++_exampleNumber;
+        }
+    }
+}

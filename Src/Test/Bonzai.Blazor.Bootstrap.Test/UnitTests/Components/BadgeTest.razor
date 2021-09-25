@@ -1,0 +1,24 @@
+﻿@inherits TestBase<Badge>
+
+@code {
+    [Fact]
+    public void RendersSpanWithBadgeClass()
+    {
+        var cut = RenderComponent(@<Badge />);
+        cut.MarkupMatches("<span class=\"badge\"></span>");
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInSpan()
+    {
+        var cut = RenderComponent(@<Badge>Unit Test </Badge>);
+        cut.MarkupMatches("<span class=\"badge\">Unit Test</span>");
+    }
+
+    [Fact]
+    public void RoundedIsTrue_AddsRoundedPillClass()
+    {
+        var cut = RenderComponent(@<Badge Rounded="true" />);
+        cut.MarkupMatches("<span class=\"badge rounded-pill\"></span>");
+    }
+}

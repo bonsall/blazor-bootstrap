@@ -1,0 +1,25 @@
+﻿@inherits BootstrapContainerBase
+
+<span class="@Classes">
+    @ChildContent
+</span>
+
+@code {
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("badge");
+
+            if(Rounded)
+            {
+                classBuilder.AddClassName("rounded-pill");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    [Parameter]
+    public bool Rounded { get; set; }
+}
