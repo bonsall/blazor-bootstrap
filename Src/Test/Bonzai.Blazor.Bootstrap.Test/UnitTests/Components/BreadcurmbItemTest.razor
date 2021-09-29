@@ -32,4 +32,13 @@
 
         cut.MarkupMatches($"<li class=\"breadcrumb-item active\"></li>");
     }
+
+    [Fact]
+    public void ActiveIsTrue_LinkIsNotRendered()
+    {
+        var cut = RenderComponent(@<BreadcrumbItem Active="true"
+                                                   Url="unit/test">Unit test</BreadcrumbItem>);
+
+        cut.MarkupMatches($"<li class=\"breadcrumb-item active\">Unit test</li>");
+    }
 }

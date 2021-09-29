@@ -1,6 +1,6 @@
 ﻿@inherits BootstrapContainerBase
 <li class="@Classes">
-    @if(Url == null)
+    @if(Active || Url == null)
     {
         @ChildContent
     }

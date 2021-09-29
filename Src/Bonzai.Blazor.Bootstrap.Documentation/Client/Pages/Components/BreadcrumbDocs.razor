@@ -5,11 +5,11 @@
 @page "/components/breadcrumb"
 
 <ComponentDoc Type="typeof(Breadcrumb)"
-              Description="Small label component">
+              Description="Navigational heirarchy display">
     <Properties>
         <ChildContent />
         <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.Divider))">
-            The text content to be used a divider for the breadcrumb.
+            The text content to be used as a divider for the breadcrumb.
         </ParamDescription>
         <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.DividerResource))">
             A resource to use as the divider. You can use a url or a data uri to be used as the resource.
@@ -75,11 +75,11 @@
         <DividerResource />
     </LiveExample>
     <Code>
-        @(@"@foreach(var divider in Dividers)
+        @(@"@foreach(var resource in Resources)
 {
     <Row>
         <Column>
-            <Breadcrumb Divider=""@divider"">
+            <Breadcrumb DividerResource=""@resource"">
                 <BreadcrumbItem>Home</BreadcrumbItem>
                 <BreadcrumbItem>Products</BreadcrumbItem>
                 <BreadcrumbItem>Widget</BreadcrumbItem>
@@ -89,8 +89,13 @@
 }
 
 @code {
-    private string[] Dividers = { ""|"", ""||"", ""-"", "","" };
-}")
+    private string[] Resources = 
+    {
+        ""data:image/svg+xml,<svg xmlns=\""http://www.w3.org/2000/svg\"" width=\""8\"" height=\""8\"" fill=\""none\"" viewBox=\""0 0 24 24\"" stroke=\""currentColor\""><path stroke-linecap=\""round\"" stroke-linejoin=\""round\"" stroke-width=\""2\"" d=\""M9 5l7 7-7 7\"" /></svg>"",
+        ""/images/film.svg""
+    };
+}
+")
     </Code>
 </Example>
 @code {

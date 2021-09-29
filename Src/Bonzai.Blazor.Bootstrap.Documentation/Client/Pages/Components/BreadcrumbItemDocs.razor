@@ -1,0 +1,64 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.BreadcrumbItem
+
+@inherits DocsBase
+
+@page "/components/breadcrumb-item"
+
+<ComponentDoc Type="typeof(BreadcrumbItem)"
+              Description="Individual items">
+    <CustomDescription>
+        Idividual items to be placed inside of the <PropertyReference Name="@nameof(Breadcrumb)" /> component.
+    </CustomDescription>
+    <Properties>
+        <ParamDescription Property="typeof(BreadcrumbItem).GetProperty(nameof(BreadcrumbItem.Active))">
+            Indicate that this item is the active page in the breadcrumb display. Generated links will not be clickable if this property is true.
+        </ParamDescription>
+        <ChildContent />
+        <ParamDescription Property="typeof(BreadcrumbItem).GetProperty(nameof(BreadcrumbItem.Url))">
+            Causes the breadcrumb item to display as a link that navigates to the given URL.
+        </ParamDescription>
+        <AdditionalAttributes />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(BreadcrumbItem.Active)" /> property to show the user what page they are on.
+    </Description>
+    <LiveExample>
+        <Active />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column>
+        <Breadcrumb>
+            <BreadcrumbItem Url=""/components"">Components</BreadcrumbItem>
+            <BreadcrumbItem Url=""/components/breadcrumb-item"" Active=""true"">Breadcrumb Item</BreadcrumbItem>
+        </Breadcrumb>
+    </Column>
+</Row>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(BreadcrumbItem.Url)" /> property to display each breadcrumb item as a link.
+    </Description>
+    <LiveExample>
+        <Url />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column>
+        <Breadcrumb>
+            <BreadcrumbItem Url=""/components"">Components</BreadcrumbItem>
+            <BreadcrumbItem Url=""/components/breadcrumb-item"">Breadcrumb Item</BreadcrumbItem>
+        </Breadcrumb>
+    </Column>
+</Row>")
+    </Code>
+</Example>
+
+@code {
+
+}
