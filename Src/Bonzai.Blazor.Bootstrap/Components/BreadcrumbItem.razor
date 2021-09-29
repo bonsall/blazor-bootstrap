@@ -1,0 +1,40 @@
+﻿@inherits BootstrapContainerBase
+<li class="@Classes">
+    @if(Url == null)
+    {
+        @ChildContent
+    }
+    else
+    {
+        <a href="@Url">@ChildContent</a>
+    }
+</li>
+
+@code {
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("breadcrumb-item");
+
+            if(Active)
+            {
+                classBuilder.AddClassName("active");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    /// <summary>
+    /// Specify a url to link to.
+    /// </summary>
+    [Parameter]
+    public string Url { get; set; }
+
+    /// <summary>
+    /// Indicates whether or not this item is the active page.
+    /// </summary>
+    [Parameter]
+    public bool Active { get; set; }
+}

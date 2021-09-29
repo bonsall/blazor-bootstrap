@@ -1,0 +1,64 @@
+﻿@using System.Web
+
+@inherits BootstrapContainerBase
+
+@if(SuppressNav)
+{
+    @RenderNav()
+}
+else
+{
+    <nav aria-label="@Label">
+        @RenderNav()
+    </nav>
+}
+
+@code {
+    /// <summary>
+    /// Causes the component to only render an ordered list element without wrapping it in a nav element
+    /// </summary>
+    [Parameter]
+    public bool SuppressNav { get; set; }
+
+    /// <summary>
+    /// The label to use in the aria-label attribute on the nav element. This is ignored when SuppressNav is true.
+    /// </summary>
+    [Parameter]
+    public string Label { get; set; } = "breadcrumb";
+
+    /// <summary>
+    /// The text content to be used a divider for the breadcrumb.
+    /// </summary>
+    [Parameter]
+    public string Divider { get; set; }
+
+    /// <summary>
+    /// A resources to be used as the divider.
+    /// </summary>
+    [Parameter]
+    public string DividerResource { get; set; }
+
+    private RenderFragment RenderNav() => __builder =>
+    {
+        <ol class="breadcrumb"
+            style="@Style">@ChildContent</ol>
+    };
+
+    private string Style
+    {
+        get
+        {
+            if (Divider != null) return CreateDividerStyle($"'{Divider}'");
+            else if(DividerResource != null)
+            {                
+                return CreateDividerStyle(
+                    $"url({Uri.EscapeUriString(DividerResource)})"
+                );
+            }
+
+            return null;
+        }
+    }
+
+    private string CreateDividerStyle(string divider) => $"--bs-breadcrumb-divider: {divider}";
+}

@@ -1,0 +1,16 @@
+﻿@foreach(var divider in Dividers)
+{
+    <Row>
+        <Column>
+            <Breadcrumb Divider="@divider">
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>Products</BreadcrumbItem>
+                <BreadcrumbItem>Widget</BreadcrumbItem>
+            </Breadcrumb>
+        </Column>
+    </Row>
+}
+
+@code {
+    private string[] Dividers = { "|", "||", "-", ",", "" };
+}

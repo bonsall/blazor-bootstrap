@@ -1,0 +1,35 @@
+﻿@inherits TestBase<BreadcrumbItem>
+
+@code {
+    [Fact]
+    public void RendersListItemWithBreadcrumbItemClass()
+    {
+        var cut = RenderComponent(@<BreadcrumbItem />);
+        cut.MarkupMatches("<li class=\"breadcrumb-item\"></li>");
+    }
+
+    [Fact]
+    public void RendersChildContent()
+    {
+        const string ExpectedContent = "Unit test";
+        var cut = RenderComponent(@<BreadcrumbItem>@ExpectedContent</BreadcrumbItem>);
+        cut.MarkupMatches($"<li class=\"breadcrumb-item\">{ExpectedContent}</li>");
+    }
+
+    [Fact]
+    public void UrlIsSet_WrapsChildContentInAnchor()
+    {
+        const string ExpectedUrl = "/unit/test";
+        var cut = RenderComponent(@<BreadcrumbItem Url="@ExpectedUrl"></BreadcrumbItem>);
+
+        cut.MarkupMatches($"<li class=\"breadcrumb-item\"><a href=\"{ExpectedUrl}\"></a></li>");
+    }
+
+    [Fact]
+    public void ActiveIsSet_AddsActiveClass()
+    {
+        var cut = RenderComponent(@<BreadcrumbItem Active="true"></BreadcrumbItem>);
+
+        cut.MarkupMatches($"<li class=\"breadcrumb-item active\"></li>");
+    }
+}

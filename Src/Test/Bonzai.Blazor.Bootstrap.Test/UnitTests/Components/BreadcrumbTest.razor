@@ -1,0 +1,66 @@
+﻿@inherits TestBase<Breadcrumb>
+
+@code {
+    [Fact]
+    public void ProducesNavAndOrderedListElementsWithBreadcrumbClass()
+    {
+        var cut = RenderComponent(@<Breadcrumb></Breadcrumb>);
+
+        cut.MarkupMatches("<nav aria-label=\"breadcrumb\"><ol class=\"breadcrumb\"></ol></nav>");
+    }
+
+    [Fact]
+    public void SuppressNavIsTrue_NavElementNotRendered()
+    {
+        var cut = RenderComponent(@<Breadcrumb SuppressNav="true" />);
+        cut.MarkupMatches("<ol class=\"breadcrumb\"></ol>");
+
+    }
+
+    [Fact]
+    public void LabelIsSetAriaLabelHasValueOfLabelParameter()
+    {
+        var cut = RenderComponent(@<Breadcrumb Label="unit test" />);
+
+        cut.MarkupMatches("<nav aria-label=\"unit test\"><ol class=\"breadcrumb\"></ol></nav>");
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void RendersChildContent(bool suppressNav)
+    {
+        const string ExpectedContent = "Unit test";
+        var cut = RenderComponent(@<Breadcrumb SuppressNav="suppressNav">@ExpectedContent</Breadcrumb>);
+
+        var breadcrumb = FindBreadcrumb(cut);
+        Assert.Equal(ExpectedContent, breadcrumb.TextContent);
+    }
+
+    [Fact]
+    public void DividerIsSet_SetsStyleWithDivider()
+    {
+        const string Divider = ">";
+        var cut = RenderComponent(@<Breadcrumb Divider="@Divider"></Breadcrumb>);
+
+        var breadcrumb = FindBreadcrumb(cut);
+        Assert.Equal($"--bs-breadcrumb-divider: '{Divider}'",
+            breadcrumb.GetAttribute("style"));
+    }
+
+    [Theory]
+    [InlineData("/unit/test/resource")]
+    [InlineData("https://unittest.com/some/image.png")]
+    [InlineData("data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 5l7 7-7 7\" /></svg>")]
+    public void DividerResourceIsSet_StyleIsSetWithUrlDivider(string dividerResource)
+    {
+        var cut = RenderComponent(@<Breadcrumb DividerResource="@dividerResource"></Breadcrumb>);
+
+        var breadcrumb = FindBreadcrumb(cut);
+        Assert.Contains(Uri.EscapeUriString(dividerResource),
+            breadcrumb.GetAttribute("style"));
+    }
+
+    private IElement FindBreadcrumb(IRenderedComponent<Breadcrumb> cut) =>
+        cut.Find("ol.breadcrumb");
+}

@@ -1,0 +1,98 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.Breadcrumb
+
+@inherits DocsBase
+
+@page "/components/breadcrumb"
+
+<ComponentDoc Type="typeof(Breadcrumb)"
+              Description="Small label component">
+    <Properties>
+        <ChildContent />
+        <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.Divider))">
+            The text content to be used a divider for the breadcrumb.
+        </ParamDescription>
+        <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.DividerResource))">
+            A resource to use as the divider. You can use a url or a data uri to be used as the resource.
+        </ParamDescription>
+        <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.Label))">
+            The label to use in the aria-label attribute on the nav element. This is ignored when SuppressNav is true.
+        </ParamDescription>
+        <ParamDescription Property="typeof(Breadcrumb).GetProperty(nameof(Breadcrumb.SuppressNav))">
+            Forces the content to not be wrapped in a Nav element.
+        </ParamDescription>
+        <AdditionalAttributes />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Basic exmaple
+    </Description>
+    <LiveExample>
+        <Basic />
+    </LiveExample>
+    <Code>
+        @(@"<Breadcrumb>
+    <BreadcrumbItem>Home</BreadcrumbItem>
+    <BreadcrumbItem>Products</BreadcrumbItem>
+    <BreadcrumbItem>Widget</BreadcrumbItem>
+</Breadcrumb>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Simple dividers
+    </Description>
+    <LiveExample>
+        <Divider />
+    </LiveExample>
+    <Code>
+        @(@"@foreach(var divider in Dividers)
+{
+    <Row>
+        <Column>
+            <Breadcrumb Divider=""@divider"">
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>Products</BreadcrumbItem>
+                <BreadcrumbItem>Widget</BreadcrumbItem>
+            </Breadcrumb>
+        </Column>
+    </Row>
+}
+
+@code {
+    private string[] Dividers = { ""|"", ""||"", ""-"", "","" };
+}")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Divider resources
+    </Description>
+    <LiveExample>
+        <DividerResource />
+    </LiveExample>
+    <Code>
+        @(@"@foreach(var divider in Dividers)
+{
+    <Row>
+        <Column>
+            <Breadcrumb Divider=""@divider"">
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem>Products</BreadcrumbItem>
+                <BreadcrumbItem>Widget</BreadcrumbItem>
+            </Breadcrumb>
+        </Column>
+    </Row>
+}
+
+@code {
+    private string[] Dividers = { ""|"", ""||"", ""-"", "","" };
+}")
+    </Code>
+</Example>
+@code {
+
+}
