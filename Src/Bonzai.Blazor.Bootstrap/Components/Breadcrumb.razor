@@ -38,9 +38,12 @@ else
     [Parameter]
     public string DividerResource { get; set; }
 
+    protected override string DefaultClass => "breadcrumb";
+
     private RenderFragment RenderNav() => __builder =>
     {
-        <ol class="breadcrumb"
+        <ol @attributes="AdditionalAttributes"
+            class="@Classes"
             style="@Style">@ChildContent</ol>
     };
 

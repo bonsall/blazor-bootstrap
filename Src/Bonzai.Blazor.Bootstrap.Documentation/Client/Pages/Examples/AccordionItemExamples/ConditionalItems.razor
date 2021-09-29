@@ -14,10 +14,10 @@
 @code {
     private RenderFragment ItemButton(ConditionalItemModel itemModel) => __builder =>
     {
-    <Button Variance="primary"
-            onclick="() => ToggleItem(itemModel)">
+    <Btn Variance="primary"
+          onclick="() => ToggleItem(itemModel)">
         @itemModel.ButtonText
-    </Button>
+    </Btn>
     };
 
     private RenderFragment RenderItem(ConditionalItemModel itemModel) => __builder =>

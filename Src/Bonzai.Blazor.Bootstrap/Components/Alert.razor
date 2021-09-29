@@ -47,9 +47,13 @@
     private ElementReference AlertDiv { get; set; }
 
     [JSInvokable]
-    public void StopFading()
+    public async Task StopFading()
     {
         IsFading = false;
+        await _bootstrapJsService.RemoveEventListenerAsync(
+            AlertDiv,
+            "transitionend",
+            nameof(StopFading));
         StateHasChanged();
     }
 
@@ -62,13 +66,6 @@
             await _bootstrapJsService.AddEventListenerAsync(
                 AlertDiv,
                 this,
-                "transitionend",
-                nameof(StopFading));
-        }
-        else
-        {
-            await _bootstrapJsService.RemoveEventListenerAsync(
-                AlertDiv,
                 "transitionend",
                 nameof(StopFading));
         }

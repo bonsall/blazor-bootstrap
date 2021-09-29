@@ -72,9 +72,9 @@
     <Code>
         @(@"<Row>
     <Column class=""mb-2"">
-        <Button Variance=""primary"" onclick=""ButtonClick"">
+        <Btn Variance=""primary"" onclick=""ButtonClick"">
             @ButtonText Item 1
-        </Button>
+        </Btn>
     </Column>
 </Row>
 <Accordion>
@@ -123,9 +123,9 @@
     <Code>
         @(@"<Row>
     <Column class=""mb-2"">
-        <Button Variance=""primary"" onclick=""ToggleItem1"">
+        <Btn Variance=""primary"" onclick=""ToggleItem1"">
             @ButtonText Item 1
-        </Button>
+        </Btn>
     </Column>
 </Row>
 <Accordion>
@@ -187,10 +187,10 @@
 @code {
     private RenderFragment ItemButton(ConditionalItemModel itemModel) => __builder =>
     {
-        <Button Variance=""primary""
+        <Btn Variance=""primary""
                 onclick=""() => ToggleItem(itemModel)"">
             @itemModel.ButtonText
-        </Button>
+        </Btn>
     };
 
     private RenderFragment RenderItem(ConditionalItemModel itemModel) => __builder =>
