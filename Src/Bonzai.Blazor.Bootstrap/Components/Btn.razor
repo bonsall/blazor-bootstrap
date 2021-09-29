@@ -7,10 +7,26 @@
 </button>
 
 @code {
-    public Btn() : base("primary") { }
-
     [Parameter]
     public EventCallback<MouseEventArgs> OnClick { get; set; }
 
-    protected override string DefaultClass => $"btn btn-{Variance}";
+    [Parameter]
+    public string Size { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder($"btn btn-{Variance}");
+
+            if(Size != null)
+            {
+                classBuilder.AddClassName($"btn-{Size}");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    public Btn() : base("primary") { }
 }

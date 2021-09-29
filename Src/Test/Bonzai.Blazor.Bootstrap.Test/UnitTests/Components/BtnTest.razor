@@ -1,0 +1,41 @@
+﻿@inherits TestBase<Btn>
+
+@code {
+    [Fact]
+    public void RendersButtonWithPrimaryVarianceClass()
+    {
+        var cut = RenderComponent(@<Btn></Btn>);
+
+        cut.MarkupMatches("<button class=\"btn btn-primary\"></button>");
+    }
+
+    [Fact]
+    public void VarianceIsSet_ClassNameOverriddenWithVariance()
+    {
+        var cut = RenderComponent(@<Btn Variance="unit-test"></Btn>);
+
+        cut.MarkupMatches("<button class=\"btn btn-unit-test\"></button>");
+    }
+
+    [Fact]
+    public void OnClickIsSet_OnClickExecutesWhenButtonPressed()
+    {
+        int clickCount = 0;
+        var cut = RenderComponent(@<Btn OnClick="() => ++clickCount"></Btn>);
+
+        cut.Find("button").Click();
+
+        Assert.Equal(1, clickCount);
+    }
+
+    [Theory]
+    [InlineData("sm", "btn-sm")]
+    [InlineData("lg", "btn-lg")]
+    [InlineData("test", "btn-test")]
+    public void SizeIsSet_RendersSizeClass(string size, string expectedClass)
+    {
+        var cut = RenderComponent(@<Btn Size="@size"></Btn>);
+
+        Assert.NotNull(cut.Find($"button.{expectedClass}"));
+    }
+}
