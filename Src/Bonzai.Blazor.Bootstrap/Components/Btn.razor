@@ -2,7 +2,7 @@
 
 <button @attributes="AdditionalAttributes"
         class="@Classes"
-        @onclick="onclick">
+        @onclick="OnClick">
     @ChildContent
 </button>
 
@@ -10,7 +10,7 @@
     public Btn() : base("primary") { }
 
     [Parameter]
-    public EventCallback<MouseEventArgs> onclick { get; set; }
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
     protected override string DefaultClass => $"btn btn-{Variance}";
 }
