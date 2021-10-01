@@ -1,0 +1,130 @@
+﻿@inherits TestBase<BtnLink>
+
+@code {
+    [Fact]
+    public void RendersAnchorTagWithButtonClasses()
+    {
+        var cut = RenderComponent(@<BtnLink></BtnLink>);
+
+        cut.MarkupMatches("<a class=\"btn btn-link\" role=\"button\"></a>");
+    }
+
+    [Fact]
+    public void UsesVarianceClassWhenSpecified()
+    {
+        var cut = RenderComponent(@<BtnLink Variance="unit-test"></BtnLink>);
+
+        cut.MarkupMatches("<a class=\"btn btn-unit-test\" role=\"button\"></a>");
+    }
+
+    [Fact]
+    public void OnClickIsSet_OnClickExecutesWhenButtonPressed()
+    {
+        int clickCount = 0;
+        var cut = RenderComponent(@<BtnLink OnClick="() => ++clickCount"></BtnLink>);
+
+        cut.Find("a").Click();
+
+        Assert.Equal(1, clickCount);
+    }
+
+    [Theory]
+    [InlineData("sm", "btn-sm")]
+    [InlineData("lg", "btn-lg")]
+    [InlineData("test", "btn-test")]
+    public void SizeIsSet_RendersSizeClass(string size, string expectedClass)
+    {
+        var cut = RenderComponent(@<BtnLink Size="@size"></BtnLink>);
+
+        Assert.NotNull(cut.Find($"a.{expectedClass}"));
+    }
+
+    [Fact]
+    public void RendersChildContent()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<BtnLink>@ExpectedContent</BtnLink>);
+
+        var anchor = FindAnchor(cut);
+        Assert.Equal(ExpectedContent, anchor.TextContent);
+    }
+
+    [Fact]
+    public void AdditionalAttributesAreRendered()
+    {
+        const string ExpectedValue = "unit test";
+        var cut = RenderComponent(@<BtnLink data-test="@ExpectedValue"></BtnLink>);
+
+        var anchor = FindAnchor(cut);
+        Assert.Equal(ExpectedValue, anchor.GetAttribute("data-test"));
+    }
+
+    [Fact]
+    public void ClassAttributeAddsAdditionalClasses_ButtonClassesAreNotRemoved()
+    {
+        const string ExpectedClasses = "unit test";
+        var cut = RenderComponent(@<BtnLink class="@ExpectedClasses"></BtnLink>);
+
+        var classes = FindAnchor(cut).GetAttribute("class");
+        Assert.Contains(ExpectedClasses, classes);
+        Assert.Contains("btn btn-link", classes);
+    }
+
+    [Fact]
+    public void DisabledAttributeIsSpecified_AddsDisabledClass()
+    {
+        var cut = RenderComponent(@<BtnLink disabled></BtnLink>);
+
+        var anchor = FindAnchor(cut);
+        Assert.Contains("disabled", anchor.ClassName);
+    }
+
+    [Fact]
+    public void DisabledAttributeIsSpecified_AdditionalClassesAreSet_DisabledClassAppendedToClassNames()
+    {
+        const string ExpectedClass = "unit-test";
+        var cut = RenderComponent(@<BtnLink class="@ExpectedClass" disabled></BtnLink>);
+
+        var classes = FindAnchor(cut).ClassName;
+        Assert.Contains(ExpectedClass, classes);
+        Assert.Contains("disabled", classes);
+    }
+
+    [Fact]
+    public void DisabledAttributeIsSpecified_AddsAriaDisabledAttribute()
+    {
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink disabled></BtnLink>);
+        Assert.Equal("true", anchor.GetAttribute("aria-disabled"));
+    }
+
+    [Fact]
+    public void DisabledAttributeIsSpecified_SetsTabIndexNegative1()
+    {
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink disabled></BtnLink>);
+
+        Assert.Equal("-1", anchor.GetAttribute("tabindex"));
+    }
+
+    [Fact]
+    public void CanOverrideRole()
+    {
+        const string ExpectedRole = "link";
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink role="@ExpectedRole"></BtnLink>);
+
+        Assert.Equal(ExpectedRole, anchor.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void HrefIsSet_RoleIsSetToLink()
+    {
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink href="https://unit.test"></BtnLink>);
+
+        Assert.Equal("link", anchor.GetAttribute("role"));
+    }
+
+    private IElement FindAnchor(IRenderedComponent<BtnLink> cut) =>
+        cut.Find("a");
+
+    private IElement RenderComponentAndFindAnchor(RenderFragment component) =>
+        FindAnchor(RenderComponent(component));
+}

@@ -1,0 +1,67 @@
+﻿@using System.Text.RegularExpressions
+
+@inherits Btn
+
+<a role="@Role"
+   @attributes="AdditionalAttributes"
+   class="@Classes"
+   @onclick="OnClick">
+    @ChildContent
+</a>
+
+@code {
+    public BtnLink() : base("link") { }
+
+    private string Role { get; set; } = "button";
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (AdditionalAttributes != null)
+        {
+            SetupDisabledState();
+            SetRole();
+        }
+    }
+
+    private void SetupDisabledState()
+    {
+        if(!(AdditionalAttributes.TryGetValue("disabled", out var disabledObject)
+            && bool.TryParse(disabledObject.ToString(), out var disabled)
+            && disabled))
+        {
+            return;
+        }
+
+        if (AdditionalAttributes.TryGetValue("class", out var classObject))
+        {
+            var classes = classObject.ToString();
+
+            if (!Regex.IsMatch(classes, @"\bdisabled\b"))
+            {
+                AdditionalAttributes["class"] = $"{classes} disabled";
+            }
+        }
+        else
+        {
+            AdditionalAttributes["class"] = "disabled";
+        }
+
+        AdditionalAttributes["aria-disabled"] = "true";
+        AdditionalAttributes["tabindex"] = -1;
+    }
+
+    private void SetRole()
+    {
+        if(AdditionalAttributes.TryGetValue("href", out var href)
+            && href.ToString().Any())
+        {
+            Role = "link";
+        }
+        else
+        {
+            Role = "button";
+        }
+    }
+}

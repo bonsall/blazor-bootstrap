@@ -6,7 +6,7 @@
     {
         var cut = RenderComponent(@<Btn></Btn>);
 
-        cut.MarkupMatches("<button class=\"btn btn-primary\"></button>");
+        cut.MarkupMatches("<button class=\"btn btn-primary\" type=\"button\"></button>");
     }
 
     [Fact]
@@ -14,7 +14,7 @@
     {
         var cut = RenderComponent(@<Btn Variance="unit-test"></Btn>);
 
-        cut.MarkupMatches("<button class=\"btn btn-unit-test\"></button>");
+        cut.MarkupMatches("<button class=\"btn btn-unit-test\" type=\"button\"></button>");
     }
 
     [Fact]
@@ -37,5 +37,13 @@
         var cut = RenderComponent(@<Btn Size="@size"></Btn>);
 
         Assert.NotNull(cut.Find($"button.{expectedClass}"));
+    }
+
+    [Fact]
+    public void ButtonTypeIsOverridable()
+    {
+        var cut = RenderComponent(@<Btn type="submit"></Btn>);
+
+        cut.MarkupMatches("<button class=\"btn btn-primary\" type=\"submit\"></button>");
     }
 }
