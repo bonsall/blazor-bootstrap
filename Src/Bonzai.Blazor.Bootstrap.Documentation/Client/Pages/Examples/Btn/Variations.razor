@@ -1,0 +1,20 @@
+﻿<Row class="flex-wrap justify-content-between">
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class="mb-2">
+            <Btn Variance="@variation">@variation</Btn>
+        </Column>
+    }
+</Row>
+<Row class="flex-wrap justify-content-between">
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class="mb-2">
+            <Btn Variance="@($"outline-{variation}")">Outline @variation</Btn>
+        </Column>
+    }
+</Row>
+
+@code {
+
+}
