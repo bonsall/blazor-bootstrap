@@ -1,0 +1,22 @@
+﻿<Row class="mb-2">
+    <Column>
+        <BtnLink OnClick="DoSomething">Do Something</BtnLink>
+    </Column>
+</Row>
+@if(ShowContent)
+{
+    <Row>
+        <Column>
+            You did something.
+        </Column>
+    </Row>
+}
+
+@code {
+    private bool ShowContent { get; set; }
+
+    private void DoSomething()
+    {
+        ShowContent = !ShowContent;
+    }
+}

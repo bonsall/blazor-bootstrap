@@ -5,14 +5,24 @@
 <a role="@Role"
    @attributes="AdditionalAttributes"
    class="@Classes"
-   @onclick="OnClick">
+   @onclick="HandleClick"
+   @onclick:preventDefault="IsDefaultPrevented">
     @ChildContent
 </a>
 
 @code {
+    [Parameter]
+    public bool PreventDefault { get; set; }
+
     public BtnLink() : base("link") { }
 
+    private bool Disabled { get; set; }
+
     private string Role { get; set; } = "button";
+
+    private bool IsDefaultPrevented => PreventDefault
+        || Disabled
+        || OnClick.HasDelegate;
 
     protected override void OnParametersSet()
     {
@@ -23,6 +33,14 @@
             SetupDisabledState();
             SetRole();
         }
+    }
+
+    private async Task HandleClick(MouseEventArgs args)
+    {
+        if (Disabled)
+            return;
+
+        await OnClick.InvokeAsync(args);
     }
 
     private void SetupDisabledState()
@@ -37,11 +55,7 @@
         if (AdditionalAttributes.TryGetValue("class", out var classObject))
         {
             var classes = classObject.ToString();
-
-            if (!Regex.IsMatch(classes, @"\bdisabled\b"))
-            {
-                AdditionalAttributes["class"] = $"{classes} disabled";
-            }
+            AdditionalAttributes["class"] = $"{classes} disabled";
         }
         else
         {
@@ -49,7 +63,7 @@
         }
 
         AdditionalAttributes["aria-disabled"] = "true";
-        AdditionalAttributes["tabindex"] = -1;
+        Disabled = true;
     }
 
     private void SetRole()

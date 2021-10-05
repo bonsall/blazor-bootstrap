@@ -1,0 +1,199 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.BtnLink
+
+@inherits DocsBase
+
+@page "/components/btn-link"
+
+<ComponentDoc Type="typeof(BtnLink)">
+    <CustomDescription>
+        <Row>
+            <Column>
+                Creates a bootstrap styled button using an anchor tag. The default <code>role</code> given to the rendered <code>&lt;a&gt;</code> is <code>button</code>.
+                Setting the href for this element will change the <code>role</code> to be <code>link</code>. You can ovverride this behavior by setting
+                your own value ex: <code>role="menu"</code>
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <Alert Variance="info"
+                       class="d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-info-circle flex-shrink-0 me-2" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                    </svg>
+                    <div>
+                        This component renders an <code>&lt;a&gt;</code> (anchor) element. The <code><a href="/components/btn">Btn</a></code>
+                        comoponent will render a <code>&lt;button&gt;</code> element. Since the button element is semantically
+                        correct for defining custom actions I strongly encourage you to use that component instead of this one.
+                        This component should be reserved for navigation that requires complexity that a simple anchor (without
+                        js/blazor) cannot handle.
+                    </div>
+                </Alert>
+            </Column>
+        </Row>
+    </CustomDescription>
+    <Properties>
+        <ChildContent />
+        <AdditionalAttributes />
+        <ParamDescription Property="typeof(BtnLink).GetProperty(nameof(BtnLink.OnClick))">
+            The action to execute when the button is clicked.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnLink).GetProperty(nameof(BtnLink.Size))">
+            Specify a size for the button. Bootstrap defines 'lg' and 'sm' variants.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnLink).GetProperty(nameof(BtnLink.PreventDefault))">
+            Prevents the element from executing its default behaviorwhen clicked. Default behavior is automatically
+            prevented when the <code>disabled</code> attribute is placed on the component or when the OnClick event
+            handler is set.
+        </ParamDescription>
+        <ContextualVariance />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Specify any of the standard bootstrap contextual variations. Bootstrap also provides additional "outline" and "link" variations.
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <strong>Standard</strong>
+                @string.Join(", ", BootstrapVariations.ContextualVariations)
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <strong>Outline</strong>
+                @string.Join(", ", BootstrapVariations.ContextualVariations.Select(x => $"outline-{x}"))
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <strong>Link</strong>
+                link
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <Variations />
+    </LiveExample>
+    <Code>@(@"<Row class=""flex-wrap justify-content-between"">
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class=""mb-2"">
+            <BtnLink Variance=""@variation"">@variation</BtnLink>
+        </Column>
+    }
+</Row>
+<Row class=""flex-wrap justify-content-between"">
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class=""mb-2"">
+            <BtnLink Variance=""@($""outline-{variation}"")"">Outline @variation</BtnLink>
+        </Column>
+    }
+</Row>
+<Row>
+    <Column class=""mb-2"">
+        <BtnLink Variance=""link"">Link</BtnLink>
+    </Column>
+</Row>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Specify one of the size variations using the <PropertyReference Name="@nameof(BtnLink.Size)" /> property.
+    </Description>
+    <LiveExample>
+        <Size />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <BtnLink Size=""sm"">Small</BtnLink>
+        <BtnLink Size=""lg"">large</BtnLink>
+    </Column>
+</Row>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Respond to click events.
+    </Description>
+    <LiveExample>
+        <Click />
+    </LiveExample>
+    <Code>@(@"<Row class=""mb-2"">
+    <Column>
+        <BtnLink OnClick=""DoSomething"">Do Something</BtnLink>
+    </Column>
+</Row>
+@if(ShowContent)
+{
+    <Row>
+        <Column>
+            You did something.
+        </Column>
+    </Row>
+}
+
+@code {
+    private bool ShowContent { get; set; }
+
+    private void DoSomething()
+    {
+        ShowContent = !ShowContent;
+    }
+}
+")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Setting the href will cause the button to navigate.
+    </Description>
+    <LiveExample>
+        <Navigation />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <BtnLink href=""/components/btn"">Btn Component</BtnLink>
+    </Column>
+</Row>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Setting the disabled attribute will disable the button and add the disabled class.
+    </Description>
+    <LiveExample>
+        <Disabled />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <BtnLink OnClick=""UpdateButtonText""
+                 Variance=""primary""
+                 disabled>@ButtonText</BtnLink>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnLink href=""https://www.google.com""
+                 disabled>Google.com</BtnLink>
+    </Column>
+</Row>
+
+@code {
+    private string ButtonText { get; set; } = ""I am disabled"";
+
+    private void UpdateButtonText()
+    {
+        ButtonText = ""I am not disabled!"";
+    }
+}")</Code>
+</Example>
+
+@code {
+
+}

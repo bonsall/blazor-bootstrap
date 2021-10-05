@@ -98,11 +98,14 @@
     }
 
     [Fact]
-    public void DisabledAttributeIsSpecified_SetsTabIndexNegative1()
+    public void DisabledAttributeIsSpecified_ClickEventIsPrevented()
     {
-        var anchor = RenderComponentAndFindAnchor(@<BtnLink disabled></BtnLink>);
+        var clickCount = 0;
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink OnClick="() => ++clickCount" disabled></BtnLink>);
 
-        Assert.Equal("-1", anchor.GetAttribute("tabindex"));
+        anchor.Click();
+
+        Assert.Equal(0, clickCount);
     }
 
     [Fact]

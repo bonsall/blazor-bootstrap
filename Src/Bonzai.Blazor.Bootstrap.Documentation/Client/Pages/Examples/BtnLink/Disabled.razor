@@ -1,0 +1,22 @@
+﻿<Row>
+    <Column>
+        <BtnLink OnClick="UpdateButtonText"
+                 Variance="primary"
+                 disabled>@ButtonText</BtnLink>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnLink href="https://www.google.com"
+                 disabled>Google.com</BtnLink>
+    </Column>
+</Row>
+
+@code {
+    private string ButtonText { get; set; } = "I am disabled";
+
+    private void UpdateButtonText()
+    {
+        ButtonText = "I am not disabled!";
+    }
+}

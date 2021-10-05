@@ -2,7 +2,7 @@
     @foreach(var variation in BootstrapVariations.ContextualVariations)
     {
         <Column class="mb-2">
-            <Btn Variance="@variation">@variation</Btn>
+            <BtnLink Variance="@variation">@variation</BtnLink>
         </Column>
     }
 </Row>
@@ -10,13 +10,13 @@
     @foreach(var variation in BootstrapVariations.ContextualVariations)
     {
         <Column class="mb-2">
-            <Btn Variance="@($"outline-{variation}")">Outline @variation</Btn>
+            <BtnLink Variance="@($"outline-{variation}")">Outline @variation</BtnLink>
         </Column>
     }
 </Row>
 <Row>
     <Column class="mb-2">
-        <Btn Variance="link">Link</Btn>
+        <BtnLink Variance="link">Link</BtnLink>
     </Column>
 </Row>
 
