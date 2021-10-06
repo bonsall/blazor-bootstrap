@@ -1,0 +1,42 @@
+﻿@inherits TestBase<AlertLink>
+
+@code {
+    [Fact]
+    public void RendersAnchorWithAlertLinkClass()
+    {
+        var cut = RenderComponent(@<AlertLink />);
+
+        cut.Find("a.alert-link");
+    }
+
+    [Fact]
+    public void AlertLinkHasHrefAttribute_RenderedAnchorHasHref()
+    {
+        const string ExpectedHrefValue = "http://unit.test";
+        var anchor = RenderComponentAndFindAnchor(@<AlertLink href="@ExpectedHrefValue"></AlertLink>);
+
+        Assert.Equal(ExpectedHrefValue, anchor.GetAttribute("href"));
+    }
+
+    [Fact]
+    public void AlertLinkHasClassAttribute_ClassAttributeValuesAddedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var anchor = RenderComponentAndFindAnchor(@<AlertLink class="@ExpectedClassName"></AlertLink>);
+
+        Assert.Contains("alert-link", anchor.ClassList);
+        Assert.Contains(ExpectedClassName, anchor.ClassList);
+    }
+
+    [Fact]
+    public void ChildContentIsSpecified_ChildContentIsRendered()
+    {
+        const string ExpectedChildContent = "This is a unit test";
+        var anchor = RenderComponentAndFindAnchor(@<AlertLink>@ExpectedChildContent</AlertLink>);
+
+        Assert.Equal(ExpectedChildContent, anchor.TextContent);
+    }
+
+    private IElement RenderComponentAndFindAnchor(RenderFragment renderFragment) =>
+        RenderComponent(renderFragment).Find("a");
+}

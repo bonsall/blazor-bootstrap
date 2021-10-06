@@ -138,6 +138,25 @@
     </Code>
 </Example>
 
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        You can use the <code>&lt;AlertLink&gt;</code> component to add styled links to your alert.
+    </Description>
+    <LiveExample>
+        <AlertLinks />
+    </LiveExample>
+    <Code>@(@"@foreach(var variation in BootstrapVariations.ContextualVariations)
+{
+    <Row>
+        <Column>
+            <Alert Variance=""@variation"">
+                Check out this cool <AlertLink href=""#"">colored link</AlertLink> inside my alert.
+            </Alert>
+        </Column>
+    </Row>
+}")</Code>
+</Example>
+
 @code {
     private int _exampleNumber;
 

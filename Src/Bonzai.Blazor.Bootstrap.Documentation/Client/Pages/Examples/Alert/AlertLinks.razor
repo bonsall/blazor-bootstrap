@@ -1,0 +1,14 @@
+﻿@foreach(var variation in BootstrapVariations.ContextualVariations)
+{
+    <Row>
+        <Column>
+            <Alert Variance="@variation">
+                Check out this cool <AlertLink href="#">colored link</AlertLink> inside my alert.
+            </Alert>
+        </Column>
+    </Row>
+}
+
+@code {
+
+}
