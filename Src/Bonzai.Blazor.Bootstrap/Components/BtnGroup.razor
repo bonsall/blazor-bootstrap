@@ -1,0 +1,35 @@
+﻿@inherits BootstrapContainerBase
+
+<div role="group" @attributes="AdditionalAttributes" class="@Classes">@ChildContent</div>
+
+@code {
+    [Parameter]
+    public string Size { get; set; }
+
+    [Parameter]
+    public bool Vertical { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder(
+                Vertical ? "btn-group-vertical"
+                : "btn-group");
+
+            if(!string.IsNullOrWhiteSpace(Size))
+            {
+                classBuilder.AddClassName($"btn-group-{Size}");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        AdditionalAttributes ??= new Dictionary<string, object>();
+    }
+}

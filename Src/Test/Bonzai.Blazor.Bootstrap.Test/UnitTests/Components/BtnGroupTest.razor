@@ -1,0 +1,72 @@
+﻿@inherits TestBase<BtnGroup>
+
+@code {
+    [Fact]
+    public void RendersDivWithBtnGroupClass()
+    {
+        var cut = RenderComponent(@<BtnGroup></BtnGroup>);
+
+        cut.Find("div.btn-group");
+    }
+
+    [Fact]
+    public void AdditionalClassesAreAppended()
+    {
+        const string ExpectedClass = "unit-test";
+        var cut = RenderComponent(@<BtnGroup class="@ExpectedClass"></BtnGroup>);
+
+        cut.Find($"div.btn-group.{ExpectedClass}");
+    }
+
+    [Fact]
+    public void RendersChildContent()
+    {
+        const string ChildContent = "unit test";
+        var cut = RenderComponent(@<BtnGroup>@ChildContent</BtnGroup>);
+
+        var div = cut.Find("div");
+        Assert.Equal(ChildContent, div.TextContent);
+    }
+
+    [Fact]
+    public void RoleDefaultsToGroup()
+    {
+        var div = RenderComponentAndFindDiv(@<BtnGroup></BtnGroup>);
+
+        Assert.Equal("group", div.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void RoleIsSet_RoleIsNotOverridden()
+    {
+        const string ExpectedRole = "unit-test";
+        var div = RenderComponentAndFindDiv(@<BtnGroup role="@ExpectedRole"></BtnGroup>);
+
+        Assert.Equal(ExpectedRole, div.GetAttribute("role"));
+    }
+
+    [Theory]
+    [InlineData("lg")]
+    [InlineData("sm")]
+    public void SizeIsSet_AddsSizeClass(string size)
+    {
+        var cut = RenderComponent(@<BtnGroup Size="@size"></BtnGroup>);
+
+        cut.Find($"div.btn-group-{size}");
+    }
+
+    [Fact]
+    public void HasVerticalAttribute_RendersVerticalClass()
+    {
+        var cut = RenderComponent(@<BtnGroup Vertical="true"></BtnGroup>);
+
+        cut.Find("div.btn-group-vertical");
+    }
+
+    private IElement RenderComponentAndFindDiv(RenderFragment renderFragment) =>
+        RenderComponent(renderFragment).Find("div.btn-group");
+
+    private IElement RenderComponentAndFindToolbar(RenderFragment renderFragment) =>
+        RenderComponent(renderFragment).Find("div.btn-toolbar");
+
+}

@@ -1,0 +1,113 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.BtnGroup
+
+@inherits DocsBase
+
+@page "/components/btn-group"
+
+<ComponentDoc Type="typeof(BtnGroup)">
+    <CustomDescription>
+        <Row>
+            <Column>
+                Visually groups buttons together in a container.
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <Alert Variance="info"
+                       class="d-flex align-items-center">
+                    <InfoIcon class="flex-shrink-0 me-2" />
+                    <div>
+                        groups and toolbars should be given an explicit label, as most assistive technologies will otherwise not announce them,
+                        despite the presence of the correct role attribute. This library <strong>does</strong> automatically add the role
+                        attribute but <strong>does not</strong> automatically add aria-label or aria-labeledby attributes so please make sure
+                        you add them.
+                    </div>
+                </Alert>
+            </Column>
+        </Row>
+    </CustomDescription>
+    <Properties>
+        <AdditionalAttributes />
+        <ChildContent />
+        <ParamDescription Property="typeof(BtnGroup).GetProperty(nameof(BtnGroup.Size))">
+            Specify a size for the button. Bootstrap defines 'lg' and 'sm' variants.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnGroup).GetProperty(nameof(BtnGroup.Vertical))">
+            Forces the buttons to be stacked verticaly instead of inline.
+        </ParamDescription>
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Basic.
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <Simple />
+    </LiveExample>
+    <Code>@(@"<BtnGroup>
+    <Btn>One</Btn>
+    <Btn>Two</Btn>
+    <Btn>Three</Btn>
+</BtnGroup>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Specify one of the size variations using the <PropertyReference Name="@nameof(BtnGroup.Size)" /> property.
+    </Description>
+    <LiveExample>
+        <Size />
+    </LiveExample>
+    <Code>@(@"<Row class=""mb-2"">
+    <Column>
+        <BtnGroup Size=""lg"">
+            <Btn>One</Btn>
+            <Btn>Two</Btn>
+            <Btn>Three</Btn>
+        </BtnGroup>
+    </Column>
+</Row>
+<Row class=""mb-2"">
+    <Column>
+        <BtnGroup>
+            <Btn>One</Btn>
+            <Btn>Two</Btn>
+            <Btn>Three</Btn>
+        </BtnGroup>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnGroup Size=""sm"">
+            <Btn>One</Btn>
+            <Btn>Two</Btn>
+            <Btn>Three</Btn>
+        </BtnGroup>
+    </Column>
+</Row>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(BtnGroup.Vertical)" /> property to create a stacked layout.
+    </Description>
+    <LiveExample>
+        <Vertical />
+    </LiveExample>
+    <Code>
+        @(@"<BtnGroup Vertical=""true"">
+    <Btn>One</Btn>
+    <Btn>Two</Btn>
+    <Btn>Three</Btn>
+</BtnGroup>")
+    </Code>
+</Example>
+
+@code {
+
+}
