@@ -125,6 +125,23 @@
         Assert.Equal("link", anchor.GetAttribute("role"));
     }
 
+    [Fact]
+    public void BtnLinkIsDisabled_TabIndexisNegative1()
+    {
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink disabled></BtnLink>);
+
+        Assert.Equal("-1", anchor.GetAttribute("tabindex"));
+    }
+
+    [Fact]
+    public void BtnLinkIsDisabled_TabIndexIsSet_TabIndexNotModified()
+    {
+        const int ExpectedTabIndex = 5;
+        var anchor = RenderComponentAndFindAnchor(@<BtnLink disabled tabindex="@ExpectedTabIndex"></BtnLink>);
+
+        Assert.Equal(ExpectedTabIndex.ToString(), anchor.GetAttribute("tabindex"));
+    }
+
     private IElement FindAnchor(IRenderedComponent<BtnLink> cut) =>
         cut.Find("a");
 

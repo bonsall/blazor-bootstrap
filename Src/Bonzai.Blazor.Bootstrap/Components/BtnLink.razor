@@ -62,6 +62,11 @@
             AdditionalAttributes["class"] = "disabled";
         }
 
+        if(!AdditionalAttributes.ContainsKey("tabindex"))
+        {
+            AdditionalAttributes["tabindex"] = -1;
+        }
+
         AdditionalAttributes["aria-disabled"] = "true";
         Disabled = true;
     }
