@@ -1,0 +1,7 @@
+﻿@inherits BootstrapContainerBase
+
+<div role="toolbar" @attributes="AdditionalAttributes" class="@Classes">@ChildContent</div>
+
+@code {
+    protected override string DefaultClass => "btn-toolbar";
+}

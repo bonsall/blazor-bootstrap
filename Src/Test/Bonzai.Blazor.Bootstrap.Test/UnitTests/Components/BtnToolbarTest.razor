@@ -1,0 +1,50 @@
+﻿@inherits TestBase<BtnToolbar>
+
+@code {
+    [Fact]
+    public void RendersDivWithBtnToolbarClass()
+    {
+        var cut = RenderComponent(@<BtnToolbar></BtnToolbar>);
+
+        cut.Find("div.btn-toolbar");
+    }
+
+    [Fact]
+    public void AdditionalClassesAreAppended()
+    {
+        const string ExpectedClass = "unit-test";
+        var cut = RenderComponent(@<BtnToolbar class="@ExpectedClass"></BtnToolbar>);
+
+        cut.Find($"div.btn-toolbar.{ExpectedClass}");
+    }
+
+    [Fact]
+    public void RendersChildContent()
+    {
+        const string ChildContent = "unit test";
+        var cut = RenderComponent(@<BtnToolbar>@ChildContent</BtnToolbar>);
+
+        var div = cut.Find("div");
+        Assert.Equal(ChildContent, div.TextContent);
+    }
+
+    [Fact]
+    public void RoleDefaultsToToolbar()
+    {
+        var div = RenderComponentAndFindDiv(@<BtnToolbar></BtnToolbar>);
+
+        Assert.Equal("toolbar", div.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void RoleIsSet_RoleIsNotOverridden()
+    {
+        const string ExpectedRole = "unit-test";
+        var div = RenderComponentAndFindDiv(@<BtnToolbar role="@ExpectedRole"></BtnToolbar>);
+
+        Assert.Equal(ExpectedRole, div.GetAttribute("role"));
+    }
+
+    private IElement RenderComponentAndFindDiv(RenderFragment renderFragment) =>
+        RenderComponent(renderFragment).Find("div.btn-toolbar");
+}

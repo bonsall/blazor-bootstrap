@@ -1,0 +1,64 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.BtnToolbar
+
+@inherits DocsBase
+
+@page "/components/btn-toolbar"
+
+<ComponentDoc Type="typeof(BtnGroup)">
+    <CustomDescription>
+        <Row>
+            <Column>
+                Used to combine multiple button groups into a single component.
+            </Column>
+        </Row>
+        <Row>
+            <Column>
+                <Alert Variance="info"
+                       class="d-flex align-items-center">
+                    <InfoIcon class="flex-shrink-0 me-2" />
+                    <div>
+                        groups and toolbars should be given an explicit label, as most assistive technologies will otherwise not announce them,
+                        despite the presence of the correct role attribute. This library <strong>does</strong> automatically add the role
+                        attribute but <strong>does not</strong> automatically add aria-label or aria-labeledby attributes so please make sure
+                        you add them.
+                    </div>
+                </Alert>
+            </Column>
+        </Row>
+    </CustomDescription>
+    <Properties>
+        <AdditionalAttributes />
+        <ChildContent />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Basic.
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <Basic />
+    </LiveExample>
+    <Code>@(@"<BtnToolbar aria-label=""Toolbar with button groups"">
+    <BtnGroup aria-label=""A group of buttons"">
+        <Btn>1</Btn>
+        <Btn>2</Btn>
+        <Btn>3</Btn>
+        <Btn>4</Btn>
+    </BtnGroup>
+    <BtnGroup class=""ms-2"" aria-label=""Another group of buttons"">
+        <Btn>One</Btn>
+        <Btn>Two</Btn>
+        <Btn>Three</Btn>
+        <Btn>Four</Btn>
+    </BtnGroup>
+</BtnToolbar>")</Code>
+</Example>
+
+@code {
+
+}
