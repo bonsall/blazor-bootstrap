@@ -1,0 +1,20 @@
+﻿<Row>
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class="mb-2">
+            <BtnCheck class="mx-2" Variance="@variation">@variation</BtnCheck>
+        </Column>
+    }
+</Row>
+<Row>
+    @foreach (var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class="mb-2">
+            <BtnCheck class="mx-2" Variance="@($"outline-{variation}")">Outline @variation</BtnCheck>
+        </Column>
+    }
+</Row>
+
+@code {
+
+}

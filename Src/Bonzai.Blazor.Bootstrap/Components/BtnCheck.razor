@@ -1,0 +1,62 @@
+﻿@inherits BootstrapVariantContainerBase
+
+<input  type="checkbox" class="btn-check" id="@InputId" checked="@Value" @onchange="ToggleValue" value="@InputValue" />
+<label @attributes="AdditionalAttributes" for="@InputId" class="@Classes">@ChildContent</label>
+
+@code {
+    [Parameter]
+    public bool Value { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ValueChanged { get; set; }
+
+    [Parameter]
+    public string InputValue { get; set; }
+
+    public BtnCheck() : base("outline-primary") { }
+
+    protected override string DefaultClass =>
+        $"btn btn-{Variance}";
+
+    private uint Id { get; } = NextId;
+
+    private string InputId
+    {
+        get
+        {
+            if(AdditionalAttributes.ContainsKey("id"))
+            {
+                return AdditionalAttributes["id"].ToString();
+            }
+            return $"BtnCheck-{Id}";
+        }
+    }
+
+    private static uint _nextId;
+    private static uint NextId
+    {
+        get
+        {
+            if(_nextId == uint.MaxValue)
+            {
+                return _nextId = uint.MinValue;
+            }
+
+            return _nextId++;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(AdditionalAttributes == null)
+        {
+            AdditionalAttributes = new Dictionary<string, object>();
+        }
+    }
+
+    private async Task ToggleValue()
+    {
+        Value = !Value;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

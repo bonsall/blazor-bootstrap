@@ -1,0 +1,117 @@
+﻿@inherits TestBase<BtnCheck>
+
+@code {
+    [Fact]
+    public void RendersLabelAndInput()
+    {
+        var cut = RenderComponent(@<BtnCheck />);
+
+        cut.Find("label");
+        cut.Find("input.btn-check");
+    }
+
+    [Fact]
+    public void IdIsNotSet_InputIdIsNotNull_LabelsForAttributematchesId()
+    {
+        var cut = RenderComponent(@<BtnCheck />);
+
+        var label  = cut.Find("label"); ;
+        var input = cut.Find("input.btn-check");
+
+        var inputId = input.GetAttribute("id");
+        Assert.NotNull(inputId);
+
+        Assert.Equal(inputId, label.GetAttribute("for"));
+    }
+
+    [Fact]
+    public void IdIsSet_InputIdIsSetValue_LabelForAttributeMatchesInputId()
+    {
+        const string ExpectedId = "unit-test";
+        var cut = RenderComponent(@<BtnCheck id="@ExpectedId" />);
+
+        var label  = cut.Find("label"); ;
+        var input = cut.Find("input.btn-check");
+
+        var inputId = input.GetAttribute("id");
+
+        Assert.Equal(ExpectedId, inputId);
+        Assert.Equal(inputId, label.GetAttribute("for"));
+    }
+
+    [Fact]
+    public void ClassAttributeIsSet_AddsClassesToLabel()
+    {
+        const string ClassName = "unit-test";
+        var cut = RenderComponent(@<BtnCheck class="@ClassName" />);
+
+        cut.Find($"label.btn.{ClassName}");
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInLabel()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<BtnCheck>@ExpectedContent</BtnCheck>);
+
+        var label = cut.Find("label");
+        Assert.Equal(ExpectedContent, label.TextContent);
+    }
+
+    [Fact]
+    public void LabelHasButtonClasses()
+    {
+        var cut = RenderComponent(@<BtnCheck />);
+
+        var labelClasses = cut.Find("label").ClassList;
+        Assert.Contains("btn", labelClasses);
+        Assert.Contains("btn-outline-primary", labelClasses);
+    }
+
+    [Fact]
+    public void VarianceIsSet_AddsButtonVarianceClass()
+    {
+        const string ExpectedVariance = "unit-test";
+        var cut = RenderComponent(@<BtnCheck Variance="@ExpectedVariance" />);
+
+        cut.Find($"label.btn.btn-{ExpectedVariance}");
+    }
+
+    [Fact]
+    public void ValueIsTrue_CheckboxIsChecked()
+    {
+        var cut = RenderComponent(@<BtnCheck Value="true" />);
+
+        var input = cut.Find("input");
+        Assert.NotNull(input.GetAttribute("checked"));
+    }
+
+    [Fact]
+    public void CheckboxIsChanged_ValueChangedIsExecutedWithNewValue()
+    {
+        int valueChangedExecutionCount = 0;
+        bool value = false;
+        void ValueChanged(bool newValue)
+        {
+            valueChangedExecutionCount++;
+            value = newValue;
+        }
+
+        var cut = RenderComponent(@<BtnCheck ValueChanged="ValueChanged" />);
+
+        cut.Find("input").Change(new object());
+
+        Assert.Equal(1, valueChangedExecutionCount);
+        Assert.True(value);
+    }
+
+    [Fact]
+    public void InputValueIsSet_InputValueAttributeIsSet()
+    {
+        const string ExpectedValue = "unit-test";
+        var cut = RenderComponent(@<BtnCheck InputValue="@ExpectedValue" />);
+
+        var input = cut.Find("input");
+        Assert.Equal(ExpectedValue, input.GetAttribute("value"));
+    }
+}
