@@ -1,0 +1,172 @@
+﻿@*@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.BtnRadio
+
+@inherits DocsBase
+
+@page "/components/btn-radio"
+
+<ComponentDoc Type="typeof(BtnRadio)">
+    <CustomDescription>
+        <Row>
+            <Column>
+                Creates a radio button that is styled like a button.
+            </Column>
+        </Row>
+    </CustomDescription>
+    <Properties>
+        <ChildContent />
+        <AdditionalAttributes />
+        <ParamDescription Property="typeof(BtnRadio).GetProperty(nameof(BtnRadio.InputValue))">
+            Sets the <code>value</code> attribute on the rendered input component.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnRadio).GetProperty(nameof(BtnRadio.Value))">
+            Whether or not the checkbox is checked.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnRadio).GetProperty(nameof(BtnRadio.ValueChanged))">
+            A callback to execute when the <PropertyReference Name="@nameof(BtnRadio.Value)" /> property is changed.
+        </ParamDescription>
+        <ParamDescription Property="typeof(BtnRadio).GetProperty(nameof(BtnRadio.Name))">
+            Sets the <code>name</code> attribute on the rendered input.
+        </ParamDescription>
+        <ContextualVariance />
+    </Properties>
+</ComponentDoc>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Works with all of the button variations. It's pretty difficult to see the difference between checked and unchecked for the
+                non-outline versions of the button so I recommend only using the outline variations.
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <Variations />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    @foreach(var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class=""mb-2"">
+            <BtnCheck class=""mx-2"" Variance=""@variation"">@variation</BtnCheck>
+        </Column>
+    }
+</Row>
+<Row>
+    @foreach (var variation in BootstrapVariations.ContextualVariations)
+    {
+        <Column class=""mb-2"">
+            <BtnCheck class=""mx-2"" Variance=""@($""outline-{variation}"")"">Outline @variation</BtnCheck>
+        </Column>
+    }
+</Row>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Bind to the <PropertyReference Name="@nameof(BtnRadio.Value)" /> property to control the checkbox.
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <BindValue />
+    </LiveExample>
+    <Code>
+        @(@"<Row class=""mb-2"">
+    <Column>
+        <BtnCheck @bind-Value=""Check1"">
+            @GetMessage(Check1)
+        </BtnCheck>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnCheck @bind-Value=""Check2"">
+            @GetMessage(Check2)
+        </BtnCheck>
+    </Column>
+</Row>
+
+@code {
+    private bool Check1 { get; set; }
+
+    private bool Check2 { get; set; } = true;
+
+    private string GetMessage(bool isChecked) => isChecked
+        ? ""This button is checked""
+        : ""This button is not checked"";
+}")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <Row>
+            <Column>
+                Use the <code>&lt;BtnGroup&gt;</code> component to group checkboxes together. Use
+                <code>&lt;BtnToolbar&gt;</code> to group multiple groups together.
+            </Column>
+        </Row>
+    </Description>
+    <LiveExample>
+        <Group />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column>
+        Using <code>&lt;BtnGroup&gt;</code>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnGroup>
+            <BtnCheck>Item 1</BtnCheck>
+            <BtnCheck>Item 2</BtnCheck>
+            <BtnCheck>Item 3</BtnCheck>
+        </BtnGroup>
+    </Column>
+</Row>
+<Row class=""mt-3"">
+    <Column>
+        Vertical group
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <BtnGroup Vertical=""true"">
+            <BtnCheck>Item 1</BtnCheck>
+            <BtnCheck>Item 2</BtnCheck>
+            <BtnCheck>Item 3</BtnCheck>
+        </BtnGroup>
+    </Column>
+</Row>
+<Row class=""mt-3"">
+    <Column>
+        Using <code>&lt;BtnToolbar&gt;</code>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <div class=""btn-toolbar"">
+            <BtnGroup class=""me-2"">
+                <BtnCheck>Item 1</BtnCheck>
+                <BtnCheck>Item 2</BtnCheck>
+                <BtnCheck>Item 3</BtnCheck>
+            </BtnGroup>
+            <BtnGroup>
+                <BtnCheck>Item 4</BtnCheck>
+                <BtnCheck>Item 5</BtnCheck>
+                <BtnCheck>Item 6</BtnCheck>
+            </BtnGroup>
+        </div>
+    </Column>
+</Row>")
+    </Code>
+</Example>
+
+@code {
+
+}*@
