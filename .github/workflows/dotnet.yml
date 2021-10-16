@@ -20,8 +20,8 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore ./src/Bonzai.Blazor.Bootstrap.sln
+      run: dotnet restore src/Bonzai.Blazor.Bootstrap.sln
     - name: Build
-      run: dotnet build ./src/Bonzai.Blazor.Bootstrap.sln --no-restore
+      run: dotnet build src/Bonzai.Blazor.Bootstrap.sln --no-restore
     - name: Test
-      run: dotnet test ./src/Bonzai.Blazor.Bootstrap.sln --no-build --verbosity normal
+      run: dotnet test src/Bonzai.Blazor.Bootstrap.sln --no-build --verbosity normal
