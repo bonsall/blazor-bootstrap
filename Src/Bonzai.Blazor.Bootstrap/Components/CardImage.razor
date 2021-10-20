@@ -1,0 +1,7 @@
+﻿@inherits BootstrapVariantBase
+
+<img @attributes="AdditionalAttributes" class="@Classes" />
+
+@code {
+    protected override string DefaultClass => $"card-image-{Variance}";
+}

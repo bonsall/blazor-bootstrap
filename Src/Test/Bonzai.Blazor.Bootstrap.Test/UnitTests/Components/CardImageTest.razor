@@ -1,0 +1,40 @@
+﻿@inherits TestBase<CardImage>
+
+@code {
+    [Fact]
+    public void RendersImgTagWithCardImageClass()
+    {
+        var cut = RenderComponent(@<CardImage />);
+
+        var imageTag = cut.Find("img");
+        Assert.Contains(imageTag.ClassList, className => className.Contains("card-image"));
+    }
+
+    [Fact]
+    public void AdditionalClassesAreAddedToClassList()
+    {
+        const string expectedClassName = "unit-test";
+        var cut = RenderComponent(@<CardImage class="@expectedClassName" />);
+
+        var imageTag = cut.Find("img");
+        Assert.Contains(expectedClassName, imageTag.ClassList);
+    }
+
+    [Fact]
+    public void VarianceIsAddedToCardImageClass()
+    {
+        var cut = RenderComponent(@<CardImage Variance="bottom" />);
+
+        var imageTag = cut.Find("img");
+        Assert.Contains("card-image-bottom", imageTag.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesAddedToImgTag()
+    {
+        var cut = RenderComponent(@<CardImage data-unit-test="custom value" />);
+
+        var imageTag = cut.Find("img");
+        Assert.NotNull(imageTag.GetAttribute("data-unit-test"));
+    }
+}
