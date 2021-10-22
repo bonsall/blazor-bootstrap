@@ -1,0 +1,264 @@
+﻿
+@using Bunit
+@inherits TestContext
+@code {
+	private const string ClassName = "card-title";
+	
+    [Fact]
+    public void RendersH1WithCardBodyClass()
+    {
+        var cut = Render<CardTitle1>(
+            @<CardTitle1></CardTitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle1ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle1>(
+            @<CardTitle1 class="@ExpectedClassName"></CardTitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle1AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle1>(
+            @<CardTitle1 data-unit-test="custom value"></CardTitle1>);
+
+        var element = cut.Find("h1");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle1ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle1>(
+            @<CardTitle1>@ExpectedContent</CardTitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH2WithCardBodyClass()
+    {
+        var cut = Render<CardTitle2>(
+            @<CardTitle2></CardTitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle2ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle2>(
+            @<CardTitle2 class="@ExpectedClassName"></CardTitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle2AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle2>(
+            @<CardTitle2 data-unit-test="custom value"></CardTitle2>);
+
+        var element = cut.Find("h2");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle2ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle2>(
+            @<CardTitle2>@ExpectedContent</CardTitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH3WithCardBodyClass()
+    {
+        var cut = Render<CardTitle3>(
+            @<CardTitle3></CardTitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle3ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle3>(
+            @<CardTitle3 class="@ExpectedClassName"></CardTitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle3AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle3>(
+            @<CardTitle3 data-unit-test="custom value"></CardTitle3>);
+
+        var element = cut.Find("h3");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle3ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle3>(
+            @<CardTitle3>@ExpectedContent</CardTitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH4WithCardBodyClass()
+    {
+        var cut = Render<CardTitle4>(
+            @<CardTitle4></CardTitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle4ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle4>(
+            @<CardTitle4 class="@ExpectedClassName"></CardTitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle4AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle4>(
+            @<CardTitle4 data-unit-test="custom value"></CardTitle4>);
+
+        var element = cut.Find("h4");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle4ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle4>(
+            @<CardTitle4>@ExpectedContent</CardTitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH5WithCardBodyClass()
+    {
+        var cut = Render<CardTitle5>(
+            @<CardTitle5></CardTitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle5ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle5>(
+            @<CardTitle5 class="@ExpectedClassName"></CardTitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle5AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle5>(
+            @<CardTitle5 data-unit-test="custom value"></CardTitle5>);
+
+        var element = cut.Find("h5");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle5ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle5>(
+            @<CardTitle5>@ExpectedContent</CardTitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH6WithCardBodyClass()
+    {
+        var cut = Render<CardTitle6>(
+            @<CardTitle6></CardTitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle6ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardTitle6>(
+            @<CardTitle6 class="@ExpectedClassName"></CardTitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardTitle6AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardTitle6>(
+            @<CardTitle6 data-unit-test="custom value"></CardTitle6>);
+
+        var element = cut.Find("h6");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardTitle6ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardTitle6>(
+            @<CardTitle6>@ExpectedContent</CardTitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	}
