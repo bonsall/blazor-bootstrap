@@ -1,0 +1,6 @@
+﻿@inherits BootstrapContainerBase
+<p @attributes="AdditionalAttributes" class="@Classes">@ChildContent</p>
+
+@code {
+    protected override string DefaultClass => "card-text";
+}

@@ -1,0 +1,44 @@
+﻿@inherits TestBase<CardText>
+
+@code {
+    private const string ClassName = "card-text";
+
+    [Fact]
+    public void RendersParagraphWithCardTextClass()
+    {
+        var cut = RenderComponent(@<CardText></CardText>);
+
+        var paragraph = cut.Find("p");
+        Assert.Contains(ClassName, paragraph.ClassList);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<CardText class="@ExpectedClassName"></CardText>);
+
+        var paragraph = cut.Find("p");
+        Assert.Contains(ClassName, paragraph.ClassList);
+        Assert.Contains(ExpectedClassName, paragraph.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnParagraph()
+    {
+        var cut = RenderComponent(@<CardText data-unit-test="custom value"></CardText>);
+
+        var paragraph = cut.Find("p");
+        Assert.NotNull(paragraph.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInParagraph()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<CardText>@ExpectedContent</CardText>);
+
+        var paragraph = cut.Find("p");
+        Assert.Equal(ExpectedContent, paragraph.TextContent);
+    }
+}
