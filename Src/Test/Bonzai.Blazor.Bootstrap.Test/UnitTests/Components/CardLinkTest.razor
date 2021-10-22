@@ -1,0 +1,44 @@
+﻿@inherits TestBase<CardLink>
+
+@code {
+    private const string ClassName = "card-link";
+
+    [Fact]
+    public void RendersAnchorWithCardLinkClass()
+    {
+        var cut = RenderComponent(@<CardLink></CardLink>);
+
+        var anchor = cut.Find("a");
+        Assert.Contains(ClassName, anchor.ClassList);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<CardLink class="@ExpectedClassName"></CardLink>);
+
+        var anchor = cut.Find("a");
+        Assert.Contains(ClassName, anchor.ClassList);
+        Assert.Contains(ExpectedClassName, anchor.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnAnchor()
+    {
+        var cut = RenderComponent(@<CardLink data-unit-test="custom value"></CardLink>);
+
+        var anchor = cut.Find("a");
+        Assert.NotNull(anchor.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInAnchor()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<CardLink>@ExpectedContent</CardLink>);
+
+        var anchor = cut.Find("a");
+        Assert.Equal(ExpectedContent, anchor.TextContent);
+    }
+}

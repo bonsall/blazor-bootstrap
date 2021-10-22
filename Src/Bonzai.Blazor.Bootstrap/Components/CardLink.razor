@@ -1,0 +1,6 @@
+﻿@inherits BootstrapContainerBase
+<a @attributes="AdditionalAttributes" class="@Classes">@ChildContent</a>
+
+@code {
+    protected override string DefaultClass => "card-link";
+}
