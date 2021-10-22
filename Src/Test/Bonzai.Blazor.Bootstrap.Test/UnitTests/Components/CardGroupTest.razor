@@ -1,0 +1,44 @@
+﻿@inherits TestBase<CardGroup>
+
+@code {
+    private const string ClassName = "card-group";
+
+    [Fact]
+    public void RendersDivWithCardGroupClass()
+    {
+        var cut = RenderComponent(@<CardGroup></CardGroup>);
+
+        var div = cut.Find("div");
+        Assert.Contains(ClassName, div.ClassList);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<CardGroup class="@ExpectedClassName"></CardGroup>);
+
+        var div = cut.Find("div");
+        Assert.Contains(ClassName, div.ClassList);
+        Assert.Contains(ExpectedClassName, div.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnDiv()
+    {
+        var cut = RenderComponent(@<CardGroup data-unit-test="custom value"></CardGroup>);
+
+        var div = cut.Find("div");
+        Assert.NotNull(div.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInDiv()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<CardGroup>@ExpectedContent</CardGroup>);
+
+        var div = cut.Find("div");
+        Assert.Equal(ExpectedContent, div.TextContent);
+    }
+}
