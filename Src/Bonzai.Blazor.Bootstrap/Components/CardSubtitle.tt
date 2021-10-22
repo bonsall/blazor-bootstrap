@@ -1,0 +1,12 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".cs" #>
+
+namespace Bonzai.Blazor.Bootstrap.Components
+{
+<# for(var i = 1; i <= 6; ++i) { #>
+    public class CardSubtitle<#= i #> : CardSubtitleBase
+    {
+        protected override string Element => "h<#= i #>";
+    }
+<# } #>
+}

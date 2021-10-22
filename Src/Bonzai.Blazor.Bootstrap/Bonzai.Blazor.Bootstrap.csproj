@@ -5,6 +5,14 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="Components\CardSubtitle.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CardSubtitle.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />
@@ -15,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Components\CardSubtitle.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CardSubtitle.cs</LastGenOutput>
+    </None>
     <None Update="Components\CardTitle.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CardTitle.cs</LastGenOutput>
@@ -26,6 +38,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Components\CardSubtitle.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CardSubtitle.tt</DependentUpon>
+    </Compile>
     <Compile Update="Components\CardTitle.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -1,0 +1,264 @@
+﻿
+@using Bunit
+@inherits TestContext
+@code {
+	private const string ClassName = "card-subtitle";
+	
+    [Fact]
+    public void RendersH1WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle1>(
+            @<CardSubtitle1></CardSubtitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle1ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle1>(
+            @<CardSubtitle1 class="@ExpectedClassName"></CardSubtitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle1AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle1>(
+            @<CardSubtitle1 data-unit-test="custom value"></CardSubtitle1>);
+
+        var element = cut.Find("h1");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle1ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle1>(
+            @<CardSubtitle1>@ExpectedContent</CardSubtitle1>);
+
+        var element = cut.Find("h1");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH2WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle2>(
+            @<CardSubtitle2></CardSubtitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle2ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle2>(
+            @<CardSubtitle2 class="@ExpectedClassName"></CardSubtitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle2AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle2>(
+            @<CardSubtitle2 data-unit-test="custom value"></CardSubtitle2>);
+
+        var element = cut.Find("h2");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle2ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle2>(
+            @<CardSubtitle2>@ExpectedContent</CardSubtitle2>);
+
+        var element = cut.Find("h2");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH3WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle3>(
+            @<CardSubtitle3></CardSubtitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle3ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle3>(
+            @<CardSubtitle3 class="@ExpectedClassName"></CardSubtitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle3AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle3>(
+            @<CardSubtitle3 data-unit-test="custom value"></CardSubtitle3>);
+
+        var element = cut.Find("h3");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle3ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle3>(
+            @<CardSubtitle3>@ExpectedContent</CardSubtitle3>);
+
+        var element = cut.Find("h3");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH4WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle4>(
+            @<CardSubtitle4></CardSubtitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle4ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle4>(
+            @<CardSubtitle4 class="@ExpectedClassName"></CardSubtitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle4AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle4>(
+            @<CardSubtitle4 data-unit-test="custom value"></CardSubtitle4>);
+
+        var element = cut.Find("h4");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle4ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle4>(
+            @<CardSubtitle4>@ExpectedContent</CardSubtitle4>);
+
+        var element = cut.Find("h4");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH5WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle5>(
+            @<CardSubtitle5></CardSubtitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle5ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle5>(
+            @<CardSubtitle5 class="@ExpectedClassName"></CardSubtitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle5AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle5>(
+            @<CardSubtitle5 data-unit-test="custom value"></CardSubtitle5>);
+
+        var element = cut.Find("h5");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle5ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle5>(
+            @<CardSubtitle5>@ExpectedContent</CardSubtitle5>);
+
+        var element = cut.Find("h5");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	
+    [Fact]
+    public void RendersH6WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle6>(
+            @<CardSubtitle6></CardSubtitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle6ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle6>(
+            @<CardSubtitle6 class="@ExpectedClassName"></CardSubtitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle6AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle6>(
+            @<CardSubtitle6 data-unit-test="custom value"></CardSubtitle6>);
+
+        var element = cut.Find("h6");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle6ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle6>(
+            @<CardSubtitle6>@ExpectedContent</CardSubtitle6>);
+
+        var element = cut.Find("h6");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	}

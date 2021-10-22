@@ -30,6 +30,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="UnitTests\Components\CardSubtitle.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CardSubtitle.razor</LastGenOutput>
+    </None>
     <None Update="UnitTests\Components\CardTitleTest.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CardTitleTest.razor</LastGenOutput>
@@ -41,6 +45,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="UnitTests\Components\CardSubtitle.razor">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CardSubtitle.tt</DependentUpon>
+    </Content>
     <Content Update="UnitTests\Components\CardTitleTest.razor">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

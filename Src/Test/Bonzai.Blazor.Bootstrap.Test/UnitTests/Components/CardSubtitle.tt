@@ -1,0 +1,53 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ output extension=".razor" #>
+
+@using Bunit
+@inherits TestContext
+@code {
+	private const string ClassName = "card-subtitle";
+	<# for(var i = 1; i <= 6; ++i) { #>
+
+    [Fact]
+    public void Renders<#= $"H{i}" #>WithCardBodyClass()
+    {
+        var cut = Render<CardSubtitle<#= i #>>(
+            @<CardSubtitle<#= i #>></CardSubtitle<#= i #>>);
+
+        var element = cut.Find("h<#= i #>");
+        Assert.Contains(ClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle<#= i #>ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = Render<CardSubtitle<#= i #>>(
+            @<CardSubtitle<#= i #> class="@ExpectedClassName"></CardSubtitle<#= i #>>);
+
+        var element = cut.Find("h<#= i #>");
+        Assert.Contains(ClassName, element.ClassList);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void CardSubtitle<#= i #>AdditionalAttributesRenderedOnElement()
+    {
+        var cut = Render<CardSubtitle<#= i #>>(
+            @<CardSubtitle<#= i #> data-unit-test="custom value"></CardSubtitle<#= i #>>);
+
+        var element = cut.Find("h<#= i #>");
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CardSubtitle<#= i #>ChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = Render<CardSubtitle<#= i #>>(
+            @<CardSubtitle<#= i #>>@ExpectedContent</CardSubtitle<#= i #>>);
+
+        var element = cut.Find("h<#= i #>");
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+	<# } #>
+}
