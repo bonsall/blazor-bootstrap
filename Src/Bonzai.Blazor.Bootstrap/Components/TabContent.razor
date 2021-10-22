@@ -1,0 +1,6 @@
+﻿@inherits BootstrapContainerBase
+<div @attributes="AdditionalAttributes" class="@Classes">@ChildContent</div>
+
+@code {
+    protected override string DefaultClass => "tab-content";
+}
