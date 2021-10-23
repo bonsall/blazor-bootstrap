@@ -36,8 +36,24 @@
     [Parameter]
     public EventCallback<bool> HiddenChanged { get; set; }
 
+    private bool _fadeOut;
     [Parameter]
-    public bool FadeOut { get; set; }
+    public bool FadeOut
+    {
+        get => _fadeOut;
+        set
+        {
+            _fadeOut = value;
+            if(_fadeOut)
+            {
+                AfterRender(ListenForTransitionEnd);
+            }
+            else
+            {
+                AfterRender(StopListeningForTransitionEnd);
+            }
+        }
+    }
 
     [Inject]
     private IBootstrapJsService _bootstrapJsService { get; set; }
@@ -51,27 +67,6 @@
     {
         IsFading = false;
         StateHasChanged();
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(FadeOut)
-        {
-            await _bootstrapJsService.AddEventListenerAsync(
-                AlertDiv,
-                this,
-                "transitionend",
-                nameof(StopFading));
-        }
-        else
-        {
-            await _bootstrapJsService.RemoveEventListenerAsync(
-                AlertDiv,
-                "transitionend",
-                nameof(StopFading));
-        }
     }
 
     protected override string DefaultClass
@@ -104,5 +99,22 @@
         Hidden = !Hidden;
 
         await HiddenChanged.InvokeAsync(Hidden);
+    }
+
+    private async Task ListenForTransitionEnd()
+    {
+        await _bootstrapJsService.AddEventListenerAsync(
+                AlertDiv,
+                this,
+                "transitionend",
+                nameof(StopFading));
+    }
+
+    private async Task StopListeningForTransitionEnd()
+    {
+        await _bootstrapJsService.RemoveEventListenerAsync(
+                AlertDiv,
+                "transitionend",
+                nameof(StopFading));
     }
 }

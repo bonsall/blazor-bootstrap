@@ -88,10 +88,12 @@
     }
 
     [Fact]
-    public void FadeOutIsFalse_RemovesTransitionEndEventListener()
+    public void FadeOutIsUpdatedToFalse_RemovesTransitionEndEventListener()
     {
-        var cut = RenderComponent(@<Alert FadeOut="false"
+        var cut = RenderComponent(@<Alert FadeOut="true"
                                           Variance="primary" />);
+
+        cut.SetParametersAndRender(parameterBuilder => parameterBuilder.Add(x => x.FadeOut, false));
 
         _mockBootstrapJsService.Verify(
             x => x.RemoveEventListenerAsync(It.IsAny<ElementReference>(), "transitionend", It.IsAny<string>()),
