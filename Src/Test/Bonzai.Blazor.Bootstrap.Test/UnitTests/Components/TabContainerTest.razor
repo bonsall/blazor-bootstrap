@@ -1,0 +1,68 @@
+﻿@inherits TestBase<TabContainer>
+
+@code {
+    private const string TabId1 = "tab_one";
+    private const string TabId2 = "tab_two";
+    private const string TabId3 = "tab_three";
+    
+
+    [Fact]
+    public void PanesIsSet_RendersTabContentWithPanesChildContent()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        var content = cut.Find("div.tab-content");
+    }
+
+    [Fact]
+    public void ActiveTabIdIsNotSet_FirstPaneIsSetToActive()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        AssertTabPane.IsActive(cut, ".tab-content .tab-pane:first-child");
+        AssertTabPane.IsNotActive(cut, ".tab-content .tab-pane:nth-child(2)");
+    }
+
+    [Theory]
+    [InlineData(TabId1)]
+    [InlineData(TabId2)]
+    [InlineData(TabId3)]
+    public void ActiveTabIdIsSet_TabPaneWithActiveIsSetToActiveOnInitialRender(string activeTabId)
+    {
+        var cut = RenderComponent(
+            @<TabContainer ActiveTabId="@activeTabId">
+                <Panes>
+                    <TabPane Id="@TabId1">Pane 1</TabPane>
+                    <TabPane Id="@TabId2">Pane 2</TabPane>
+                    <TabPane Id="@TabId3">Pane 3</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        AssertTabPane.IsActive(cut, $".tab-content .tab-pane#{activeTabId}");
+
+        foreach(var tabPane in cut.FindAll($".tab-content .tab-pane:not(#{activeTabId})"))
+        {
+            AssertTabPane.IsNotActive(tabPane);
+        }
+    }
+
+    //[Theory]
+    //public void ActiveTabIdIsUpdated_()
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    
+}

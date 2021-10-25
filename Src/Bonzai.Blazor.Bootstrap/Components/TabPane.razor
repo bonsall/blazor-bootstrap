@@ -1,0 +1,64 @@
+﻿@inherits BootstrapContainerBase
+
+<div @attributes="@AdditionalAttributes" class="@Classes" id="@Id">@ChildContent</div>
+
+@code {
+    private bool _active;
+    private int _id = GetNextId();
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [CascadingParameter(Name = TabContainer.TabContainerParameterName)]
+    public TabContainer TabContainer { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("tab-pane");
+
+            if(_active)
+            {
+                classBuilder.AddClassName("active");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (TabContainer == null)
+            throw new ArgumentNullException(nameof(TabContainer), $"{nameof(TabPane)} must be rendered inside of a {typeof(TabContainer)}");
+
+        if(string.IsNullOrWhiteSpace(Id))
+        {
+            Id = $"BBBS_TabPane__{_id}";
+        }
+
+        await TabContainer.RegisterTab(this);
+    }
+
+    public async Task Show()
+    {
+        await TabContainer.HideActiveTab();
+        _active = true;
+    }
+
+    public async Task Hide()
+    {
+        _active = false;
+    }
+
+    private static int _nextId;
+    private static int GetNextId()
+    {
+        if (_nextId == int.MaxValue)
+            return _nextId = int.MinValue;
+
+        return _nextId++;
+    }
+}

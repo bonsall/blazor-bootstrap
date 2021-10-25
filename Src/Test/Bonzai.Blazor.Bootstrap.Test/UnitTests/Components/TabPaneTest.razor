@@ -1,0 +1,113 @@
+﻿@inherits TestBase<TabPane>
+
+@code {
+    private const string ClassName = "tab-pane";
+
+    [Fact]
+    public void TabContainerNotSet_ThrowsException()
+    {
+        Assert.Throws<ArgumentNullException>(
+            () => RenderComponent(@<TabPane></TabPane>));
+    }
+
+    [Fact]
+    public void RendersDivWithTabPaneClass()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        FindPane(cut);
+    }
+
+    [Fact]
+    public void IdNotSet_IdIsGenerated()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        var pane = FindPane(cut);
+        Assert.NotEmpty(pane.Id);
+    }
+
+    [Fact]
+    public void ClassesAreAddedToDivClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane class="@ExpectedClassName">Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        var pane = FindPane(cut);
+        Assert.Contains(ExpectedClassName, pane.ClassList);
+        Assert.Contains(ClassName, pane.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesAreAddedToPane()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane data-unit-test="Some value">Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        var pane = FindPane(cut);
+
+        Assert.NotNull(pane.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public async Task ShowExecuted_TabGetsActiveTabClass_OtherTabsInSameContainerHaveActiveClassRemoved()
+    {
+        const string TabPane1 = "tab-pane-1";
+        const string TabPane2 = "tab-pane-2";
+
+        var cut = Render<TabContainer>(
+            @<TabContainer>
+                <Panes>
+                    <TabPane Id="@TabPane1">Pane 1</TabPane>
+                    <TabPane Id="@TabPane2">Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+        await cut.FindComponents<TabPane>()[1].Instance.Show();
+
+        cut.Render();
+
+        AssertTabPane.IsActive(cut, $"#{TabPane2}");
+        AssertTabPane.IsNotActive(cut, $"#{TabPane1}");
+    }
+
+    [Fact]
+    public async Task HideisExecuted_ActiveClassIsRemoved()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        await cut.Instance.Hide();
+        cut.Render();
+
+        AssertTabPane.IsNotActive(FindPane(cut));
+    }
+
+    private IElement FindPane(IRenderedComponent<TabPane> cut) =>
+        cut.Find($"div.{ClassName}");
+}
