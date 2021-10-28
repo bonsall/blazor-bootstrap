@@ -12,6 +12,11 @@
     [CascadingParameter(Name = TabContainer.TabContainerParameterName)]
     public TabContainer TabContainer { get; set; }
 
+    [Parameter]
+    public string Title { get; set; }
+
+    public RenderFragment TabItem => @<TabItem>@Title</TabItem>;
+
     protected override string DefaultClass
     {
         get

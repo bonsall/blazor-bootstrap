@@ -1,0 +1,49 @@
+﻿@inherits TestBase<TabItem>
+
+@code {
+    const string ListItemClass = "nav-item";
+    const string AnchorClass = "nav-link";
+
+    [Fact]
+    public void RendersListItemWithNavClassAndAnchorWithNavClass()
+    {
+        var cut = RenderComponent(@<TabItem></TabItem>);
+
+        var listItem = cut.Find("li");
+        
+        Assert.Contains(ListItemClass, listItem.ClassList);
+        
+        var anchor = listItem.FirstElementChild;
+        Assert.Contains(AnchorClass, anchor.ClassList);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToListItemClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<TabItem class="@ExpectedClassName"></TabItem>);
+
+        var listItem = cut.Find("li");
+        Assert.Contains(ListItemClass, listItem.ClassList);
+        Assert.Contains(ExpectedClassName, listItem.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnListItem()
+    {
+        var cut = RenderComponent(@<TabItem data-unit-test="custom value"></TabItem>);
+
+        var listItem = cut.Find("li");
+        Assert.NotNull(listItem.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInAnchor()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<TabItem>@ExpectedContent</TabItem>);
+
+        var anchor = cut.Find("li > a");
+        Assert.Equal(ExpectedContent, anchor.TextContent);
+    }
+}

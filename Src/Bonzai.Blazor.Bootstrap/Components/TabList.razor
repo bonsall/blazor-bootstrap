@@ -1,0 +1,9 @@
+﻿@inherits BootstrapContainerBase
+
+<ul @attributes="AdditionalAttributes" class="@Classes">
+    @ChildContent
+</ul>
+
+@code {
+    protected override string DefaultClass => "nav nav-tabs";
+}

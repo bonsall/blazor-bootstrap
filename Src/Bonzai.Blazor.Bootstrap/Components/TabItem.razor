@@ -1,0 +1,8 @@
+﻿@inherits BootstrapContainerBase
+
+<li @attributes="AdditionalAttributes" class="@Classes">
+    <a class="nav-link">@ChildContent</a>
+</li>
+@code {
+    protected override string DefaultClass => "nav-item";
+}

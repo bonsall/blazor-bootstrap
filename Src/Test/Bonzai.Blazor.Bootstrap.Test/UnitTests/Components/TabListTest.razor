@@ -1,0 +1,48 @@
+﻿@inherits TestBase<TabList>
+
+@code {
+    [Fact]
+    public void RendersListWithTabClasses()
+    {
+        var cut = RenderComponent(@<TabList></TabList>);
+
+        var list = cut.Find("ul");
+        AssertHasTabClasses(list);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<TabList class="@ExpectedClassName"></TabList>);
+
+        var list = cut.Find("ul");
+        AssertHasTabClasses(list);
+        Assert.Contains(ExpectedClassName, list.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnList()
+    {
+        var cut = RenderComponent(@<TabList data-unit-test="custom value"></TabList>);
+
+        var list = cut.Find("ul");
+        Assert.NotNull(list.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInList()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<TabList>@ExpectedContent</TabList>);
+
+        var list = cut.Find("ul");
+        Assert.Equal(ExpectedContent, list.TextContent);
+    }
+
+    private void AssertHasTabClasses(IElement list)
+    {
+        Assert.Contains("nav", list.ClassList);
+        Assert.Contains("nav-tabs", list.ClassList);
+    }
+}

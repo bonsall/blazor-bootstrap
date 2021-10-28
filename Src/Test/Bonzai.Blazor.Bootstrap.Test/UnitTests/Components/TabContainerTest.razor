@@ -64,5 +64,25 @@
     //    throw new NotImplementedException();
     //}
 
-    
+    [Fact]
+    public void TabsFragmentIsNotSet_RendersTabItemsForChildPanes()
+    {
+        const string Title1 = "Tab Title 1";
+        const string Title2 = "Tab Title 2";
+        const string Title3 = "Tab Title 3";
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane Id="@TabId1" Title="@Title1">Pane 1</TabPane>
+                    <TabPane Id="@TabId2" Title="@Title2">Pane 2</TabPane>
+                    <TabPane Id="@TabId3" Title="@Title3">Pane 3</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        cut.Render();
+
+        var tabItems = cut.FindAll("li");
+        Assert.Equal(3, tabItems.Count);
+        Assert.NotNull(cut.FindComponent<TabList>());
+    }
 }

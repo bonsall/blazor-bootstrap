@@ -1,6 +1,15 @@
 ﻿@inherits BootstrapComponentBase
 
 <CascadingValue Name="@TabContainerParameterName" Value="this">
+@if(Tabs == null)
+{
+    <TabList>
+        @foreach(var tabPanePair in _tabPanes)
+        {
+            @tabPanePair.Value.TabItem
+        }
+    </TabList>
+}
 @if(Panes != null)
 {
     <TabContent>
@@ -39,13 +48,13 @@
         if(string.IsNullOrWhiteSpace(ActiveTabId)
             || ActiveTabId == tabPane.Id)
         {
-            await SetActiveTab(tabPane);
+            await SetActiveTabAsync(tabPane);
         }
     }
 
     public IList<TabPane> GetTabs() => _tabPanes.Select(x => x.Value).ToList();
 
-    public async Task SetActiveTab(TabPane tabPane)
+    public async Task SetActiveTabAsync(TabPane tabPane)
     {
         await tabPane.Show();
         ActiveTabId = tabPane.Id;
@@ -53,7 +62,7 @@
     }
 
     public async Task SetActiveTabAsync(string tabPaneid) =>
-        await SetActiveTab(_tabPanes[ActiveTabId]);
+        await SetActiveTabAsync(_tabPanes[ActiveTabId]);
 
     internal async Task HideActiveTab()
     {
