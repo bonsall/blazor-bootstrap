@@ -58,11 +58,31 @@
         }
     }
 
-    //[Theory]
-    //public void ActiveTabIdIsUpdated_()
-    //{
-    //    throw new NotImplementedException();
-    //}
+    [Theory]
+    [InlineData(TabId1, TabId2)]
+    [InlineData(TabId1, TabId3)]
+    [InlineData(TabId2, TabId1)]
+    public void ActiveTabIdIsUpdated_TabWithMatchingIdIsMadeActive(string initialActiveTab,
+        string updatedActiveTab)
+    {
+        var cut = RenderComponent(
+            @<TabContainer ActiveTabId="@initialActiveTab">
+                <Panes>
+                    <TabPane Id="@TabId1">Pane 1</TabPane>
+                    <TabPane Id="@TabId2">Pane 2</TabPane>
+                    <TabPane Id="@TabId3">Pane 3</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        cut.SetParametersAndRender(builder => builder.Add(x => x.ActiveTabId, updatedActiveTab));
+
+        AssertTabPane.IsActive(cut, $".tab-content .tab-pane#{updatedActiveTab}");
+
+        foreach (var tabPane in cut.FindAll($".tab-content .tab-pane:not(#{updatedActiveTab})"))
+        {
+            AssertTabPane.IsNotActive(tabPane);
+        }
+    }
 
     [Fact]
     public void TabsFragmentIsNotSet_RendersTabItemsForChildPanes()

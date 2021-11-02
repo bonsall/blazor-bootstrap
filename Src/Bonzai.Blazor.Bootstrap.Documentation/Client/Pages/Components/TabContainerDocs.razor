@@ -73,7 +73,7 @@
                 active tab in this container.
             </Description>
             <Parameters>
-                <MethodParameterItem Name="tabPane" Type="typeof(string)">
+                <MethodParameterItem Name="tabPaneId" Type="typeof(string)">
                     The id of the <PropertyReference Name="@nameof(TabPane)" /> to make active.
                 </MethodParameterItem>
             </Parameters>
@@ -86,7 +86,13 @@
         Bind to the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> property to open and close the accordion.
     </Description>
     <LiveExample>
-        <BindExpandedProperty />
+        <TabContainer>
+            <Panes>
+                <TabPane Title="Tab 1">Content 1</TabPane>
+                <TabPane Title="Tab 2">Content 2</TabPane>
+                <TabPane Title="Tab 3">Content 3</TabPane>
+            </Panes>
+        </TabContainer>
     </LiveExample>
     <Code>
         @(@"<Row>

@@ -35,41 +35,65 @@
     [Parameter]
     public bool Animated { get; set; }
 
+    private string _activeTabId;
     [Parameter]
-    public string ActiveTabId { get; set; }
+    public string ActiveTabId
+    {
+        get => _activeTabId;
+        set
+        {
+            if (_activeTabId == value)
+                return;
+
+            if(!_tabPanes.Any())
+            {
+                _activeTabId = value;
+                return;
+            }
+
+            if (!_tabPanes.ContainsKey(value))
+                throw new InvalidOperationException($"Could not find {nameof(TabPane)} with Id {value}. Unable to update active tab.");
+
+            HideActiveTab();
+            _activeTabId = value;
+            ActiveTab.Show();
+        }
+    }
 
     [Parameter]
     public EventCallback<string> ActiveTabIdChanged { get; set; }
 
-    public async Task RegisterTab(TabPane tabPane)
+    TabPane ActiveTab => _tabPanes[ActiveTabId];
+
+    public void RegisterTab(TabPane tabPane)
     {
         _tabPanes.Add(tabPane.Id, tabPane);
 
         if(string.IsNullOrWhiteSpace(ActiveTabId)
             || ActiveTabId == tabPane.Id)
         {
-            await SetActiveTabAsync(tabPane);
+            _activeTabId = tabPane.Id;
+            tabPane.Show();
         }
+        StateHasChanged();
     }
 
     public IList<TabPane> GetTabs() => _tabPanes.Select(x => x.Value).ToList();
 
     public async Task SetActiveTabAsync(TabPane tabPane)
     {
-        await tabPane.Show();
         ActiveTabId = tabPane.Id;
         await ActiveTabIdChanged.InvokeAsync(ActiveTabId);
     }
 
-    public async Task SetActiveTabAsync(string tabPaneid) =>
+    public async Task SetActiveTabAsync(string tabPaneId) =>
         await SetActiveTabAsync(_tabPanes[ActiveTabId]);
 
-    internal async Task HideActiveTab()
+    internal void HideActiveTab()
     {
         if(!string.IsNullOrWhiteSpace(ActiveTabId))
         {
-            await _tabPanes[ActiveTabId].Hide();
+            ActiveTab.Hide();
         }
-
     }
 }

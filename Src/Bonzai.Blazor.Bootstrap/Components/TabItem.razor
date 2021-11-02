@@ -1,8 +1,29 @@
 ﻿@inherits BootstrapContainerBase
 
 <li @attributes="AdditionalAttributes" class="@Classes">
-    <a class="nav-link">@ChildContent</a>
+    <a class="@AnchorClasses" @onclick="LinkClicked" @onclick:preventDefault href="#">@ChildContent</a>
 </li>
 @code {
     protected override string DefaultClass => "nav-item";
+
+    [Parameter]
+    public bool Active { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> LinkClicked { get; set; }
+
+    private string AnchorClasses
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("nav-link");
+
+            if (Active)
+            {
+                classBuilder.AddClassName("active");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
 }

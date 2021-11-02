@@ -72,7 +72,7 @@
     }
 
     [Fact]
-    public async Task ShowExecuted_TabGetsActiveTabClass_OtherTabsInSameContainerHaveActiveClassRemoved()
+    public async Task MakeActiveExecuted_TabGetsActiveTabClass_OtherTabsInSameContainerHaveActiveClassRemoved()
     {
         const string TabPane1 = "tab-pane-1";
         const string TabPane2 = "tab-pane-2";
@@ -84,8 +84,8 @@
                     <TabPane Id="@TabPane2">Pane 2</TabPane>
                 </Panes>
             </TabContainer>);
-        await cut.FindComponents<TabPane>()[1].Instance.Show();
 
+        await cut.InvokeAsync(async () => await cut.FindComponents<TabPane>()[1].Instance.MakeActive());
         cut.Render();
 
         AssertTabPane.IsActive(cut, $"#{TabPane2}");
@@ -93,19 +93,20 @@
     }
 
     [Fact]
-    public async Task HideisExecuted_ActiveClassIsRemoved()
+    public void TabItemIsClicked_TabPaneBecomesActive()
     {
-        var cut = RenderComponent(
-            @<TabContainer>
+        const string ExpectedActiveTabId = "tab-2";
+        string actualActiveTabId = null;
+        var cut = Render<TabContainer>(
+            @<TabContainer @bind-ActiveTabId="actualActiveTabId">
                 <Panes>
                     <TabPane>Pane 1</TabPane>
+                    <TabPane Id="@ExpectedActiveTabId">Pane 2</TabPane>
                 </Panes>
             </TabContainer>);
 
-        await cut.Instance.Hide();
-        cut.Render();
-
-        AssertTabPane.IsNotActive(FindPane(cut));
+        cut.Find(".nav-item:nth-child(2) .nav-link").Click();
+        Assert.Equal(ExpectedActiveTabId, actualActiveTabId);
     }
 
     private IElement FindPane(IRenderedComponent<TabPane> cut) =>

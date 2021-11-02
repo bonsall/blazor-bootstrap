@@ -15,7 +15,7 @@
     [Parameter]
     public string Title { get; set; }
 
-    public RenderFragment TabItem => @<TabItem>@Title</TabItem>;
+    public RenderFragment TabItem => @<TabItem Active="_active" LinkClicked="MakeActive">@Title</TabItem>;
 
     protected override string DefaultClass
     {
@@ -32,9 +32,9 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
+        base.OnInitialized();
 
         if (TabContainer == null)
             throw new ArgumentNullException(nameof(TabContainer), $"{nameof(TabPane)} must be rendered inside of a {typeof(TabContainer)}");
@@ -44,18 +44,32 @@
             Id = $"BBBS_TabPane__{_id}";
         }
 
-        await TabContainer.RegisterTab(this);
+        TabContainer.RegisterTab(this);
     }
 
-    public async Task Show()
+    internal void Show()
     {
-        await TabContainer.HideActiveTab();
+        if (_active)
+            return;
+
         _active = true;
     }
 
-    public async Task Hide()
+    internal void Hide()
     {
+        if (_active == false)
+            return;
+
         _active = false;
+        StateHasChanged();
+    }
+
+    public async Task MakeActive()
+    {
+        if (_active)
+            return;
+
+        await TabContainer.SetActiveTabAsync(this);
     }
 
     private static int _nextId;
