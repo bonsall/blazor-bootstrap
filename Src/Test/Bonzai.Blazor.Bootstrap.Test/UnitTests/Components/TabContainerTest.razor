@@ -1,10 +1,12 @@
 ﻿@inherits TestBase<TabContainer>
 
 @code {
-    private const string TabId1 = "tab_one";
-    private const string TabId2 = "tab_two";
-    private const string TabId3 = "tab_three";
-    
+    const string TabId1 = "tab_one";
+    const string TabId2 = "tab_two";
+    const string TabId3 = "tab_three";
+    const string Title1 = "Tab Title 1";
+    const string Title2 = "Tab Title 2";
+    const string Title3 = "Tab Title 3";
 
     [Fact]
     public void PanesIsSet_RendersTabContentWithPanesChildContent()
@@ -87,9 +89,7 @@
     [Fact]
     public void TabsFragmentIsNotSet_RendersTabItemsForChildPanes()
     {
-        const string Title1 = "Tab Title 1";
-        const string Title2 = "Tab Title 2";
-        const string Title3 = "Tab Title 3";
+        
         var cut = RenderComponent(
             @<TabContainer>
                 <Panes>
@@ -104,5 +104,27 @@
         var tabItems = cut.FindAll("li");
         Assert.Equal(3, tabItems.Count);
         Assert.NotNull(cut.FindComponent<TabList>());
+    }
+
+    [Fact]
+    public void TabsFragmentIsNotSet_ActiveTabIsChanged_CorrespondingTabItemMadeActive()
+    {
+        const int ActiveTabIndex = 2;
+
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane Id="@TabId1" Title="@Title1">Pane 1</TabPane>
+                    <TabPane Id="@TabId2" Title="@Title2">Pane 2</TabPane>
+                    <TabPane Id="@TabId3" Title="@Title3">Pane 3</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        cut.Find($".nav-item:nth-child({ActiveTabIndex}) .nav-link")
+            .Click();
+
+        var tabPane = cut.FindComponents<TabItem>()[ActiveTabIndex - 1];
+
+        Assert.True(tabPane.Instance.Active);
     }
 }

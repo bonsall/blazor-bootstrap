@@ -3,7 +3,6 @@
 <div @attributes="@AdditionalAttributes" class="@Classes" id="@Id">@ChildContent</div>
 
 @code {
-    private bool _active;
     private int _id = GetNextId();
 
     [Parameter]
@@ -15,7 +14,9 @@
     [Parameter]
     public string Title { get; set; }
 
-    public RenderFragment TabItem => @<TabItem Active="_active" LinkClicked="MakeActive">@Title</TabItem>;
+    internal bool Active { get; set; }
+
+    private TabItem Tab { get; set; }
 
     protected override string DefaultClass
     {
@@ -23,7 +24,7 @@
         {
             var classBuilder = new ClassNameBuilder("tab-pane");
 
-            if(_active)
+            if(Active)
             {
                 classBuilder.AddClassName("active");
             }
@@ -49,24 +50,24 @@
 
     internal void Show()
     {
-        if (_active)
+        if (Active)
             return;
 
-        _active = true;
+        Active = true;
     }
 
     internal void Hide()
     {
-        if (_active == false)
+        if (Active == false)
             return;
 
-        _active = false;
+        Active = false;
         StateHasChanged();
     }
 
     public async Task MakeActive()
     {
-        if (_active)
+        if (Active)
             return;
 
         await TabContainer.SetActiveTabAsync(this);

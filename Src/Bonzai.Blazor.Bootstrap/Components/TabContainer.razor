@@ -6,7 +6,11 @@
     <TabList>
         @foreach(var tabPanePair in _tabPanes)
         {
-            @tabPanePair.Value.TabItem
+            var tabPane = tabPanePair.Value;
+            <TabItem Active="tabPane.Active"
+                     LinkClicked="async () => await SetActiveTabAsync(tabPane)">
+                @tabPane.Title
+            </TabItem>
         }
     </TabList>
 }

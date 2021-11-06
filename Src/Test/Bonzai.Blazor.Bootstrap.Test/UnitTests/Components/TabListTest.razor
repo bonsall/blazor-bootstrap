@@ -6,7 +6,7 @@
     {
         var cut = RenderComponent(@<TabList></TabList>);
 
-        var list = cut.Find("ul");
+        var list = FindList(cut);
         AssertHasTabClasses(list);
     }
 
@@ -16,7 +16,7 @@
         const string ExpectedClassName = "unit-test";
         var cut = RenderComponent(@<TabList class="@ExpectedClassName"></TabList>);
 
-        var list = cut.Find("ul");
+        var list = FindList(cut);
         AssertHasTabClasses(list);
         Assert.Contains(ExpectedClassName, list.ClassList);
     }
@@ -26,7 +26,7 @@
     {
         var cut = RenderComponent(@<TabList data-unit-test="custom value"></TabList>);
 
-        var list = cut.Find("ul");
+        var list = FindList(cut);
         Assert.NotNull(list.GetAttribute("data-unit-test"));
     }
 
@@ -36,8 +36,27 @@
         const string ExpectedContent = "unit test";
         var cut = RenderComponent(@<TabList>@ExpectedContent</TabList>);
 
-        var list = cut.Find("ul");
+        var list = FindList(cut);
         Assert.Equal(ExpectedContent, list.TextContent);
+    }
+
+    [Fact]
+    public void RoleIsNotSet_RoleisSetToTabList()
+    {
+        var cut = RenderComponent(@<TabList></TabList>);
+
+        var list = FindList(cut);
+        Assert.Equal("tablist", list.GetAttribute("role"));
+    }
+
+    [Fact]
+    public void RoleIsSet_RoleIsNotOverridden()
+    {
+        const string ExpectedRole = "unittest";
+        var cut = RenderComponent(@<TabList role="@ExpectedRole"></TabList>);
+
+        var list = FindList(cut);
+        Assert.Equal(ExpectedRole, list.GetAttribute("role"));
     }
 
     private void AssertHasTabClasses(IElement list)
@@ -45,4 +64,7 @@
         Assert.Contains("nav", list.ClassList);
         Assert.Contains("nav-tabs", list.ClassList);
     }
+
+    private IElement FindList(IRenderedComponent<TabList> cut) =>
+        cut.Find("ul");
 }

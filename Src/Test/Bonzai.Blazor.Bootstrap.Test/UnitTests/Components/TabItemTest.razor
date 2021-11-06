@@ -38,12 +38,12 @@
     }
 
     [Fact]
-    public void ChildContentIsRenderedInAnchor()
+    public void ChildContentIsRenderedInButton()
     {
         const string ExpectedContent = "unit test";
         var cut = RenderComponent(@<TabItem>@ExpectedContent</TabItem>);
 
-        var anchor = cut.Find("li > a");
+        var anchor = cut.Find("li > button");
         Assert.Equal(ExpectedContent, anchor.TextContent);
     }
 }
