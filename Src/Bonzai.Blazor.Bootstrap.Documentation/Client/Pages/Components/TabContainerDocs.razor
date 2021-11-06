@@ -14,7 +14,7 @@
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabIdChanged))">
             An action to execute when the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" /> property changes.
         </ParamDescription>
-        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Animated))">
+        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Fade))">
             Set to <code>true</code> to use fade in/out animations when switching tabs.
         </ParamDescription>
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Content))">
@@ -86,7 +86,7 @@
         Bind to the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> property to open and close the accordion.
     </Description>
     <LiveExample>
-        <TabContainer>
+        <TabContainer Fade="true">
             <Panes>
                 <TabPane Title="Tab 1">Content 1</TabPane>
                 <TabPane Title="Tab 2">Content 2</TabPane>

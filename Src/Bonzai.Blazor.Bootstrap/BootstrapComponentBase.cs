@@ -35,7 +35,7 @@ namespace Bonzai.Blazor.Bootstrap
             _afterRenderActions.Enqueue(action);
         }
 
-        protected void AfterRender(Func<Task> action)
+        protected void AfterRenderAsync(Func<Task> action)
         {
             _afterRenderAsyncActions.Enqueue(action);
         }

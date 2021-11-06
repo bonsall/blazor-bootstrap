@@ -1,7 +1,7 @@
 ﻿@inherits BootstrapContainerBase
 
 <li @attributes="AdditionalAttributes" class="@Classes">
-    <button class="@AnchorClasses" @onclick="LinkClicked">@ChildContent</button>
+    <button class="@AnchorClasses" @onclick="LinkClicked" type="button" role="tab">@ChildContent</button>
 </li>
 @code {
     protected override string DefaultClass => "nav-item";

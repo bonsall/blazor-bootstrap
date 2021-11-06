@@ -1,9 +1,10 @@
 ﻿@inherits BootstrapContainerBase
 
-<div @attributes="@AdditionalAttributes" class="@Classes" id="@Id">@ChildContent</div>
+<div @attributes="@AdditionalAttributes" class="@Classes" id="@Id" @ref="TabPaneElement">@ChildContent</div>
 
 @code {
     private int _id = GetNextId();
+    private string _displayClasses;
 
     [Parameter]
     public string Id { get; set; }
@@ -14,9 +15,42 @@
     [Parameter]
     public string Title { get; set; }
 
+    [Inject]
+    private IBootstrapJsService _bootstrapJSService { get; set; }
+
     internal bool Active { get; set; }
 
-    private TabItem Tab { get; set; }
+    private bool _animated;
+    internal bool Animated
+    {
+        get => _animated;
+        set
+        {
+            _animated = value;
+
+            if (_animated)
+            {
+                AfterRenderAsync(ListenForTransitionEnd);
+            }
+            else
+            {
+                AfterRenderAsync(StopListeningForTransitionEnd);
+            }
+        }
+    }
+
+    private ElementReference TabPaneElement { get; set; }
+
+    [JSInvokable]
+    public void FadeEnd()
+    {
+        if(!Active)
+        {
+            _displayClasses = null;
+            StateHasChanged();
+            TabContainer.FadeInActiveTab();
+        }
+    }
 
     protected override string DefaultClass
     {
@@ -24,10 +58,12 @@
         {
             var classBuilder = new ClassNameBuilder("tab-pane");
 
-            if(Active)
+            if(Animated)
             {
-                classBuilder.AddClassName("active");
+                classBuilder.AddClassName("fade");
             }
+
+            classBuilder.AddClassName(_displayClasses);
 
             return classBuilder.GetClassNames();
         }
@@ -45,6 +81,7 @@
             Id = $"BBBS_TabPane__{_id}";
         }
 
+        Animated = TabContainer.Fade;
         TabContainer.RegisterTab(this);
     }
 
@@ -54,6 +91,16 @@
             return;
 
         Active = true;
+        _displayClasses = "active";
+
+        if(Animated)
+        {
+            AfterRender(() =>
+            {
+                _displayClasses += " show";
+                StateHasChanged();
+            });
+        }
     }
 
     internal void Hide()
@@ -62,6 +109,8 @@
             return;
 
         Active = false;
+        _displayClasses = "active";
+        // TODO SETUP TRANSITIONEND LISTENER HERE AND TEST
         StateHasChanged();
     }
 
@@ -80,5 +129,22 @@
             return _nextId = int.MinValue;
 
         return _nextId++;
+    }
+
+    private async Task ListenForTransitionEnd()
+    {
+        await _bootstrapJSService.AddEventListenerAsync(
+                TabPaneElement,
+                this,
+                "transitionend",
+                nameof(FadeEnd));
+    }
+
+    private async Task StopListeningForTransitionEnd()
+    {
+        await _bootstrapJSService.RemoveEventListenerAsync(
+                TabPaneElement,
+                "transitionend",
+                nameof(FadeEnd));
     }
 }

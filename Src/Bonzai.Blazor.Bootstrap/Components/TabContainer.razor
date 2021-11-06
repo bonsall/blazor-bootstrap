@@ -26,6 +26,7 @@
     public const string TabContainerParameterName = nameof(TabContainer);
 
     private Dictionary<string, TabPane> _tabPanes = new();
+    private string _fadeInTabId;
 
     [Parameter]
     public RenderFragment Tabs { get; set; }
@@ -37,7 +38,7 @@
     public RenderFragment Panes { get; set; }
 
     [Parameter]
-    public bool Animated { get; set; }
+    public bool Fade { get; set; }
 
     private string _activeTabId;
     [Parameter]
@@ -58,9 +59,7 @@
             if (!_tabPanes.ContainsKey(value))
                 throw new InvalidOperationException($"Could not find {nameof(TabPane)} with Id {value}. Unable to update active tab.");
 
-            HideActiveTab();
-            _activeTabId = value;
-            ActiveTab.Show();
+            UpdateActiveTab(value);
         }
     }
 
@@ -98,6 +97,28 @@
         if(!string.IsNullOrWhiteSpace(ActiveTabId))
         {
             ActiveTab.Hide();
+        }
+    }
+
+    internal void FadeInActiveTab()
+    {
+        _activeTabId = _fadeInTabId;
+        ActiveTab.Show();
+        StateHasChanged();
+    }
+
+    void UpdateActiveTab(string activeTabId)
+    {
+        if(Fade)
+        {
+            _fadeInTabId = activeTabId;
+            HideActiveTab();
+        }
+        else
+        {
+            HideActiveTab();
+            _activeTabId = activeTabId;
+            ActiveTab.Show();
         }
     }
 }

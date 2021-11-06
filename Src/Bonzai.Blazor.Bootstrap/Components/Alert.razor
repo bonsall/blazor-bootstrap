@@ -46,11 +46,11 @@
             _fadeOut = value;
             if(_fadeOut)
             {
-                AfterRender(ListenForTransitionEnd);
+                AfterRenderAsync(ListenForTransitionEnd);
             }
             else
             {
-                AfterRender(StopListeningForTransitionEnd);
+                AfterRenderAsync(StopListeningForTransitionEnd);
             }
         }
     }
