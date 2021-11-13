@@ -14,11 +14,19 @@
         }
     </TabList>
 }
+else
+{
+    @Tabs
+}
 @if(Panes != null)
 {
     <TabContent>
         @Panes
     </TabContent>
+}
+else if(Content != null)
+{
+    @Content
 }
 </CascadingValue>
 

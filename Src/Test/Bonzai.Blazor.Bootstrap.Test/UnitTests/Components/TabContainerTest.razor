@@ -133,4 +133,28 @@
 
         Assert.True(tabPane.Instance.Active);
     }
+
+    [Fact]
+    public void TabsFragmentIsSet_RendersTabsFragment()
+    {
+        const string ExpectedContent = "unit test tabs";
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Tabs>@ExpectedContent</Tabs>
+            </TabContainer>);
+
+        Assert.Contains(ExpectedContent, cut.Markup);
+    }
+
+    [Fact]
+    public void ContentIsSet_PanesIsNotSet_RendersContent()
+    {
+        const string ExpectedContent = "unit test tabs";
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Content>@ExpectedContent</Content>
+            </TabContainer>);
+
+        Assert.Contains(ExpectedContent, cut.Markup);
+    }
 }
