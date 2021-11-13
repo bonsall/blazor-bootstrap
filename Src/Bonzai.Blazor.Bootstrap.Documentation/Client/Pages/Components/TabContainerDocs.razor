@@ -1,7 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Web
-@*@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.AccordionItemExamples*@
+@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.TabContainer
 
 @page "/components/tab-container"
+
+@inherits DocsBase
 
 <ComponentDoc Type="typeof(TabContainer)">
     <CustomDescription>
@@ -14,18 +16,22 @@
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabIdChanged))">
             An action to execute when the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" /> property changes.
         </ParamDescription>
-        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Fade))">
-            Set to <code>true</code> to use fade in/out animations when switching tabs.
-        </ParamDescription>
+        <AdditionalAttributes />
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Content))">
             Use this render fragment when you want to disaply the tab pages in your own custom container. Using this fragment
             will not wrap your content in any container so make sure your <PropertyReference Name="@nameof(TabPane)" />s are
             wrapped in some kind of container element.
         </ParamDescription>
+        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Fade))">
+            Set to <code>true</code> to use fade in/out animations when switching tabs.
+        </ParamDescription>
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Panes))">
             Use this render fragment when you want to disaply the tab pages in a <code>div</code> with the <code>tab-content</code>
             class. Using this fragment automatically wraps the child content in a containing <code>div</code> so it is ok to add
             <PropertyReference Name="@nameof(TabPane)" /> to this component directly.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Pills))">
+            Render the tabs as pills.
         </ParamDescription>
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Tabs))">
             Use this fragment when you want more control over how the tab links are displayed. When using this fragment you
@@ -33,7 +39,6 @@
             The public constant <PropertyReference Name="@nameof(TabContainer.TabContainerParameterName)" /> is the name of
             the cascaded parameter.
         </ParamDescription>
-        <AdditionalAttributes />
     </Properties>
     <Methods>
         <MethodItem TSource="TabContainer"
@@ -80,81 +85,105 @@
         </MethodItem>
     </Methods>
 </ComponentDoc>
+
 <ExampleHeading />
 <Example ExampleNumber="ExampleNumber">
     <Description>
-        Bind to the <PropertyReference Name="@nameof(AccordionItem.Expanded)" /> property to open and close the accordion.
+        Add <PropertyReference Name="@nameof(TabPane)" /> components to the <PropertyReference Name="@nameof(TabContainer.Panes)" /> <code>RenderFragment</code> to
+        generate a tab control
     </Description>
     <LiveExample>
-        <TabContainer>
-            <Panes>
-                <TabPane Title="Tab 1">Content 1</TabPane>
-                <TabPane Title="Tab 2">Content 2</TabPane>
-                <TabPane Title="Tab 3">Content 3</TabPane>
-                <TabPane Title="Tab 4">Content 4</TabPane>
-                <TabPane Title="Tab 5">Content 5</TabPane>
-                <TabPane Title="Tab 6">Content 6</TabPane>
-            </Panes>
+        <Panes />
+    </LiveExample>
+    <Code>@(@"<TabContainer>
+    <Panes>
+        <TabPane Title=""Tab 1"">Content 1</TabPane>
+        <TabPane Title=""Tab 2"">Content 2</TabPane>
+        <TabPane Title=""Tab 3"">Content 3</TabPane>
+        <TabPane Title=""Tab 4"">Content 4</TabPane>
+        <TabPane Title=""Tab 5"">Content 5</TabPane>
+        <TabPane Title=""Tab 6"">Content 6</TabPane>
+    </Panes>
+</TabContainer>
+
+@code {
+
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Control the active tab programatically by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" />
+    </Description>
+    <LiveExample>
+        <UpdateActiveTabId />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <Btn OnClick=""() => ActiveTabId = TabId1"">Display tab 1</Btn>
+        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
+        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
+    </Column>
+</Row>
+
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabId=""ActiveTabId"">
+            <TabPane Title=""Tab 1"" Id=""@TabId1"">Content 1</TabPane>
+            <TabPane Title=""Tab 2"" Id=""@TabId2"">Content 2</TabPane>
+            <TabPane Title=""Tab 3"" Id=""@TabId3"">Content 3</TabPane>
         </TabContainer>
+    </Column>
+</Row>
+
+@code {
+    const string TabId1 = ""TabId1"";
+    const string TabId2 = ""TabId2"";
+    const string TabId3 = ""TabId3"";
+
+    private string ActiveTabId { get; set; }
+}
+")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Preserve the state of the <PropertyReference Name="@nameof(TabContainer)" /> by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" />.
+        This prevents the tab from being reset when the parent container needs to re-render.
+    </Description>
+    <LiveExample>
+        <PreserveState />
     </LiveExample>
     <Code>
         @(@"<Row>
-    <Column class=""mb-2"">
-        <Btn Variance=""primary"" OnClick=""ButtonClick"">
-            @ButtonText Item 1
-        </Btn>
+    <Column>
+        <Btn OnClick=""() => ActiveTabId = TabId1"">Display tab 1</Btn>
+        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
+        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
     </Column>
 </Row>
-<Accordion>
-    <AccordionItem @bind-Expanded=""ExpandItem1"">
-        <Header>This is item 1</Header>
-        <Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
 
-            Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
-        </Body>
-    </AccordionItem>
-    <AccordionItem>
-        <Header>This is item 2</Header>
-        <Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
-
-            Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
-        </Body>
-    </AccordionItem>
-    <AccordionItem>
-        <Header>This is item 3</Header>
-        <Body>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce quis nunc et massa bibendum lobortis a non est. Donec a egestas dolor. Aliquam dictum tellus orci, non porta orci laoreet sit amet. Donec congue nisi egestas risus pulvinar tincidunt. Suspendisse suscipit nec diam in semper. Etiam sem quam, hendrerit quis molestie sit amet, tempor quis metus. Pellentesque molestie quis nulla in faucibus.
-
-            Proin arcu ipsum, bibendum id consectetur eget, ornare vulputate neque. Integer condimentum dapibus porttitor. Vivamus viverra vulputate felis sed ultricies. Mauris ac nunc at risus tristique cursus non eu dolor. Vestibulum non ligula leo. Sed sit amet ullamcorper libero. Phasellus imperdiet ex sed ipsum consequat, et dictum lorem efficitur. Nam quis elit vitae nulla consequat bibendum. Curabitur quam lorem, pulvinar quis fermentum ut, tristique sed orci. Maecenas quis lectus vitae lectus condimentum ultrices vitae eu neque. Quisque elementum lorem at erat tempor blandit.
-        </Body>
-    </AccordionItem>
-</Accordion>
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabId=""ActiveTabId"">
+            <TabPane Title=""Tab 1"" Id=""@TabId1"">Content 1</TabPane>
+            <TabPane Title=""Tab 2"" Id=""@TabId2"">Content 2</TabPane>
+            <TabPane Title=""Tab 3"" Id=""@TabId3"">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
 
 @code {
-    private bool ExpandItem1 { get; set; }
+    const string TabId1 = ""TabId1"";
+    const string TabId2 = ""TabId2"";
+    const string TabId3 = ""TabId3"";
 
-    private string ButtonText => ExpandItem1
-        ? ""Close""
-        : ""Open"";
-
-    private void ButtonClick()
-    {
-        ExpandItem1 = !ExpandItem1;
-    }
-}")
+    private string ActiveTabId { get; set; }
+}
+")
     </Code>
 </Example>
 
 @code{
-    private int _exampleNumber;
-
-    private int ExampleNumber
-    {
-        get
-        {
-            return ++_exampleNumber;
-        }
-    }
+    
 }

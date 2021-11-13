@@ -5,5 +5,25 @@
 </ul>
 
 @code {
-    protected override string DefaultClass => "nav nav-tabs";
+    [Parameter]
+    public bool Pills { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("nav");
+
+            if(Pills)
+            {
+                classBuilder.AddClassName("nav-pills");
+            }
+            else
+            {
+                classBuilder.AddClassName("nav-tabs");
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
 }

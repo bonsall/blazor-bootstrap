@@ -59,6 +59,16 @@
         Assert.Equal(ExpectedRole, list.GetAttribute("role"));
     }
 
+    [Fact]
+    public void PillsIsTrue_UsesPillClass()
+    {
+        var cut = RenderComponent(@<TabList Pills="true"></TabList>);
+
+        var list = FindList(cut);
+        Assert.Contains("nav", list.ClassList);
+        Assert.Contains("nav-pills", list.ClassList);
+    }
+
     private void AssertHasTabClasses(IElement list)
     {
         Assert.Contains("nav", list.ClassList);

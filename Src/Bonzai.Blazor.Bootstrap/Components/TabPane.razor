@@ -62,9 +62,9 @@
         }
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
         if (TabContainer == null)
             throw new ArgumentNullException(nameof(TabContainer), $"{nameof(TabPane)} must be rendered inside of a {typeof(TabContainer)}");
@@ -75,7 +75,7 @@
         }
 
         Animated = TabContainer.Fade;
-        TabContainer.RegisterTab(this);
+        await TabContainer.RegisterTab(this);
     }
 
     internal void Show()

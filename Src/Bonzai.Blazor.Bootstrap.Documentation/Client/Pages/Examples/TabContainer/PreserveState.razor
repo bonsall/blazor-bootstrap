@@ -1,0 +1,66 @@
+﻿<Row>
+    <Column>
+        Change tabs on each container below, then use this button to force this example component to re-render.
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Btn OnClick="ForceRender">Render Component</Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class="fw-bold mb-2">Without binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row class="mb-4">
+    <Column>
+        <TabContainer>
+            <Panes>
+                <TabPane Title="Tab 1">@Content1</TabPane>
+                <TabPane Title="Tab 2">@Content2</TabPane>
+                <TabPane Title="Tab 3">@Content3</TabPane>
+            </Panes>
+        </TabContainer>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class="fw-bold">With binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabId="ActiveTabId">
+            <Panes>
+                <TabPane Title="Tab 1">@Content1</TabPane>
+                <TabPane Title="Tab 2">@Content2</TabPane>
+                <TabPane Title="Tab 3">@Content3</TabPane>
+            </Panes>
+        </TabContainer>
+    </Column>
+</Row>
+
+@code {
+    private string ActiveTabId { get; set; }
+
+    private int Content1 { get; set; }
+
+    private int Content2 { get; set; }
+
+    private int Content3 { get; set; }
+
+    private void ForceRender()
+    {
+        SetContent();
+        StateHasChanged();
+    }
+
+    private void SetContent()
+    {
+        var random = new Random();
+        Content1 = random.Next(0, 100);
+        Content2 = random.Next(0, 100);
+        Content3 = random.Next(0, 100);
+    }
+}

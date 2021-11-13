@@ -157,4 +157,20 @@
 
         Assert.Contains(ExpectedContent, cut.Markup);
     }
+
+    [Fact]
+    public void PillsIsTrue_TabListPillsIstrue()
+    {
+        var cut = RenderComponent(
+            @<TabContainer Pills="true">
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                    <TabPane>Pane 3</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        var tabList = cut.FindComponent<TabList>();
+        Assert.True(tabList.Instance.Pills);
+    }
 }

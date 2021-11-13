@@ -1,0 +1,27 @@
+﻿<Row class="mb-2">
+    <Column>
+        <Btn OnClick="() => ActiveTabId = TabId1">Display tab 1</Btn>
+        <Btn OnClick="() => ActiveTabId = TabId2">Display tab 2</Btn>
+        <Btn OnClick="() => ActiveTabId = TabId3">Display tab 3</Btn>
+    </Column>
+</Row>
+
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabId="ActiveTabId">
+            <Panes>
+                <TabPane Title="Tab 1" Id="@TabId1">Content 1</TabPane>
+                <TabPane Title="Tab 2" Id="@TabId2">Content 2</TabPane>
+                <TabPane Title="Tab 3" Id="@TabId3">Content 3</TabPane>
+            </Panes>
+        </TabContainer>
+    </Column>
+</Row>
+
+@code {
+    const string TabId1 = "TabId1";
+    const string TabId2 = "TabId2";
+    const string TabId3 = "TabId3";
+
+    private string ActiveTabId { get; set; }
+}
