@@ -8,6 +8,12 @@
     const string Title2 = "Tab Title 2";
     const string Title3 = "Tab Title 3";
 
+    public TabContainerTest()
+    {
+        // this is needed by the TabPane component
+        new MockBootstrapJsService(Services);
+    }
+
     [Fact]
     public void PanesIsSet_RendersTabContentWithPanesChildContent()
     {

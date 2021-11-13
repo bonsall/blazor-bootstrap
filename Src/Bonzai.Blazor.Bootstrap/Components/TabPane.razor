@@ -102,11 +102,17 @@
             return;
 
         Active = false;
-        _displayClasses = "active";
 
         if(Animated)
         {
+            _displayClasses = "active";
+
+            // This will execute JSInvokable FadeEnd
             AfterRenderAsync(ListenForTransitionEnd);
+        }
+        else
+        {
+            _displayClasses = null;
         }
 
         StateHasChanged();

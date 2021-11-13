@@ -3,6 +3,14 @@
 @code {
     private const string ClassName = "tab-pane";
 
+    private MockBootstrapJsService _mockBootstrapJSService;
+
+    public TabPaneTest()
+    {
+        _mockBootstrapJSService = new MockBootstrapJsService(Services);
+    }
+
+
     [Fact]
     public void TabContainerNotSet_ThrowsException()
     {
