@@ -27,5 +27,10 @@ namespace Bonzai.Blazor.Bootstrap.Test.Mocks
         public IReturnsResult<IBootstrapJsService> SetupGetBoundingClientRect(BoundingClientRect boundingClientRect) => 
             Setup(x => x.GetBoundingClientRect(It.IsAny<ElementReference>()))
             .ReturnsAsync(boundingClientRect);
+
+        public void VerifyAddEventListener(object listeningObject, string eventName, Func<Times> times) =>
+            Verify(
+                x => x.AddEventListenerAsync(It.IsAny<ElementReference>(), listeningObject, eventName, It.IsAny<string>()),
+                times);
     }
 }
