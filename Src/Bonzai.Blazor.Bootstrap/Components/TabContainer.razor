@@ -103,6 +103,7 @@
     internal void FadeInActiveTab()
     {
         _activeTabId = _fadeInTabId;
+        _fadeInTabId = null;
         ActiveTab.Show();
         StateHasChanged();
     }

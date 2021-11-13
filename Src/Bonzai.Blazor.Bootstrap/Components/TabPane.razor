@@ -20,36 +20,29 @@
 
     internal bool Active { get; set; }
 
-    private bool _animated;
-    internal bool Animated
-    {
-        get => _animated;
-        set
-        {
-            _animated = value;
-
-            if (_animated)
-            {
-                AfterRenderAsync(ListenForTransitionEnd);
-            }
-            else
-            {
-                AfterRenderAsync(StopListeningForTransitionEnd);
-            }
-        }
-    }
+    internal bool Animated {  get;  set; }
 
     private ElementReference TabPaneElement { get; set; }
 
+    /// <summary>
+    /// Do not use this method. This is only meant to be called
+    /// by JS interop.
+    /// </summary>
     [JSInvokable]
-    public void FadeEnd()
+    public async Task FadeEnd()
     {
-        if(!Active)
-        {
-            _displayClasses = null;
-            StateHasChanged();
-            TabContainer.FadeInActiveTab();
-        }
+        _displayClasses = null;
+        StateHasChanged();
+        TabContainer.FadeInActiveTab();
+        await StopListeningForTransitionEnd();
+    }
+
+    public async Task MakeActive()
+    {
+        if (Active)
+            return;
+
+        await TabContainer.SetActiveTabAsync(this);
     }
 
     protected override string DefaultClass
@@ -110,16 +103,13 @@
 
         Active = false;
         _displayClasses = "active";
-        // TODO SETUP TRANSITIONEND LISTENER HERE AND TEST
+
+        if(Animated)
+        {
+            AfterRenderAsync(ListenForTransitionEnd);
+        }
+
         StateHasChanged();
-    }
-
-    public async Task MakeActive()
-    {
-        if (Active)
-            return;
-
-        await TabContainer.SetActiveTabAsync(this);
     }
 
     private static int _nextId;
