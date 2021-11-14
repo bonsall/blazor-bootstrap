@@ -34,7 +34,7 @@
     {
         _displayClasses = null;
         StateHasChanged();
-        TabContainer.FadeInActiveTab();
+        await TabContainer.FadeInActiveTab();
         await StopListeningForTransitionEnd();
     }
 
