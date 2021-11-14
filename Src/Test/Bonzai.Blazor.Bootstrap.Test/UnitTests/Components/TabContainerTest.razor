@@ -44,49 +44,49 @@
     }
 
     [Theory]
-    [InlineData(TabId1)]
-    [InlineData(TabId2)]
-    [InlineData(TabId3)]
-    public void ActiveTabIdIsSet_TabPaneWithActiveIsSetToActiveOnInitialRender(string activeTabId)
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void ActiveTabIndexIsSet_TabPaneWithActiveIndexIsSetToActiveOnInitialRender(int activeTabIndex)
     {
         var cut = RenderComponent(
-            @<TabContainer ActiveTabId="@activeTabId">
+            @<TabContainer ActiveTabIndex="@activeTabIndex">
                 <Panes>
-                    <TabPane Id="@TabId1">Pane 1</TabPane>
-                    <TabPane Id="@TabId2">Pane 2</TabPane>
-                    <TabPane Id="@TabId3">Pane 3</TabPane>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                    <TabPane>Pane 3</TabPane>
                 </Panes>
             </TabContainer>);
 
-        AssertTabPane.IsActive(cut, $".tab-content .tab-pane#{activeTabId}");
+        AssertTabPane.IsActive(cut, $".tab-content .tab-pane:nth-child({activeTabIndex + 1})");
 
-        foreach(var tabPane in cut.FindAll($".tab-content .tab-pane:not(#{activeTabId})"))
+        foreach(var tabPane in cut.FindAll($".tab-content .tab-pane:not(:nth-child({activeTabIndex + 1}))"))
         {
             AssertTabPane.IsNotActive(tabPane);
         }
     }
 
     [Theory]
-    [InlineData(TabId1, TabId2)]
-    [InlineData(TabId1, TabId3)]
-    [InlineData(TabId2, TabId1)]
-    public void ActiveTabIdIsUpdated_TabWithMatchingIdIsMadeActive(string initialActiveTab,
-        string updatedActiveTab)
+    [InlineData(0, 1)]
+    [InlineData(0, 2)]
+    [InlineData(1, 0)]
+    public void ActiveTabIndexIsUpdated_TabWithMatchingIndexIsMadeActive(int initialActiveTab,
+        int updatedActiveTab)
     {
         var cut = RenderComponent(
             @<TabContainer ActiveTabId="@initialActiveTab">
                 <Panes>
-                    <TabPane Id="@TabId1">Pane 1</TabPane>
-                    <TabPane Id="@TabId2">Pane 2</TabPane>
-                    <TabPane Id="@TabId3">Pane 3</TabPane>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                    <TabPane>Pane 3</TabPane>
                 </Panes>
             </TabContainer>);
 
-        cut.SetParametersAndRender(builder => builder.Add(x => x.ActiveTabId, updatedActiveTab));
+        cut.SetParametersAndRender(builder => builder.Add(x => x.ActiveTabIndex, updatedActiveTab));
 
-        AssertTabPane.IsActive(cut, $".tab-content .tab-pane#{updatedActiveTab}");
+        AssertTabPane.IsActive(cut, $".tab-content .tab-pane:nth-child({updatedActiveTab + 1})");
 
-        foreach (var tabPane in cut.FindAll($".tab-content .tab-pane:not(#{updatedActiveTab})"))
+        foreach (var tabPane in cut.FindAll($".tab-content .tab-pane:not(:nth-child({updatedActiveTab + 1}))"))
         {
             AssertTabPane.IsNotActive(tabPane);
         }
@@ -99,9 +99,9 @@
         var cut = RenderComponent(
             @<TabContainer>
                 <Panes>
-                    <TabPane Id="@TabId1" Title="@Title1">Pane 1</TabPane>
-                    <TabPane Id="@TabId2" Title="@Title2">Pane 2</TabPane>
-                    <TabPane Id="@TabId3" Title="@Title3">Pane 3</TabPane>
+                    <TabPane Title="@Title1">Pane 1</TabPane>
+                    <TabPane Title="@Title2">Pane 2</TabPane>
+                    <TabPane Title="@Title3">Pane 3</TabPane>
                 </Panes>
             </TabContainer>);
 
@@ -113,25 +113,46 @@
     }
 
     [Fact]
-    public void TabsFragmentIsNotSet_ActiveTabIsChanged_CorrespondingTabItemMadeActive()
+    public void TabsFragmentIsNotSet_TabItemClicked_CorrespondingTabItemAndTabPaneMadeActive()
     {
-        const int ActiveTabIndex = 2;
+        const int ActiveTabIndex = 1;
 
         var cut = RenderComponent(
             @<TabContainer>
                 <Panes>
-                    <TabPane Id="@TabId1" Title="@Title1">Pane 1</TabPane>
-                    <TabPane Id="@TabId2" Title="@Title2">Pane 2</TabPane>
-                    <TabPane Id="@TabId3" Title="@Title3">Pane 3</TabPane>
+                    <TabPane Title="@Title1">Pane 1</TabPane>
+                    <TabPane Title="@Title2">Pane 2</TabPane>
+                    <TabPane Title="@Title3">Pane 3</TabPane>
                 </Panes>
             </TabContainer>);
 
-        cut.Find($".nav-item:nth-child({ActiveTabIndex}) .nav-link")
+        cut.Find($".nav-item:nth-child({ActiveTabIndex + 1}) .nav-link")
             .Click();
 
-        var tabPane = cut.FindComponents<TabItem>()[ActiveTabIndex - 1];
+        var tabItem = cut.FindComponents<TabItem>()[ActiveTabIndex];
+
+        Assert.True(tabItem.Instance.Active);
+
+        var tabPane = cut.FindComponents<TabPane>()[ActiveTabIndex];
 
         Assert.True(tabPane.Instance.Active);
+    }
+
+    [Fact]
+    public void TabsFragmentIsNotSet_TabItemIsClicked_ActiveTabIndexIsUpdated()
+    {
+        const int ExpectedActiveTabId = 1;
+        int actualActiveTabIndex = default;
+        var cut = Render<TabContainer>(
+            @<TabContainer @bind-ActiveTabIndex="actualActiveTabIndex">
+                <Panes>
+                    <TabPane>Pane 1</TabPane>
+                    <TabPane>Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        cut.Find(".nav-item:nth-child(2) .nav-link").Click();
+        Assert.Equal(ExpectedActiveTabId, actualActiveTabIndex);
     }
 
     [Fact]

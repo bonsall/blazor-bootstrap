@@ -1,13 +1,12 @@
 ﻿@inherits BootstrapContainerBase
+@implements IDisposable
 
-<div @attributes="@AdditionalAttributes" class="@Classes" id="@Id" @ref="TabPaneElement">@ChildContent</div>
+<div @attributes="@AdditionalAttributes" class="@Classes" @ref="TabPaneElement">@ChildContent</div>
 
 @code {
-    private int _id = GetNextId();
     private string _displayClasses;
 
-    [Parameter]
-    public string Id { get; set; }
+    public int Index { get; internal set; }
 
     [CascadingParameter(Name = TabContainer.TabContainerParameterName)]
     public TabContainer TabContainer { get; set; }
@@ -15,10 +14,12 @@
     [Parameter]
     public string Title { get; set; }
 
+    public string Id => AdditionalAttributes["id"].ToString();
+
     [Inject]
     private IBootstrapJsService _bootstrapJSService { get; set; }
 
-    internal bool Active { get; set; }
+    public bool Active { get; internal set; }
 
     internal bool Animated {  get;  set; }
 
@@ -45,6 +46,13 @@
         await TabContainer.SetActiveTabAsync(this);
     }
 
+    public void Dispose()
+    {
+        if (TabContainer == null) return;
+
+        TabContainer.RemoveTab(this);
+    }
+
     protected override string DefaultClass
     {
         get
@@ -69,13 +77,23 @@
         if (TabContainer == null)
             throw new ArgumentNullException(nameof(TabContainer), $"{nameof(TabPane)} must be rendered inside of a {typeof(TabContainer)}");
 
-        if(string.IsNullOrWhiteSpace(Id))
-        {
-            Id = $"BBBS_TabPane__{_id}";
-        }
-
         Animated = TabContainer.Fade;
         await TabContainer.RegisterTab(this);
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if(AdditionalAttributes == null)
+        {
+            AdditionalAttributes = new Dictionary<string, object>();
+        }
+
+        if(!AdditionalAttributes.ContainsKey("id"))
+        {
+            AdditionalAttributes["id"] = $"BBBS_TabPane__{GetNextId()}";
+        }
     }
 
     internal void Show()
@@ -118,15 +136,6 @@
         StateHasChanged();
     }
 
-    private static int _nextId;
-    private static int GetNextId()
-    {
-        if (_nextId == int.MaxValue)
-            return _nextId = int.MinValue;
-
-        return _nextId++;
-    }
-
     private async Task ListenForTransitionEnd()
     {
         await _bootstrapJSService.AddEventListenerAsync(
@@ -142,5 +151,14 @@
                 TabPaneElement,
                 "transitionend",
                 nameof(FadeEnd));
+    }
+
+    private static int _nextId;
+    private static int GetNextId()
+    {
+        if (_nextId == int.MaxValue)
+            return _nextId = int.MinValue;
+
+        return _nextId++;
     }
 }

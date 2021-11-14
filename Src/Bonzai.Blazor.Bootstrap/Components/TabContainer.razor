@@ -4,9 +4,8 @@
 @if(Tabs == null)
 {
     <TabList Pills="Pills">
-        @foreach(var tabPanePair in _tabPanes)
+        @foreach(var tabPane in _tabPanes)
         {
-            var tabPane = tabPanePair.Value;
             <TabItem Active="tabPane.Active"
                      LinkClicked="async () => await SetActiveTabAsync(tabPane)">
                 @tabPane.Title
@@ -33,8 +32,9 @@ else if(Content != null)
 @code {
     public const string TabContainerParameterName = nameof(TabContainer);
 
-    private Dictionary<string, TabPane> _tabPanes = new();
-    private string _fadeInTabId;
+    private List<TabPane> _tabPanes = new();
+    private int? _fadeInTabIndex;
+    bool _updateActiveTabIndexAfterRemoval;
 
     [Parameter]
     public RenderFragment Tabs { get; set; }
@@ -51,86 +51,127 @@ else if(Content != null)
     [Parameter]
     public bool Pills { get; set; }
 
-    private string _activeTabId;
+    private int _activeTabIndex;
     [Parameter]
-    public string ActiveTabId
+    public int ActiveTabIndex
     {
-        get => _activeTabId;
+        get => _activeTabIndex;
         set
         {
-            if (_activeTabId == value)
+            if (_activeTabIndex == value)
                 return;
 
             if(!_tabPanes.Any())
             {
-                _activeTabId = value;
+                _activeTabIndex = value;
                 return;
             }
 
-            if (!_tabPanes.ContainsKey(value))
-                throw new InvalidOperationException($"Could not find {nameof(TabPane)} with Id {value}. Unable to update active tab.");
+            if (!IndexIsInRange(value))
+                throw new ArgumentOutOfRangeException($"{nameof(ActiveTabIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]");
 
             UpdateActiveTab(value);
         }
     }
 
     [Parameter]
-    public EventCallback<string> ActiveTabIdChanged { get; set; }
+    public EventCallback<int> ActiveTabIndexChanged { get; set; }
 
-    TabPane ActiveTab => _tabPanes[ActiveTabId];
+    TabPane ActiveTab => _tabPanes[ActiveTabIndex];
 
     public async Task RegisterTab(TabPane tabPane)
     {
-        _tabPanes.Add(tabPane.Id, tabPane);
+        tabPane.Index = _tabPanes.Count;
+        _tabPanes.Add(tabPane);
 
-        if(string.IsNullOrWhiteSpace(ActiveTabId)
-            || ActiveTabId == tabPane.Id)
+        if(ActiveTabIndex == tabPane.Index)
         {
-            _activeTabId = tabPane.Id;
-            await ActiveTabIdChanged.InvokeAsync(ActiveTabId);
+            _activeTabIndex = tabPane.Index;
+            await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
             tabPane.Show();
         }
         StateHasChanged();
     }
 
-    public IList<TabPane> GetTabs() => _tabPanes.Select(x => x.Value).ToList();
-
     public async Task SetActiveTabAsync(TabPane tabPane)
     {
-        ActiveTabId = tabPane.Id;
-        await ActiveTabIdChanged.InvokeAsync(ActiveTabId);
+        ActiveTabIndex = tabPane.Index;
+
+        // When animated the value does not change until after the next render.
+        if(!Fade)
+        {
+            await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
+        }
     }
 
-    public async Task SetActiveTabAsync(string tabPaneId) =>
-        await SetActiveTabAsync(_tabPanes[ActiveTabId]);
+    public async Task SetActiveTabAsync(int tabPaneIndex)
+    {
+        if (IndexIsInRange(tabPaneIndex))
+            throw new ArgumentOutOfRangeException($"{nameof(ActiveTabIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]",
+                nameof(tabPaneIndex));
+        await SetActiveTabAsync(_tabPanes[tabPaneIndex]);
+    }
 
     internal void HideActiveTab()
     {
-        if(!string.IsNullOrWhiteSpace(ActiveTabId))
+        if(_tabPanes.Any() && IndexIsInRange(ActiveTabIndex))
         {
             ActiveTab.Hide();
         }
     }
 
-    internal void FadeInActiveTab()
+    internal async Task FadeInActiveTab()
     {
-        _activeTabId = _fadeInTabId;
-        _fadeInTabId = null;
+        _activeTabIndex = _fadeInTabIndex.Value;
+        _fadeInTabIndex = null;
+
+        await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
+
         ActiveTab.Show();
         StateHasChanged();
     }
 
-    void UpdateActiveTab(string activeTabId)
+    internal void RemoveTab(TabPane tabPane)
+    {
+        if(tabPane.Active)
+        {
+            ActiveTabIndex = 0;
+        }
+        else
+        {
+            AfterRenderOnceAsync(UpdateActiveTabIndexAfterTabRemoval);
+        }
+        
+        _tabPanes.RemoveAt(tabPane.Index);
+
+        for (var idxTabPane = tabPane.Index; idxTabPane < _tabPanes.Count; ++idxTabPane)
+        {
+            var remainingTabPane = _tabPanes[idxTabPane];
+            remainingTabPane.Index = idxTabPane;
+        }
+    }
+
+    bool IndexIsInRange(int index) =>
+        index < _tabPanes.Count && index >= 0;
+
+    async Task UpdateActiveTabIndexAfterTabRemoval()
+    {
+        _activeTabIndex = _tabPanes.Where(x => x.Active)
+            .Single().Index;
+        await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
+    }
+
+    void UpdateActiveTab(int activeTabIndex)
     {
         if(Fade)
         {
-            _fadeInTabId = activeTabId;
+            _fadeInTabIndex = activeTabIndex;
             HideActiveTab();
         }
         else
         {
             HideActiveTab();
-            _activeTabId = activeTabId;
+            _activeTabIndex = activeTabIndex;
             ActiveTab.Show();
         }
     }

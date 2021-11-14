@@ -10,11 +10,11 @@
         A container to wrap individual <code>TabPane</code> components. Used to create a tabbed interface.
     </CustomDescription>
     <Properties>
-        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabId))">
+        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabIndex))">
             The id of the tab page that is currently active (shown). This value gets updated when a new tab is displayed.
         </ParamDescription>
-        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabIdChanged))">
-            An action to execute when the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" /> property changes.
+        <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.ActiveTabIndexChanged))">
+            An action to execute when the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" /> property changes.
         </ParamDescription>
         <AdditionalAttributes />
         <ParamDescription Property="typeof(TabContainer).GetProperty(nameof(TabContainer.Content))">
@@ -42,13 +42,6 @@
     </Properties>
     <Methods>
         <MethodItem TSource="TabContainer"
-                    MethodExpression="x => x.GetTabs()">
-            <Description>
-                Retrieves a list of <PropertyReference Name="@nameof(TabPane)" /> components that are children of this
-                container.
-            </Description>
-        </MethodItem>
-        <MethodItem TSource="TabContainer"
                     MethodExpression="x => x.RegisterTab(default)">
             <Description>
                 Registers the <PropertyReference Name="@nameof(TabPane)" /> with this container.
@@ -72,7 +65,7 @@
             </Parameters>
         </MethodItem>
         <MethodItem TSource="TabContainer"
-                    MethodExpression="x => x.SetActiveTabAsync(default(string))">
+                    MethodExpression="x => x.SetActiveTabAsync(default(int))">
             <Description>
                 Sets the <PropertyReference Name="@nameof(TabPane)" /> with the matching <code>TabPaneId</code> as the
                 active tab in this container.
@@ -113,7 +106,7 @@
 
 <Example ExampleNumber="ExampleNumber">
     <Description>
-        Control the active tab programatically by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" />
+        Control the active tab programatically by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" />
     </Description>
     <LiveExample>
         <UpdateActiveTabId />
@@ -148,40 +141,163 @@
 
 <Example ExampleNumber="ExampleNumber">
     <Description>
-        Preserve the state of the <PropertyReference Name="@nameof(TabContainer)" /> by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabId)" />.
+        Preserve the state of the <PropertyReference Name="@nameof(TabContainer)" /> by binding to the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" />.
         This prevents the tab from being reset when the parent container needs to re-render.
     </Description>
     <LiveExample>
         <PreserveState />
     </LiveExample>
-    <Code>
-        @(@"<Row>
+    <Code>@(@"<Row>
     <Column>
-        <Btn OnClick=""() => ActiveTabId = TabId1"">Display tab 1</Btn>
-        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
-        <Btn OnClick=""() => ActiveTabId = TabId2"">Display tab 2</Btn>
+        Change tabs on each container below, then use this button to hide, and then recreate.
     </Column>
 </Row>
-
 <Row>
     <Column>
-        <TabContainer @bind-ActiveTabId=""ActiveTabId"">
-            <TabPane Title=""Tab 1"" Id=""@TabId1"">Content 1</TabPane>
-            <TabPane Title=""Tab 2"" Id=""@TabId2"">Content 2</TabPane>
-            <TabPane Title=""Tab 3"" Id=""@TabId3"">Content 3</TabPane>
-        </TabContainer>
+        <Btn OnClick=""DestroyComponents"">Recreate Component</Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class=""fw-bold mb-2"">Without binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row class=""mb-4"">
+    <Column>
+        @if(ShowComponents)
+        {
+            <TabContainer>
+                <Panes>
+                    <TabPane Title=""Tab 1"">Content 1</TabPane>
+                    <TabPane Title=""Tab 2"">Content 2</TabPane>
+                    <TabPane Title=""Tab 3"">Content 3</TabPane>
+                </Panes>
+            </TabContainer>
+        }
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class=""fw-bold"">With binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        @if(ShowComponents)
+        {
+            <TabContainer @bind-ActiveTabIndex=""ActiveTabIndex"">
+                <Panes>
+                    <TabPane Title=""Tab 1"">Content 1</TabPane>
+                    <TabPane Title=""Tab 2"">Content 2</TabPane>
+                    <TabPane Title=""Tab 3"">Content 3</TabPane>
+                </Panes>
+            </TabContainer>
+        }
     </Column>
 </Row>
 
 @code {
-    const string TabId1 = ""TabId1"";
-    const string TabId2 = ""TabId2"";
-    const string TabId3 = ""TabId3"";
+    private int ActiveTabIndex { get; set; }
 
-    private string ActiveTabId { get; set; }
-}
-")
-    </Code>
+    private bool ShowComponents { get; set; } = true;
+
+    private void DestroyComponents()
+    {
+        ShowComponents = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if(!ShowComponents)
+        {
+            ShowComponents = true;
+            StateHasChanged();
+        }
+    }
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        This is the same as the previous example, except now the <PropertyReference Name="@nameof(TabContainer)" /> is using the Fade animation.
+        This is more or less an integration test for the devs creating this library.
+    </Description>
+    <LiveExample>
+        <PreserveStateFade />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        Change tabs on each container below, then use this button to hide, and then recreate.
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <Btn OnClick=""DestroyComponents"">Recreate Component</Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class=""fw-bold mb-2"">Without binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row class=""mb-4"">
+    <Column>
+        @if (ShowComponents)
+        {
+            <TabContainer Fade=""true"">
+                <Panes>
+                    <TabPane Title=""Tab 1"">Content 1</TabPane>
+                    <TabPane Title=""Tab 2"">Content 2</TabPane>
+                    <TabPane Title=""Tab 3"">Content 3</TabPane>
+                </Panes>
+            </TabContainer>
+        }
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <h6 class=""fw-bold"">With binding to ActiveTabId</h6>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        @if (ShowComponents)
+        {
+            <TabContainer @bind-ActiveTabIndex=""ActiveTabIndex""
+                          Fade=""true"">
+                <Panes>
+                    <TabPane Title=""Tab 1"">Content 1</TabPane>
+                    <TabPane Title=""Tab 2"">Content 2</TabPane>
+                    <TabPane Title=""Tab 3"">Content 3</TabPane>
+                </Panes>
+            </TabContainer>
+        }
+    </Column>
+</Row>
+
+@code {
+    private int ActiveTabIndex { get; set; }
+
+    private bool ShowComponents { get; set; } = true;
+
+    private void DestroyComponents()
+    {
+        ShowComponents = false;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if (!ShowComponents)
+        {
+            ShowComponents = true;
+            StateHasChanged();
+        }
+    }
+}")</Code>
 </Example>
 
 @code{

@@ -1,7 +1,12 @@
 ﻿@inherits BootstrapContainerBase
 
 <li @attributes="AdditionalAttributes" class="@Classes">
-    <button class="@AnchorClasses" @onclick="LinkClicked" type="button" role="tab">@ChildContent</button>
+    <button class="@AnchorClasses"
+            @onclick="LinkClicked"
+            type="button"
+            role="tab"
+            aria-controls="@TabPane?.Id"
+            aria-selected="@Active.ToString()">@ChildContent</button>
 </li>
 @code {
     protected override string DefaultClass => "nav-item";
@@ -11,6 +16,9 @@
 
     [Parameter]
     public EventCallback<MouseEventArgs> LinkClicked { get; set; }
+
+    [Parameter]
+    public TabPane TabPane { get; set; }
 
     private string AnchorClasses
     {

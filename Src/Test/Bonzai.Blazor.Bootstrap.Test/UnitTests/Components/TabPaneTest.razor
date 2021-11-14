@@ -47,6 +47,23 @@
     }
 
     [Fact]
+    public void IndexIsSet()
+    {
+        TabPane tabPane0 = null;
+        TabPane tabPane1 = null;
+        var cut = RenderComponent(
+            @<TabContainer>
+                <Panes>
+                    <TabPane @ref="tabPane0">Pane 1</TabPane>
+                    <TabPane @ref="tabPane1">Pane 2</TabPane>
+                </Panes>
+            </TabContainer>);
+
+        Assert.Equal(0, tabPane0.Index);
+        Assert.Equal(1, tabPane1.Index);
+    }
+
+    [Fact]
     public void ClassesAreAddedToDivClassList()
     {
         const string ExpectedClassName = "unit-test";
@@ -101,25 +118,7 @@
     }
 
     [Fact]
-    public void TabItemIsClicked_TabPaneBecomesActive()
-    {
-        const string ExpectedActiveTabId = "tab-2";
-        string actualActiveTabId = null;
-        var cut = Render<TabContainer>(
-            @<TabContainer @bind-ActiveTabId="actualActiveTabId">
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane Id="@ExpectedActiveTabId">Pane 2</TabPane>
-                </Panes>
-    </TabContainer>
-    );
-
-        cut.Find(".nav-item:nth-child(2) .nav-link").Click();
-        Assert.Equal(ExpectedActiveTabId, actualActiveTabId);
-    }
-
-    [Fact]
-    public async Task ContainerAnimated_ActivetabIsUpdated_ListensForTransitionEnd()
+    public async Task ContainerAnimated_ActiveTabIsUpdated_ListensForTransitionEnd()
     {
         /// Animating the fade OUT of a tab is a multi step process
         ///     1. Remove show class

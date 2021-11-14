@@ -15,9 +15,9 @@
 </Row>
 <Row class="mb-4">
     <Column>
-        @if(ShowComponents)
+        @if (ShowComponents)
         {
-            <TabContainer>
+            <TabContainer Fade="true">
                 <Panes>
                     <TabPane Title="Tab 1">Content 1</TabPane>
                     <TabPane Title="Tab 2">Content 2</TabPane>
@@ -34,9 +34,10 @@
 </Row>
 <Row>
     <Column>
-        @if(ShowComponents)
+        @if (ShowComponents)
         {
-            <TabContainer @bind-ActiveTabIndex="ActiveTabIndex">
+            <TabContainer @bind-ActiveTabIndex="ActiveTabIndex"
+                          Fade="true">
                 <Panes>
                     <TabPane Title="Tab 1">Content 1</TabPane>
                     <TabPane Title="Tab 2">Content 2</TabPane>
@@ -61,7 +62,7 @@
     {
         base.OnAfterRender(firstRender);
 
-        if(!ShowComponents)
+        if (!ShowComponents)
         {
             ShowComponents = true;
             StateHasChanged();

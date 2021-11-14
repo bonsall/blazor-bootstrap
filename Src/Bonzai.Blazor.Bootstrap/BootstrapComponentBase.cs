@@ -40,8 +40,17 @@ namespace Bonzai.Blazor.Bootstrap
             _afterRenderAsyncActions.Enqueue(action);
         }
 
+        protected void AfterRenderOnceAsync(Func<Task> action)
+        {
+            if (_afterRenderAsyncActions.Contains(action)) return;
+
+            AfterRenderAsync(action);
+        }
+
         protected override void OnAfterRender(bool firstRender)
         {
+            base.OnAfterRender(firstRender);
+
             while(_afterRenderActions.Any())
             {
                 _afterRenderActions.Dequeue()();
@@ -50,6 +59,8 @@ namespace Bonzai.Blazor.Bootstrap
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
+            await base.OnAfterRenderAsync(firstRender);
+
             while (_afterRenderAsyncActions.Any())
             {
                 await _afterRenderAsyncActions.Dequeue()();
