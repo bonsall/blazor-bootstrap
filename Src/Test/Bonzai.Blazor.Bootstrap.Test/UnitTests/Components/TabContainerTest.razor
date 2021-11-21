@@ -243,6 +243,29 @@
         Assert.Contains("flex-grow-1", tabContent.ClassList);
     }
 
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(100)]
+    public void ActiveTabIndexIsSetToValueOutOfRange_ThrowsException(int activeIndex)
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        // Unable to use "proper" SetParametersAndRender method.
+        // The expected exception is suppressed when using that method.
+#pragma warning disable BL0005
+        Assert.Throws<ArgumentOutOfRangeException>(
+        () => cut.Instance.ActiveTabIndex = activeIndex);
+#pragma warning restore BL0005
+
+        //Assert.Throws<ArgumentOutOfRangeException>(
+        //    () => cut.SetParametersAndRender(parameters => parameters.Add(x => x.ActiveTabIndex, activeIndex)));
+    }
+
     private IRenderedComponent<TabList> FindTabList(IRenderedComponent<TabContainer> cut) =>
-        cut.FindComponent<TabList>();
+    cut.FindComponent<TabList>();
 }
