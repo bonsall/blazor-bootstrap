@@ -53,7 +53,7 @@ else
             }
 
             if (!IndexIsInRange(value))
-                throw new ArgumentOutOfRangeException($"{nameof(ActiveTabIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]");
+                throw new ArgumentOutOfRangeException($"{nameof(ActiveTabIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]. Value passed: {value}");
 
             UpdateActiveTab(value);
         }
@@ -127,8 +127,8 @@ else
 
     public async Task SetActiveTabAsync(int tabPaneIndex)
     {
-        if (IndexIsInRange(tabPaneIndex))
-            throw new ArgumentOutOfRangeException($"{nameof(ActiveTabIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]",
+        if (!IndexIsInRange(tabPaneIndex))
+            throw new ArgumentOutOfRangeException($"{nameof(tabPaneIndex)} must be between 0 and the count of child {nameof(TabPane)} components contained in this container minus 1 [0, {_tabPanes.Count - 1}]. Value passed: {tabPaneIndex}",
                 nameof(tabPaneIndex));
         await SetActiveTabAsync(_tabPanes[tabPaneIndex]);
     }
@@ -191,6 +191,7 @@ else
     bool IndexIsInRange(int index) =>
         index < _tabPanes.Count && index >= 0;
 
+    // Used for fade animation
     async Task UpdateActiveTabIndexAfterTabRemoval()
     {
         _activeTabIndex = _tabPanes.Where(x => x.Active)

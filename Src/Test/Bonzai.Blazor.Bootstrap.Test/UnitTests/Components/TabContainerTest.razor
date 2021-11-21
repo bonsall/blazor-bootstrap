@@ -68,7 +68,7 @@
         int updatedActiveTab)
     {
         var cut = RenderComponent(
-            @<TabContainer ActiveTabId="@initialActiveTab">
+            @<TabContainer ActiveTabIndex="@initialActiveTab">
                 <TabPane>Pane 1</TabPane>
                 <TabPane>Pane 2</TabPane>
                 <TabPane>Pane 3</TabPane>
@@ -266,6 +266,51 @@
         //    () => cut.SetParametersAndRender(parameters => parameters.Add(x => x.ActiveTabIndex, activeIndex)));
     }
 
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(100)]
+    public async Task SetActiveTabAsyncExecuted_IndexIsOutOfRange_ThrowsException(int activeTabIndex)
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        await Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => cut.Instance.SetActiveTabAsync(activeTabIndex));
+    }
+
+    [Theory]
+    [InlineData(0, 1)]
+    [InlineData(0, 2)]
+    [InlineData(1, 0)]
+    public async Task SetActiveTabAsyncExecutes_TabWithMatchingIndexIsMadeActive(int initialActiveTab,
+        int updatedActiveTab)
+    {
+        var cut = RenderComponent(
+            @<TabContainer ActiveTabIndex="@initialActiveTab">
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        await cut.InvokeAsync(async () => await cut.Instance.SetActiveTabAsync(updatedActiveTab));
+        cut.Render();
+
+        AssertTabIndexIsTheOnlyActiveTab(cut, updatedActiveTab);
+    }
+
+    private void AssertTabIndexIsTheOnlyActiveTab(IRenderedComponent<TabContainer> cut, int updatedActiveTab)
+    {
+        AssertTabPane.IsActive(cut, $".tab-content .tab-pane:nth-child({updatedActiveTab + 1})");
+
+        foreach (var tabPane in cut.FindAll($".tab-content .tab-pane:not(:nth-child({updatedActiveTab + 1}))"))
+        {
+            AssertTabPane.IsNotActive(tabPane);
+        }
+    }
+
     private IRenderedComponent<TabList> FindTabList(IRenderedComponent<TabContainer> cut) =>
-    cut.FindComponent<TabList>();
+        cut.FindComponent<TabList>();
 }
