@@ -1,16 +1,11 @@
 ﻿<Row>
     <Column>
-        Change tabs on each container below, then use this button to destroy, and then recreate that tab controls.
-    </Column>
-</Row>
-<Row>
-    <Column>
         <Btn OnClick="DestroyComponents">Recreate Component</Btn>
     </Column>
 </Row>
 <Row>
     <Column>
-        <h6 class="fw-bold mb-2">Without binding to ActiveTabId</h6>
+        <h6 class="fw-bold my-2">Without binding to ActiveTabId</h6>
     </Column>
 </Row>
 <Row class="mb-4">
@@ -18,11 +13,9 @@
         @if(ShowComponents)
         {
             <TabContainer>
-                <Panes>
-                    <TabPane Title="Tab 1">Content 1</TabPane>
-                    <TabPane Title="Tab 2">Content 2</TabPane>
-                    <TabPane Title="Tab 3">Content 3</TabPane>
-                </Panes>
+                <TabPane Title="Tab 1">Content 1</TabPane>
+                <TabPane Title="Tab 2">Content 2</TabPane>
+                <TabPane Title="Tab 3">Content 3</TabPane>
             </TabContainer>
         }
     </Column>
@@ -37,11 +30,9 @@
         @if(ShowComponents)
         {
             <TabContainer @bind-ActiveTabIndex="ActiveTabIndex">
-                <Panes>
-                    <TabPane Title="Tab 1">Content 1</TabPane>
-                    <TabPane Title="Tab 2">Content 2</TabPane>
-                    <TabPane Title="Tab 3">Content 3</TabPane>
-                </Panes>
+                <TabPane Title="Tab 1">Content 1</TabPane>
+                <TabPane Title="Tab 2">Content 2</TabPane>
+                <TabPane Title="Tab 3">Content 3</TabPane>
             </TabContainer>
         }
     </Column>

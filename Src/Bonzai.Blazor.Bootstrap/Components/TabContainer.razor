@@ -17,10 +17,10 @@ else
 {
     @Tabs
 }
-@if(Panes != null)
+@if(ChildContent != null)
 {
     <TabContent>
-        @Panes
+        @ChildContent
     </TabContent>
 }
 else if(Content != null)
@@ -45,7 +45,7 @@ else if(Content != null)
     public bool Fade { get; set; }
 
     [Parameter]
-    public RenderFragment Panes { get; set; }
+    public RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public bool Pills { get; set; }
