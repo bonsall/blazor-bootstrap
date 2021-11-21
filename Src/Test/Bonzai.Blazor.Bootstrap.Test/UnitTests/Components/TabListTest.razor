@@ -69,6 +69,17 @@
         Assert.Contains("nav-pills", list.ClassList);
     }
 
+    [Fact]
+    public void VerticalIsTrue_VerticalClassIsAppendedToClassList_DoesNotAppendTabsClass()
+    {
+        var cut = RenderComponent(@<TabList Vertical="true"></TabList>);
+
+        var list = FindList(cut);
+        Assert.Contains("nav", list.ClassList);
+        Assert.Contains("flex-column", list.ClassList);
+        Assert.DoesNotContain("nav-tabs", list.ClassList);
+    }
+
     private void AssertHasTabClasses(IElement list)
     {
         Assert.Contains("nav", list.ClassList);

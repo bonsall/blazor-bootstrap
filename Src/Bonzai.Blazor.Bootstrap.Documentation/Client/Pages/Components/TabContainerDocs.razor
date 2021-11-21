@@ -357,7 +357,7 @@
         <p>
             The list of <PropertyReference Name="@nameof(TabPane)" />s is passed to this fragment as the context so you can use that
             to generate content for your tab links. You should also make sure that you call <PropertyReference Name="@nameof(TabContainer.SetActiveTabAsync)" />
-            when the link is clicked so that the proper content is displayed.
+             or update the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" /> when the link is clicked so that the proper content is displayed.
         </p>
     </Description>
     <LiveExample>
@@ -409,6 +409,22 @@
     <TabPane Title=""Tab 2"">Content 2</TabPane>
     <TabPane Title=""Tab 3"">Content 3</TabPane>
 </TabContainer>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(TabContainer.Vertical)" /> property to render the tabs vertically instead of
+        horizontally.
+    </Description>
+    <LiveExample>
+        <Vertical />
+    </LiveExample>
+    <Code>@(@"<TabContainer Vertical=""true"">
+    <TabPane Title=""Tab 1"">Content 1</TabPane>
+    <TabPane Title=""Tab 2"">Content 2</TabPane>
+    <TabPane Title=""Tab 3"">Content 3</TabPane>
+</TabContainer>")
+    </Code>
 </Example>
 
 @code{

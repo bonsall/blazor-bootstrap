@@ -8,6 +8,9 @@
     [Parameter]
     public bool Pills { get; set; }
 
+    [Parameter]
+    public bool Vertical { get; set; }
+
     protected override string DefaultClass
     {
         get
@@ -18,9 +21,14 @@
             {
                 classBuilder.AddClassName("nav-pills");
             }
-            else
+            else if (!Vertical)
             {
                 classBuilder.AddClassName("nav-tabs");
+            }
+
+            if(Vertical)
+            {
+                classBuilder.AddClassName("flex-column");
             }
 
             return classBuilder.GetClassNames();

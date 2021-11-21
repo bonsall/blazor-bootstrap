@@ -15,14 +15,12 @@
     }
 
     [Fact]
-    public void PanesIsSet_RendersTabContentWithPanesChildContent()
+    public void ChildContentIsSet_RendersTabContentWithChildContent()
     {
         var cut = RenderComponent(
             @<TabContainer>
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
             </TabContainer>);
 
         var content = cut.Find("div.tab-content");
@@ -33,10 +31,8 @@
     {
         var cut = RenderComponent(
             @<TabContainer>
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
             </TabContainer>);
 
         AssertTabPane.IsActive(cut, ".tab-content .tab-pane:first-child");
@@ -47,15 +43,13 @@
     [InlineData(0)]
     [InlineData(1)]
     [InlineData(2)]
-    public void ActiveTabIndexIsSet_TabPaneWithActiveIndexIsSetToActiveOnInitialRender(int activeTabIndex)
+    public void ActiveTabIndexIsSet_TabPaneWithMatchingIndexIsSetToActiveOnInitialRender(int activeTabIndex)
     {
         var cut = RenderComponent(
             @<TabContainer ActiveTabIndex="@activeTabIndex">
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                    <TabPane>Pane 3</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
             </TabContainer>);
 
         AssertTabPane.IsActive(cut, $".tab-content .tab-pane:nth-child({activeTabIndex + 1})");
@@ -75,11 +69,9 @@
     {
         var cut = RenderComponent(
             @<TabContainer ActiveTabId="@initialActiveTab">
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                    <TabPane>Pane 3</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
             </TabContainer>);
 
         cut.SetParametersAndRender(builder => builder.Add(x => x.ActiveTabIndex, updatedActiveTab));
@@ -98,11 +90,9 @@
         
         var cut = RenderComponent(
             @<TabContainer>
-                <Panes>
-                    <TabPane Title="@Title1">Pane 1</TabPane>
-                    <TabPane Title="@Title2">Pane 2</TabPane>
-                    <TabPane Title="@Title3">Pane 3</TabPane>
-                </Panes>
+                <TabPane Title="@Title1">Pane 1</TabPane>
+                <TabPane Title="@Title2">Pane 2</TabPane>
+                <TabPane Title="@Title3">Pane 3</TabPane>
             </TabContainer>);
 
         cut.Render();
@@ -119,11 +109,9 @@
 
         var cut = RenderComponent(
             @<TabContainer>
-                <Panes>
-                    <TabPane Title="@Title1">Pane 1</TabPane>
-                    <TabPane Title="@Title2">Pane 2</TabPane>
-                    <TabPane Title="@Title3">Pane 3</TabPane>
-                </Panes>
+                <TabPane Title="@Title1">Pane 1</TabPane>
+                <TabPane Title="@Title2">Pane 2</TabPane>
+                <TabPane Title="@Title3">Pane 3</TabPane>
             </TabContainer>);
 
         cut.Find($".nav-item:nth-child({ActiveTabIndex + 1}) .nav-link")
@@ -145,10 +133,8 @@
         int actualActiveTabIndex = default;
         var cut = Render<TabContainer>(
             @<TabContainer @bind-ActiveTabIndex="actualActiveTabIndex">
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
             </TabContainer>);
 
         cut.Find(".nav-item:nth-child(2) .nav-link").Click();
@@ -168,7 +154,7 @@
     }
 
     [Fact]
-    public void ContentIsSet_PanesIsNotSet_RendersContent()
+    public void ContentIsSet_ChildContentIsNotSet_RendersContent()
     {
         const string ExpectedContent = "unit test tabs";
         var cut = RenderComponent(
@@ -184,14 +170,79 @@
     {
         var cut = RenderComponent(
             @<TabContainer Pills="true">
-                <Panes>
-                    <TabPane>Pane 1</TabPane>
-                    <TabPane>Pane 2</TabPane>
-                    <TabPane>Pane 3</TabPane>
-                </Panes>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
             </TabContainer>);
 
-        var tabList = cut.FindComponent<TabList>();
+        var tabList = FindTabList(cut);
         Assert.True(tabList.Instance.Pills);
     }
+
+    [Fact]
+    public void VerticalIsTrue_RendersTabListWithVerticalClass()
+    {
+        var cut = RenderComponent(
+            @<TabContainer Vertical="true">
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var tabList = FindTabList(cut);
+
+        Assert.True(tabList.Instance.Vertical);
+    }
+
+    [Fact]
+    public void VerticalIsTrue_RendersTabItemAsLink()
+    {
+        var cut = RenderComponent(
+            @<TabContainer Vertical="true">
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var tabItems = cut.FindAll(".nav-link");
+
+        foreach(var tabItem in tabItems)
+        {
+            Assert.Contains("btn", tabItem.ClassList);
+            Assert.Contains("btn-link", tabItem.ClassList);
+        }
+    }
+
+    [Fact]
+    public void VerticalIsTrue_RendersEverythingInFlexContainer()
+    {
+        var cut = RenderComponent(
+            @<TabContainer Vertical="true">
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var rootElement = cut.Find("div");
+
+        Assert.Contains("d-flex", rootElement.ClassList);
+    }
+
+    [Fact]
+    public void VerticalIsTrue_TabContentHasFlexGrowClass()
+    {
+        var cut = RenderComponent(
+            @<TabContainer Vertical="true">
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var tabContent = cut.Find(".tab-content");
+
+        Assert.Contains("flex-grow-1", tabContent.ClassList);
+    }
+
+    private IRenderedComponent<TabList> FindTabList(IRenderedComponent<TabContainer> cut) =>
+        cut.FindComponent<TabList>();
 }

@@ -1,32 +1,15 @@
 ﻿@inherits BootstrapComponentBase
 
 <CascadingValue Name="@TabContainerParameterName" Value="this">
-@if(Tabs == null)
+@if(Vertical)
 {
-    <TabList Pills="Pills">
-        @foreach(var tabPane in _tabPanes)
-        {
-            <TabItem Active="tabPane.Active"
-                     LinkClicked="async () => await SetActiveTabAsync(tabPane)"
-                     TabPane="tabPane">
-                @tabPane.Title
-            </TabItem>
-        }
-    </TabList>
+    <div class="d-flex">
+        @TabInterface
+    </div>
 }
 else
 {
-    @Tabs(_tabPanes.AsReadOnly())
-}
-@if(ChildContent != null)
-{
-    <TabContent>
-        @ChildContent
-    </TabContent>
-}
-else if(Content != null)
-{
-    @Content
+    @TabInterface
 }
 </CascadingValue>
 
@@ -35,6 +18,8 @@ else if(Content != null)
 
     private List<TabPane> _tabPanes = new();
     private int? _fadeInTabIndex;
+    private string _tabItemClass;
+    private string _tabContentClass;
 
     [Parameter]
     public RenderFragment<IReadOnlyCollection<TabPane>> Tabs { get; set; }
@@ -61,7 +46,7 @@ else if(Content != null)
             if (_activeTabIndex == value)
                 return;
 
-            if(!_tabPanes.Any())
+            if (!_tabPanes.Any())
             {
                 _activeTabIndex = value;
                 return;
@@ -77,14 +62,50 @@ else if(Content != null)
     [Parameter]
     public EventCallback<int> ActiveTabIndexChanged { get; set; }
 
+    [Parameter]
+    public bool Vertical { get; set; }
+
     TabPane ActiveTab => _tabPanes[ActiveTabIndex];
+
+    private RenderFragment TabInterface => __builder =>
+    {
+        @if (Tabs == null)
+        {
+            <TabList Pills="Pills"
+                     Vertical="Vertical">
+                @foreach (var tabPane in _tabPanes)
+                {
+                    <TabItem Active="tabPane.Active"
+                             LinkClicked="async () => await SetActiveTabAsync(tabPane)"
+                             TabPane="tabPane"
+                             LinkClasses="@_tabItemClass">
+                        @tabPane.Title
+                    </TabItem>
+                }
+            </TabList>
+        }
+        else
+        {
+            @Tabs(_tabPanes.AsReadOnly())
+        }
+        @if (ChildContent != null)
+        {
+            <TabContent class="@_tabContentClass">
+                @ChildContent
+            </TabContent>
+        }
+        else if (Content != null)
+        {
+            @Content
+        }
+    };
 
     public async Task RegisterTab(TabPane tabPane)
     {
         tabPane.Index = _tabPanes.Count;
         _tabPanes.Add(tabPane);
 
-        if(ActiveTabIndex == tabPane.Index)
+        if (ActiveTabIndex == tabPane.Index)
         {
             _activeTabIndex = tabPane.Index;
             await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
@@ -98,7 +119,7 @@ else if(Content != null)
         ActiveTabIndex = tabPane.Index;
 
         // When animated the value does not change until after the next render.
-        if(!Fade)
+        if (!Fade)
         {
             await ActiveTabIndexChanged.InvokeAsync(ActiveTabIndex);
         }
@@ -112,9 +133,25 @@ else if(Content != null)
         await SetActiveTabAsync(_tabPanes[tabPaneIndex]);
     }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if(Vertical)
+        {
+            _tabItemClass = "btn btn-link";
+            _tabContentClass = "flex-grow-1";
+        }
+        else
+        {
+            _tabItemClass = null;
+            _tabContentClass = null;
+        }
+    }
+
     internal void HideActiveTab()
     {
-        if(_tabPanes.Any() && IndexIsInRange(ActiveTabIndex))
+        if (_tabPanes.Any() && IndexIsInRange(ActiveTabIndex))
         {
             ActiveTab.Hide();
         }
@@ -133,7 +170,7 @@ else if(Content != null)
 
     internal void RemoveTab(TabPane tabPane)
     {
-        if(tabPane.Active)
+        if (tabPane.Active)
         {
             ActiveTabIndex = 0;
         }
@@ -141,7 +178,7 @@ else if(Content != null)
         {
             AfterRenderOnceAsync(UpdateActiveTabIndexAfterTabRemoval);
         }
-        
+
         _tabPanes.RemoveAt(tabPane.Index);
 
         for (var idxTabPane = tabPane.Index; idxTabPane < _tabPanes.Count; ++idxTabPane)
@@ -163,7 +200,7 @@ else if(Content != null)
 
     void UpdateActiveTab(int activeTabIndex)
     {
-        if(Fade)
+        if (Fade)
         {
             _fadeInTabIndex = activeTabIndex;
             HideActiveTab();

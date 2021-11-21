@@ -43,7 +43,17 @@
         const string ExpectedContent = "unit test";
         var cut = RenderComponent(@<TabItem>@ExpectedContent</TabItem>);
 
-        var anchor = cut.Find("li > button");
-        Assert.Equal(ExpectedContent, anchor.TextContent);
+        var button = cut.Find("li > button");
+        Assert.Equal(ExpectedContent, button.TextContent);
+    }
+
+    [Fact]
+    public void LinkClassesSet_LinkClassesAppendedToButton()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<TabItem LinkClasses="@ExpectedClassName"></TabItem>);
+
+        var button = cut.Find("button");
+        Assert.Contains(ExpectedClassName, button.ClassList);
     }
 }

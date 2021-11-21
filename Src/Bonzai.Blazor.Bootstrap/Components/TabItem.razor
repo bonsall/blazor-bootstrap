@@ -1,7 +1,7 @@
 ﻿@inherits BootstrapContainerBase
 
 <li @attributes="AdditionalAttributes" class="@Classes">
-    <button class="@AnchorClasses"
+    <button class="@ButtonClasses"
             @onclick="LinkClicked"
             type="button"
             role="tab"
@@ -15,12 +15,15 @@
     public bool Active { get; set; }
 
     [Parameter]
+    public string LinkClasses { get; set; }
+
+    [Parameter]
     public EventCallback<MouseEventArgs> LinkClicked { get; set; }
 
     [Parameter]
     public TabPane TabPane { get; set; }
 
-    private string AnchorClasses
+    private string ButtonClasses
     {
         get
         {
@@ -29,6 +32,11 @@
             if (Active)
             {
                 classBuilder.AddClassName("active");
+            }
+
+            if(!string.IsNullOrWhiteSpace(LinkClasses))
+            {
+                classBuilder.AddClassName(LinkClasses);
             }
 
             return classBuilder.GetClassNames();
