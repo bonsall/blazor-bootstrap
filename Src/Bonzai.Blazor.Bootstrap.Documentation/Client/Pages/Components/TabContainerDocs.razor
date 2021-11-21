@@ -277,6 +277,140 @@
 }")</Code>
 </Example>
 
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        By default the <PropertyReference Name="@nameof(TabContainer)" /> renders the panes in a <PropertyReference Name="@nameof(TabContent)" />
+        component. You can override this behavior and render the panes in your own customized container by using the
+        <PropertyReference Name="@nameof(TabContainer.Content)" /> <code>RenderFragment</code>.
+    </Description>
+    <LiveExample>
+        <CustomContent />
+    </LiveExample>
+    <Code>@(@"@using System.Timers
+
+<TabContainer>
+    <Content>
+        <TabContent class=""@BackgroundColorNode.Value"">
+            <TabPane Title=""Tab 1"">
+                Content 1
+            </TabPane>
+            <TabPane Title=""Tab 2"">
+                Content 2
+            </TabPane>
+            <TabPane Title=""Tab 3"">
+                Content 3
+            </TabPane>
+        </TabContent>
+    </Content>
+</TabContainer>
+
+@code {
+    private LinkedList<string> TabContainerColors { get; set; } =
+        new LinkedList<string>(BootstrapVariations.ContextualVariations.Select(x => $""bg-{x}""));
+
+    private LinkedListNode<string> BackgroundColorNode { get; set; }
+
+    private Timer BackgroundColorUpdateInterval { get; set; }
+
+    private LinkedListNode<string> NextBackgroundColorNode
+    {
+        get
+        {
+            return BackgroundColorNode.Next ?? TabContainerColors.First;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        BackgroundColorNode = TabContainerColors.First;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if(firstRender)
+        {
+            BackgroundColorUpdateInterval = new Timer(500);
+            BackgroundColorUpdateInterval.Elapsed += UpdateBackgroundColor;
+            BackgroundColorUpdateInterval.Start();
+        }
+    }
+
+    private void UpdateBackgroundColor(object sender, ElapsedEventArgs e)
+    {
+        BackgroundColorNode = NextBackgroundColorNode;
+        StateHasChanged();
+    }
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        <p>
+            By default the tab links are rendered in a <PropertyReference Name="@nameof(TabList)" /> component. You can
+            override this behavior and render a custom list of tab links by using the <PropertyReference Name="@nameof(TabContainer.Tabs)" />
+            <code>RenderFragment</code>.
+        </p>
+        <p>
+            The list of <PropertyReference Name="@nameof(TabPane)" />s is passed to this fragment as the context so you can use that
+            to generate content for your tab links. You should also make sure that you call <PropertyReference Name="@nameof(TabContainer.SetActiveTabAsync)" />
+            when the link is clicked so that the proper content is displayed.
+        </p>
+    </Description>
+    <LiveExample>
+        <CustomTabList />
+    </LiveExample>
+    <Code>@(@"<TabContainer @ref=""TabContainer"">
+    <Tabs Context=""tabPanes"">
+        <TabList>
+            @foreach(var tabPane in tabPanes)
+            {
+                <TabItem Active=""tabPane.Active""
+                         TabPane=""tabPane""
+                         LinkClicked=""async _ => await TabContainer.SetActiveTabAsync(tabPane)"">
+                    @tabPane.Title
+                    <svg xmlns=""http://www.w3.org/2000/svg"" style=""height: 2em; width: 2em;"" fill=""none"" viewBox=""0 0 24 24"" stroke=""currentColor"">
+                        <path stroke-linecap=""round"" stroke-linejoin=""round"" stroke-width=""2"" d=""M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"" />
+                    </svg>
+                </TabItem>
+            }
+        </TabList>
+    </Tabs>
+    <ChildContent>
+        <TabPane Title=""Tab 1"">
+            Content 1
+        </TabPane>
+        <TabPane Title=""Tab 2"">
+            Content 2
+        </TabPane>
+        <TabPane Title=""Tab 3"">
+            Content 3
+        </TabPane>
+    </ChildContent>
+</TabContainer>
+
+@code {
+    private TabContainer TabContainer { get; set; }
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(TabContainer.Pills)" /> to render the tabs as pills.
+    </Description>
+    <LiveExample>
+        <Pills />
+    </LiveExample>
+    <Code>@(@"<TabContainer Pills=""true"">
+    <TabPane Title=""Tab 1"">Content 1</TabPane>
+    <TabPane Title=""Tab 2"">Content 2</TabPane>
+    <TabPane Title=""Tab 3"">Content 3</TabPane>
+</TabContainer>")</Code>
+</Example>
+
 @code{
     
 }

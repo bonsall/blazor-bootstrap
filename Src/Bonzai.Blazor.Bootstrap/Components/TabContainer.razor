@@ -7,7 +7,8 @@
         @foreach(var tabPane in _tabPanes)
         {
             <TabItem Active="tabPane.Active"
-                     LinkClicked="async () => await SetActiveTabAsync(tabPane)">
+                     LinkClicked="async () => await SetActiveTabAsync(tabPane)"
+                     TabPane="tabPane">
                 @tabPane.Title
             </TabItem>
         }
@@ -15,7 +16,7 @@
 }
 else
 {
-    @Tabs
+    @Tabs(_tabPanes.AsReadOnly())
 }
 @if(ChildContent != null)
 {
@@ -36,7 +37,7 @@ else if(Content != null)
     private int? _fadeInTabIndex;
 
     [Parameter]
-    public RenderFragment Tabs { get; set; }
+    public RenderFragment<IReadOnlyCollection<TabPane>> Tabs { get; set; }
 
     [Parameter]
     public RenderFragment Content { get; set; }

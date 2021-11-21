@@ -1,0 +1,59 @@
+﻿@using System.Timers
+
+<TabContainer>
+    <Content>
+        <TabContent class="@BackgroundColorNode.Value">
+            <TabPane Title="Tab 1">
+                Content 1
+            </TabPane>
+            <TabPane Title="Tab 2">
+                Content 2
+            </TabPane>
+            <TabPane Title="Tab 3">
+                Content 3
+            </TabPane>
+        </TabContent>
+    </Content>
+</TabContainer>
+
+@code {
+    private LinkedList<string> TabContainerColors { get; set; } =
+        new LinkedList<string>(BootstrapVariations.ContextualVariations.Select(x => $"bg-{x}"));
+
+    private LinkedListNode<string> BackgroundColorNode { get; set; }
+
+    private Timer BackgroundColorUpdateInterval { get; set; }
+
+    private LinkedListNode<string> NextBackgroundColorNode
+    {
+        get
+        {
+            return BackgroundColorNode.Next ?? TabContainerColors.First;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        BackgroundColorNode = TabContainerColors.First;
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+
+        if(firstRender)
+        {
+            BackgroundColorUpdateInterval = new Timer(500);
+            BackgroundColorUpdateInterval.Elapsed += UpdateBackgroundColor;
+            BackgroundColorUpdateInterval.Start();
+        }
+    }
+
+    private void UpdateBackgroundColor(object sender, ElapsedEventArgs e)
+    {
+        BackgroundColorNode = NextBackgroundColorNode;
+        StateHasChanged();
+    }
+}
