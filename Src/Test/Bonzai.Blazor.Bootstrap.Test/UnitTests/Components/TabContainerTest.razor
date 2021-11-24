@@ -301,6 +301,67 @@
         AssertTabIndexIsTheOnlyActiveTab(cut, updatedActiveTab);
     }
 
+    [Fact]
+    public void ExecuteIsActiveTabWithActiveTabPane_ReturnsTrue()
+    {
+        TabPane activeTab = null;
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane @ref="activeTab">Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var isActive = cut.Instance.IsActiveTab(activeTab);
+
+        Assert.True(isActive);
+    }
+
+    [Fact]
+    public void ExecuteIsActiveTabWithActiveTabPaneIndex_ReturnsTrue()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var isActive = cut.Instance.IsActiveTab(0);
+
+        Assert.True(isActive);
+    }
+
+    [Fact]
+    public void ExecuteIsActiveTabWithInactiveTabPane_ReturnsFalse()
+    {
+        TabPane inactiveTab = null;
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane>Pane 1</TabPane>
+                <TabPane @ref="inactiveTab">Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var isActive = cut.Instance.IsActiveTab(inactiveTab);
+
+        Assert.False(isActive);
+    }
+    [Fact]
+    public void ExecuteIsActiveTabWithInactiveTabPaneIndex_ReturnsFalse()
+    {
+        var cut = RenderComponent(
+            @<TabContainer>
+                <TabPane>Pane 1</TabPane>
+                <TabPane>Pane 2</TabPane>
+                <TabPane>Pane 3</TabPane>
+            </TabContainer>);
+
+        var isActive = cut.Instance.IsActiveTab(1);
+
+        Assert.False(isActive);
+    }
+
     private void AssertTabIndexIsTheOnlyActiveTab(IRenderedComponent<TabContainer> cut, int updatedActiveTab)
     {
         AssertTabPane.IsActive(cut, $".tab-content .tab-pane:nth-child({updatedActiveTab + 1})");

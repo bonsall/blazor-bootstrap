@@ -1,0 +1,222 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.TabPane
+
+@page "/components/tab-pane"
+
+@inherits DocsBase
+
+<ComponentDoc Type="typeof(TabPane)">
+    <CustomDescription>
+        A container for the content of an individual tab page in a tabbed interface. Needs to be used
+        inside of a <PropertyReference Name="@nameof(TabContainer)" />.
+    </CustomDescription>
+    <Properties>
+        <ParamDescription Property="typeof(TabPane).GetProperty(nameof(TabPane.Active))">
+            Whether or not this is the active (displayed) tab. Your component cannot and will not
+            respond to changes in this value, therefore it is ok to use this property in event
+            handlers, but not ok to use this property in your rendering logic.
+        </ParamDescription>
+        <AdditionalAttributes />
+        <ChildContent />
+        <ParamDescription Property="typeof(TabPane).GetProperty(nameof(TabPane.Id))">
+            A unique identifier for this tab. The id attribute on the rendered html will be set
+            to this value. This value is generated from the AdditionalAttributes and will be
+            created for if not explicitely set.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabPane).GetProperty(nameof(TabPane.Index))">
+            The zero based index of this tab page inside of it's parent
+            <PropertyReference Name="@nameof(TabContainer)" />. This value is populated on
+            initialization.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabPane).GetProperty(nameof(TabPane.TabContainer))">
+            This is a cascading parameter that is a reference to the <PropertyReference Name="@nameof(TabContainer)" /> this
+            <PropertyReference Name="@nameof(TabPane)" /> belongs to. Do not set this value.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabPane).GetProperty(nameof(TabPane.Title))">
+            This value is displayed on the link for the tab.
+        </ParamDescription>
+    </Properties>
+    <Methods>
+        <MethodItem TSource="TabPane"
+                    MethodExpression="x => x.FadeEnd()">
+            <Description>
+                Do not use this method. It is only meant to be used by JS interop.
+            </Description>
+        </MethodItem>
+        <MethodItem TSource="TabPane"
+                    MethodExpression="x => x.MakeActive()">
+            <Description>
+                Call this method to make this pane the active pane in the <PropertyReference Name="TabContainer" />.
+            </Description>
+        </MethodItem>
+    </Methods>
+</ComponentDoc>
+
+<ExampleHeading />
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(TabPane.Title)" /> property to give a name
+        to your tab pane.
+    </Description>
+    <LiveExample>
+        <Title />
+    </LiveExample>
+    <Code>@(@"<TabContainer>
+    <TabPane Title=""My first title"">My first content</TabPane>
+    <TabPane Title=""My second title"">My second content</TabPane>
+    <TabPane Title=""My third title"">My third content</TabPane>
+</TabContainer>")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        The <PropertyReference Name="@nameof(TabPane.Active)" /> property will let you know
+        if this pane is active. This property can not be reliably used in your render logic,
+        however it can be used in your event handlers.
+    </Description>
+    <LiveExample>
+        <Active />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <Btn OnClick=""AlertTab1Status"">
+            Show Tab 1 status
+        </Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabContainer>
+            <TabPane Title=""Tab 1""
+                     @ref=""Tab1"">Content 1</TabPane>
+            <TabPane Title=""Tab 2"">Content 2</TabPane>
+            <TabPane Title=""Tab 3"">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+@if(Tab1?.Active ?? false)
+{
+    <Row class=""mt-3"">
+        <Column>
+            <Alert>Tab 1 is active</Alert>
+        </Column>
+    </Row>
+}
+
+@code {
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+
+    TabPane Tab1 { get; set; }
+
+    async Task AlertTab1Status()
+    {
+        var statusMessage = Tab1.Active
+            ? ""Tab 1 is active""
+            : ""Tab 1 is not active"";
+        await JSRuntime.InvokeVoidAsync(""alert"", statusMessage);
+    }
+}
+")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        You can compare the <PropertyReference Name="@nameof(TabPane.Index)" /> property
+        to the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" />, or call
+        <PropertyReference Name="@nameof(TabContainer)" />.<PropertyReference Name="@nameof(TabContainer.IsActiveTab)" />
+        in your rendering logic to determine if a tab is active.
+    </Description>
+    <LiveExample>
+        <IsActiveProper />
+    </LiveExample>
+    <Code>@(@"@if (Tab1 != null)
+{
+    <div class=""d-grid gap-3"">
+        <div>
+            <div class=""fw-bold"">Comparing to ActiveTabIndex</div>
+            <Alert Variance=""info"">
+                Tab1 @CompareToActiveTabIndex active.
+            </Alert>
+        </div>
+        <div>
+            <div class=""fw-bold"">Using IsActiveTab(TabPane)</div>
+            <Alert Variance=""info"">
+                Tab1 @IsActivePane active.
+            </Alert>
+        </div>
+        <div>
+            <div class=""fw-bold"">Using IsActiveTab(int)</div>
+            <Alert Variance=""info"">
+                Tab1 @IsActiveIndex active.
+            </Alert>
+        </div>
+    </div>
+}
+
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabIndex=""ActiveTabIndex""
+                      @ref=""TabContainer"">
+            <TabPane Title=""Tab 1""
+                     @ref=""Tab1"">Content 1</TabPane>
+            <TabPane Title=""Tab 2"">Content 2</TabPane>
+            <TabPane Title=""Tab 3"">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+
+@code {
+    int ActiveTabIndex { get; set; }
+
+    TabPane Tab1 { get; set; }
+
+    TabContainer TabContainer { get; set; }
+
+    string CompareToActiveTabIndex => Tab1.Index == ActiveTabIndex
+        ? ""is""
+        : ""is not"";
+
+    string IsActivePane => TabContainer.IsActiveTab(Tab1)
+        ? ""is""
+        : ""is not"";
+
+    string IsActiveIndex => TabContainer.IsActiveTab(0)
+        ? ""is""
+        : ""is not"";
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Call <PropertyReference Name="@nameof(TabPane.MakeActive)" /> on a <PropertyReference Name="@nameof(TabPane)" />
+        instance in order to make it the active tab in the container.
+    </Description>
+    <LiveExample>
+        <MakeActive />
+    </LiveExample>
+    <Code>@(@"<Row class=""mb-3"">
+    <Column>
+        <Btn OnClick=""ActivateTab1"">Activate Tab 1</Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabContainer>
+            <TabPane Title=""Tab 1""
+                     @ref=""Tab1"">Content 1</TabPane>
+            <TabPane Title=""Tab 2"">Content 2</TabPane>
+            <TabPane Title=""Tab 3"">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+@code {
+    TabPane Tab1 { get; set; }
+
+    async Task ActivateTab1() => await Tab1.MakeActive();
+}")</Code>
+</Example>
+
+@code {
+
+}

@@ -1,0 +1,99 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.TabList
+
+@page "/components/tab-list"
+
+@inherits DocsBase
+
+<ComponentDoc Type="typeof(TabList)">
+    <CustomDescription>
+        A container for the individual <PropertyReference Name="@nameof(TabItem)" />s to be added to. This is used
+        by the <PropertyReference Name="@nameof(TabContainer)" /> component to create a tabbed interface.
+    </CustomDescription>
+    <Properties>
+        <AdditionalAttributes />
+        <ChildContent />
+        <ParamDescription Property="typeof(TabList).GetProperty(nameof(TabList.Pills))">
+            Display the individual <PropertyReference Name="@nameof(TabItem)" />s as pills instead of tabs.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabList).GetProperty(nameof(TabList.Vertical))">
+            Display the list vertically instead of horizontally.
+        </ParamDescription>
+    </Properties>
+</ComponentDoc>
+
+<ExampleHeading />
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        A basic example that renders multiple <PropertyReference Name="@nameof(TabItem)" />s inside of a <PropertyReference Name="@nameof(TabList)" />
+    </Description>
+    <LiveExample>
+        <BasicNav />
+    </LiveExample>
+    <Code>
+        @(@"<TabList>
+    <TabItem Active=""true"">Tab 1</TabItem>
+    <TabItem>Tab 2</TabItem>
+    <TabItem>Tab 3</TabItem>
+</TabList>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Display the <PropertyReference Name="@nameof(TabItem)" />s as pills instead of tabs.
+    </Description>
+    <LiveExample>
+        <Pills />
+    </LiveExample>
+    <Code>
+        @(@"<TabList Pills=""true"">
+    <TabItem Active=""true"">Tab 1</TabItem>
+    <TabItem>Tab 2</TabItem>
+    <TabItem>Tab 3</TabItem>
+</TabList>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Display the <PropertyReference Name="@nameof(TabItem)" />s in a vertical list instead of a horizontal one.
+        <em>
+            We recommend adding the <code>btn</code> and <code>btn-link</code> classes to the
+            <PropertyReference Name="@nameof(TabItem)" />s when the <PropertyReference Name="@nameof(TabList.Pills)" />
+            property is false.
+        </em>
+    </Description>
+    <LiveExample>
+        <Vertical />
+    </LiveExample>
+    <Code>
+        @(@"<Row>
+    <Column>
+        <TabList Vertical=""true"">
+            <TabItem Active=""true"" LinkClasses=""btn btn-link"">Tab 1</TabItem>
+            <TabItem LinkClasses=""btn btn-link"">Tab 2</TabItem>
+            <TabItem LinkClasses=""btn btn-link"">Tab 3</TabItem>
+        </TabList>
+    </Column>
+</Row>
+<Row class=""my-1"">
+    <Column>
+        <hr />
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabList Vertical=""true""
+                 Pills=""true"">
+            <TabItem Active=""true"">Tab 1</TabItem>
+            <TabItem>Tab 2</TabItem>
+            <TabItem>Tab 3</TabItem>
+        </TabList>
+    </Column>
+</Row>")
+    </Code>
+</Example>
+
+@code {
+
+}

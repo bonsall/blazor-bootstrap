@@ -1,0 +1,15 @@
+﻿<TabList>
+    <TabItem LinkClicked="async _ => await TabItemClicked(1)">Tab 1</TabItem>
+    <TabItem LinkClicked="async _ => await TabItemClicked(2)">Tab 2</TabItem>
+    <TabItem LinkClicked="async _ => await TabItemClicked(3)">Tab 3</TabItem>
+</TabList>
+
+@code {
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    private async Task TabItemClicked(int tab)
+    {
+        await JSRuntime.InvokeVoidAsync("alert", $"Tab {tab} clicked.");
+    }
+}

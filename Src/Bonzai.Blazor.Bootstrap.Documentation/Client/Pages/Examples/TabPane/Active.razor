@@ -1,0 +1,40 @@
+﻿<Row class="mb-3">
+    <Column>
+        <Btn OnClick="AlertTab1Status">
+            Show Tab 1 status
+        </Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabContainer>
+            <TabPane Title="Tab 1"
+                     @ref="Tab1">Content 1</TabPane>
+            <TabPane Title="Tab 2">Content 2</TabPane>
+            <TabPane Title="Tab 3">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+@if(Tab1?.Active ?? false)
+{
+    <Row class="mt-3">
+        <Column>
+            <Alert Variance="info">Tab 1 is active</Alert>
+        </Column>
+    </Row>
+}
+
+@code {
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; }
+
+    TabPane Tab1 { get; set; }
+
+    async Task AlertTab1Status()
+    {
+        var statusMessage = Tab1.Active
+            ? "Tab 1 is active"
+            : "Tab 1 is not active";
+        await JSRuntime.InvokeVoidAsync("alert", statusMessage);
+    }
+}

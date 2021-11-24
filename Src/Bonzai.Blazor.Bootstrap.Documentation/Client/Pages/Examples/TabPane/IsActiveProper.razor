@@ -1,0 +1,55 @@
+﻿@if (Tab1 != null)
+{
+    <div class="d-grid gap-3">
+        <div>
+            <div class="fw-bold">Comparing to ActiveTabIndex</div>
+            <Alert Variance="info">
+                Tab1 @CompareToActiveTabIndex active.
+            </Alert>
+        </div>
+        <div>
+            <div class="fw-bold">Using IsActiveTab(TabPane)</div>
+            <Alert Variance="info">
+                Tab1 @IsActivePane active.
+            </Alert>
+        </div>
+        <div>
+            <div class="fw-bold">Using IsActiveTab(int)</div>
+            <Alert Variance="info">
+                Tab1 @IsActiveIndex active.
+            </Alert>
+        </div>
+    </div>
+}
+
+<Row>
+    <Column>
+        <TabContainer @bind-ActiveTabIndex="ActiveTabIndex"
+                      @ref="TabContainer">
+            <TabPane Title="Tab 1"
+                     @ref="Tab1">Content 1</TabPane>
+            <TabPane Title="Tab 2">Content 2</TabPane>
+            <TabPane Title="Tab 3">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+
+@code {
+    int ActiveTabIndex { get; set; }
+
+    TabPane Tab1 { get; set; }
+
+    TabContainer TabContainer { get; set; }
+
+    string CompareToActiveTabIndex => Tab1.Index == ActiveTabIndex
+        ? "is"
+        : "is not";
+
+    string IsActivePane => TabContainer.IsActiveTab(Tab1)
+        ? "is"
+        : "is not";
+
+    string IsActiveIndex => TabContainer.IsActiveTab(0)
+        ? "is"
+        : "is not";
+}

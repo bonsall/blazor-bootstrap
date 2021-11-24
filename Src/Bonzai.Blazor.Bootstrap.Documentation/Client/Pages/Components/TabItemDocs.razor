@@ -1,0 +1,113 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.TabItem
+ 
+@page "/components/tab-item"
+
+@inherits DocsBase
+
+<ComponentDoc Type="typeof(TabItem)">
+    <CustomDescription>
+        Creates a clickable button that is meant to be used to switch tabs insinde of a tabbed interface.
+        The <PropertyReference Name="@nameof(TabContainer)" /> component automatically generates this component
+        for you unless you set the <PropertyReference Name="@nameof(TabContainer.Tabs)" /> <code>RenderFragment</code>.
+    </CustomDescription>
+    <Properties>
+        <ParamDescription Property="typeof(TabItem).GetProperty(nameof(TabItem.Active))">
+            Display this item as the active tab.
+        </ParamDescription>
+        <AdditionalAttributes />
+        <ChildContent />
+        <ParamDescription Property="typeof(TabItem).GetProperty(nameof(TabItem.LinkClasses))">
+            Additional classes to be added to the link portion of this component.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabItem).GetProperty(nameof(TabItem.LinkClicked))">
+            An action to be performed when the link is clicked.
+        </ParamDescription>
+        <ParamDescription Property="typeof(TabItem).GetProperty(nameof(TabItem.TabPane))">
+            The <PropertyReference Name="@nameof(TabPane)" /> that this <PropertyReference Name="@nameof(TabItem)" /> will display.
+            Setting this property helps ensure assistive technologies interpret this component correctly.
+        </ParamDescription>
+    </Properties>
+</ComponentDoc>
+
+<ExampleHeading />
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        A basic example that renders multiple <PropertyReference Name="@nameof(TabItem)" />s
+    </Description>
+    <LiveExample>
+        <BasicNav />
+    </LiveExample>
+    <Code>
+        @(@"<TabList>
+    <TabItem>Tab 1</TabItem>
+    <TabItem>Tab 2</TabItem>
+    <TabItem>Tab 3</TabItem>
+</TabList>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(TabItem.Active)" /> property to display that
+        the tab item is active.
+    </Description>
+    <LiveExample>
+        <Active />
+    </LiveExample>
+    <Code>
+        @(@"<TabList>
+    <TabItem>Tab 1</TabItem>
+    <TabItem Active=""true"">Tab 2</TabItem>
+    <TabItem>Tab 3</TabItem>
+</TabList>")
+    </Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Add additional classes to the link (button) by setting the <PropertyReference Name="@nameof(TabItem.LinkClasses)" />
+        property.
+    </Description>
+    <LiveExample>
+        <LinkClasses />
+    </LiveExample>
+    <Code>@(@"<TabList>
+    @foreach(var colorVariance in BootstrapVariations.ContextualVariations)
+    {
+        <TabItem LinkClasses=""@GenerateTextClass(colorVariance)"">@colorVariance</TabItem>
+    }
+</TabList>
+
+@code {
+    private string GenerateTextClass(string variation) => $""text-{variation}"";
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Specify a custom action to execute when the link is clicked by setting the <PropertyReference Name="@nameof(TabItem.LinkClicked)" />
+        property.
+    </Description>
+    <LiveExample>
+        <LinkClicked />
+    </LiveExample>
+    <Code>@(@"<TabList>
+    <TabItem LinkClicked=""async _ => await TabItemClicked(1)"">Tab 1</TabItem>
+    <TabItem LinkClicked=""async _ => await TabItemClicked(2)"">Tab 2</TabItem>
+    <TabItem LinkClicked=""async _ => await TabItemClicked(3)"">Tab 3</TabItem>
+</TabList>
+
+@code {
+    [Inject]
+    IJSRuntime JSRuntime { get; set; }
+
+    private async Task TabItemClicked(int tab)
+    {
+        await JSRuntime.InvokeVoidAsync(""alert"", $""Tab {tab} clicked."");
+    }
+}")</Code>
+</Example>
+
+@code {
+
+}

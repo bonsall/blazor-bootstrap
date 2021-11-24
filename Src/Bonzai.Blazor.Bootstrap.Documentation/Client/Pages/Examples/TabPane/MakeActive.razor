@@ -1,0 +1,20 @@
+﻿<Row class="mb-3">
+    <Column>
+        <Btn OnClick="ActivateTab1">Activate Tab 1</Btn>
+    </Column>
+</Row>
+<Row>
+    <Column>
+        <TabContainer>
+            <TabPane Title="Tab 1"
+                     @ref="Tab1">Content 1</TabPane>
+            <TabPane Title="Tab 2">Content 2</TabPane>
+            <TabPane Title="Tab 3">Content 3</TabPane>
+        </TabContainer>
+    </Column>
+</Row>
+@code {
+    TabPane Tab1 { get; set; }
+
+    async Task ActivateTab1() => await Tab1.MakeActive();
+}

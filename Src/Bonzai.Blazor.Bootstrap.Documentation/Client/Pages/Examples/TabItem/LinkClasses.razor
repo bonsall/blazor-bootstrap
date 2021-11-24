@@ -1,0 +1,10 @@
+﻿<TabList>
+    @foreach(var colorVariance in BootstrapVariations.ContextualVariations)
+    {
+        <TabItem LinkClasses="@GenerateTextClass(colorVariance)">@colorVariance</TabItem>
+    }
+</TabList>
+
+@code {
+    private string GenerateTextClass(string variation) => $"text-{variation}";
+}

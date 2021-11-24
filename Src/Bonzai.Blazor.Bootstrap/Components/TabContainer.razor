@@ -133,6 +133,11 @@ else
         await SetActiveTabAsync(_tabPanes[tabPaneIndex]);
     }
 
+    public bool IsActiveTab(TabPane tabPane) =>
+        IsActiveTab(tabPane.Index);
+
+    public bool IsActiveTab(int tabPaneIndex) => tabPaneIndex == ActiveTabIndex;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();

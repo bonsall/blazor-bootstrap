@@ -6,7 +6,7 @@
             type="button"
             role="tab"
             aria-controls="@TabPane?.Id"
-            aria-selected="@Active.ToString()">@ChildContent</button>
+            aria-selected="@Active.ToString().ToLower()">@ChildContent</button>
 </li>
 @code {
     protected override string DefaultClass => "nav-item";

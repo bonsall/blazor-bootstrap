@@ -56,4 +56,16 @@
         var button = cut.Find("button");
         Assert.Contains(ExpectedClassName, button.ClassList);
     }
+
+    [Theory]
+    [InlineData(true, "true")]
+    [InlineData(false, "false")]
+    public void AriaSelectedAttributReflectsTheValueOfActiveProperty(bool active,
+        string expectedAriaSelected)
+    {
+        var cut = RenderComponent(@<TabItem Active="active"></TabItem>);
+
+        var tabItem = cut.Find(".nav-link");
+        Assert.Equal(expectedAriaSelected, tabItem.GetAttribute("aria-selected"));
+    }
 }

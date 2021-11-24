@@ -1,0 +1,29 @@
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.TabContent
+
+@inherits DocsBase
+
+@page "/components/tab-content"
+
+<ComponentDoc Type="typeof(TabContent)">
+    <CustomDescription>
+        A container for the body of your tab pages. Used with the <PropertyReference Name="@nameof(TabContainer)" /> component to create a tabbed interface.
+    </CustomDescription>
+    <Properties>
+        <AdditionalAttributes />
+        <ChildContent />
+    </Properties>
+</ComponentDoc>
+
+<ExampleHeading />
+<Example ExampleNumber="ExampleNumber">
+    <LiveExample>
+        <Basic />
+    </LiveExample>
+    <Code>@(@"<TabContent>
+    Not much going on here.
+</TabContent>")</Code>
+</Example>
+
+@code {
+
+}

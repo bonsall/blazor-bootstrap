@@ -42,6 +42,29 @@
     </Properties>
     <Methods>
         <MethodItem TSource="TabContainer"
+                    MethodExpression="x => x.IsActiveTab(default(TabPane))">
+            <Description>
+                Determines whether the passed in <PropertyReference Name="@nameof(TabPane)" /> is the
+                active tab.
+            </Description>
+            <Parameters>
+                <MethodParameterItem Name="tabPane" Type="typeof(TabPane)">
+                    The <PropertyReference Name="@nameof(TabPane)" /> instance to check is active.
+                </MethodParameterItem>
+            </Parameters>
+        </MethodItem>
+        <MethodItem TSource="TabContainer"
+                    MethodExpression="x => x.IsActiveTab(default(int))">
+            <Description>
+                Determines whether the passed in index is equal to the <PropertyReference Name="@nameof(TabContainer.ActiveTabIndex)" />.
+            </Description>
+            <Parameters>
+                <MethodParameterItem Name="tabPane" Type="typeof(int)">
+                    The 0 based index of the <PropertyReference Name="@nameof(TabPane)" /> instance to check is active.
+                </MethodParameterItem>
+            </Parameters>
+        </MethodItem>
+        <MethodItem TSource="TabContainer"
                     MethodExpression="x => x.RegisterTab(default)">
             <Description>
                 Registers the <PropertyReference Name="@nameof(TabPane)" /> with this container.
