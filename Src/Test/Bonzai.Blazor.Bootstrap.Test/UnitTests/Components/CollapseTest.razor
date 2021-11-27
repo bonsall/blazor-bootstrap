@@ -1,0 +1,33 @@
+﻿@inherits TestBase<Collapse>
+
+@code {
+    [Fact]
+    public void RendersDivWithCollapseClass()
+    {
+        var cut = RenderComponent(@<Collapse></Collapse>);
+
+        var div = cut.Find("div");
+
+        Assert.Contains("collapse", div.ClassList);
+    }
+
+    [Fact]
+    public void CollapsedIsTrue_ShowClassNotRendered()
+    {
+        var cut = RenderComponent(@<Collapse Collapsed="true"></Collapse>);
+
+        var div = cut.Find("div");
+
+        Assert.DoesNotContain("show", div.ClassList);
+    }
+
+    [Fact]
+    public void CollapsedIsFalse_ShowClassRendered()
+    {
+        var cut = RenderComponent(@<Collapse Collapsed="false"></Collapse>);
+
+        var div = cut.Find("div");
+
+        Assert.Contains("show", div.ClassList);
+    }
+}

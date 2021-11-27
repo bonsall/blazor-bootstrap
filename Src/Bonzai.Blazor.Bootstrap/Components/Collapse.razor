@@ -1,0 +1,52 @@
+﻿@inherits BootstrapContainerBase
+
+<div class="@Classes"></div>
+
+@code {
+    private string _collapseClasses;
+    private string _collapseStyles;
+    private bool _collapsed;
+
+    [Parameter]
+    public bool Collapsed
+    {
+        get => _collapsed;
+        set
+        {
+            if (_collapsed == value) return;
+
+            _collapsed = value;
+
+#pragma warning disable CS4014
+            UpdateStateForCollapsed();
+#pragma warning restore CS4014
+        }
+    }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("collapse");
+
+            if(!string.IsNullOrWhiteSpace(_collapseClasses))
+            {
+                classBuilder.AddClassName(_collapseClasses);
+            }
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
+    async Task UpdateStateForCollapsed()
+    {
+        if(Collapsed)
+        {
+            _collapseStyles = null;
+        }
+        else
+        {
+            _collapseStyles = "show";
+        }
+    }
+}
