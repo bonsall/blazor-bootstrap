@@ -1,25 +1,137 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Reflection
 
-<Container Variance="@ContainerType">
+@inherits LayoutComponentBase
+
+<Container Variance="fluid" class="pt-5">
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white">
+        <Container Variance="fluid">
+            <button class="navbar-toggler"
+                    type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <div class="d-flex">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Search docs. Ctrl + k"
+                           aria-label="Search docs. Ctrl + k" />
+                </div>
+            </div>
+            <a href="/" class="navbar-brand">Bonzai.Blazor.Bootstrap</a>
+        </Container>
+    </nav>
+    <Row>
+        <Column Width="3" Breakpoint="lg">
+            <aside>
+
+            </aside>
+        </Column>
+    </Row>
     @Body
 </Container>
 
 @code{
-    private static string _containerType;
-    public static string ContainerType
+    static readonly List<RouteModel> Routes = new List<RouteModel>
     {
-        get => _containerType;
-        set
+        new RouteModel
         {
-            _containerType = value;
-            Instance.StateHasChanged();
+            DisplayName = "Layout",
+            ChildRoutes = new List<RouteModel>
+            {
+                // TODO Split this out into individual page for each component.
+                new RouteModel
+                {
+                    DisplayName = "Layout",
+                    Route = "/layout"
+                }
+            }
+        },
+        new RouteModel
+        {
+            DisplayName = "Components",
+            ChildRoutes = new List<RouteModel>
+            {
+                new RouteModel
+                {
+                    DisplayName = nameof(Accordion),
+                    Route = "/components/accordion"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(AccordionItem),
+                    Route = "/components/accordion-item"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(Alert),
+                    Route = "/components/alert"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(Badge),
+                    Route = "/components/badge"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(Breadcrumb),
+                    Route = "/components/breadcrumb"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(BreadcrumbItem),
+                    Route = "/components/breadcrumb-item"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(Btn),
+                    Route = "/components/btn"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(BtnCheck),
+                    Route = "/components/btn-check"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(BtnGroup),
+                    Route = "/components/btn-group"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(BtnLink),
+                    Route = "/components/btn-link"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(BtnToolbar),
+                    Route = "/components/btn-toolbar"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(TabContainer),
+                    Route = "/components/tab-container"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(TabContent),
+                    Route = "/components/tab-content"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(TabItem),
+                    Route = "/components/tab-item"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(TabList),
+                    Route = "/components/tab-list"
+                },
+                new RouteModel
+                {
+                    DisplayName = nameof(TabPane),
+                    Route = "/components/tab-pane"
+                },
+            }
         }
-    }
-
-    private static MainLayout Instance { get; set; }
-
-    public MainLayout()
-    {
-        Instance = this;
-    }
+    };
 }
