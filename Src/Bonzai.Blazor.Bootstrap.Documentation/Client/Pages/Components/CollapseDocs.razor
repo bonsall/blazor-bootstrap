@@ -1,0 +1,15 @@
+﻿@page "/components/collapse"
+
+<Btn OnClick="ToggleCollapse">
+    Toggle
+</Btn>
+
+<Collapse @bind-Collapsed="_collapsed"
+          class="bg-primary mt-5">
+    This is a test.
+</Collapse>
+
+@code {
+    bool _collapsed = true;
+    void ToggleCollapse() => _collapsed = !_collapsed;
+}

@@ -1,11 +1,16 @@
 ﻿@inherits BootstrapContainerBase
 
-<div class="@Classes"></div>
+<div @attributes="AdditionalAttributes"
+     class="@Classes"
+     @ref="CollapseElement"
+     style="@_collapseStyles">@ChildContent</div>
 
 @code {
     private string _collapseClasses;
     private string _collapseStyles;
     private bool _collapsed;
+    private bool _hasRendered;
+    private bool _styleUpdateRequired;
 
     [Parameter]
     public bool Collapsed
@@ -16,37 +21,137 @@
             if (_collapsed == value) return;
 
             _collapsed = value;
-
-#pragma warning disable CS4014
-            UpdateStateForCollapsed();
-#pragma warning restore CS4014
+            _styleUpdateRequired = true;
         }
     }
 
-    protected override string DefaultClass
+    [Parameter]
+    public EventCallback<bool> CollapsedChanged { get; set; }
+
+    protected override string DefaultClass => _collapseClasses;
+
+    [Inject]
+    private IBootstrapJsService _jsService { get; set; }
+
+    private ElementReference CollapseElement { get; set; }
+
+    public async ValueTask DisposeAsync()
     {
-        get
+        await _jsService.RemoveEventListenerAsync(CollapseElement,
+            "transitionend",
+            nameof(SetStableStateStylesAndUpdateState));
+    }
+
+    public async Task SetCollapsedAsync(bool collapsed)
+    {
+        if (collapsed == Collapsed)
+            return;
+
+        await SetCollapsedInternal(collapsed);
+        StateHasChanged();
+    }
+
+    [JSInvokable]
+    public void SetStableStateStylesAndUpdateState()
+    {
+        SetStableStateStyles();
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        SetStableStateStyles();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        _hasRendered = true;
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
         {
-            var classBuilder = new ClassNameBuilder("collapse");
-
-            if(!string.IsNullOrWhiteSpace(_collapseClasses))
-            {
-                classBuilder.AddClassName(_collapseClasses);
-            }
-
-            return classBuilder.GetClassNames();
+            await _jsService.AddEventListenerAsync(CollapseElement, this, "transitionend", nameof(SetStableStateStylesAndUpdateState));
         }
     }
 
-    async Task UpdateStateForCollapsed()
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        if(_styleUpdateRequired)
+        {
+            _styleUpdateRequired = false;
+            await UpdateStylesForCollapsedChange();
+        }
+    }
+
+    private async Task SetCollapsingStyleAsync()
     {
         if(Collapsed)
         {
-            _collapseStyles = null;
+            await SetElementHeightFromBoundingRect();
+            AfterRenderAsync(ReflowContainer);
         }
         else
         {
-            _collapseStyles = "show";
+            _collapseClasses = "collapsing";
+            AfterRenderAsync(SetContainerScrollHeight);
+        }
+    }
+
+    async Task ReflowContainer()
+    {
+        await _jsService.ReflowAsync(CollapseElement);
+        _collapseClasses = "collapsing";
+        _collapseStyles = null;
+        StateHasChanged();
+    }
+
+    async Task SetContainerScrollHeight()
+    {
+        var height = await _jsService.GetScrollHeight(CollapseElement);
+        _collapseStyles = $"height: {height}px;";
+        StateHasChanged();
+    }
+
+    async Task SetElementHeightFromBoundingRect()
+    {
+        var boundingRect = await _jsService.GetBoundingClientRect(CollapseElement);
+        _collapseStyles = $"height: {boundingRect.Height}px;";
+    }
+
+    private async Task SetCollapsedInternal(bool collapsed)
+    {
+        _collapsed = collapsed;
+        await CollapsedChanged.InvokeAsync(collapsed);
+
+        await UpdateStylesForCollapsedChange();
+    }
+
+    private void SetStableStateStyles()
+    {
+        _collapseStyles = null;
+        if (Collapsed)
+        {
+            _collapseClasses = "collapse";
+        }
+        else
+        {
+            _collapseClasses = "collapse show";
+        }
+    }
+
+    private async Task UpdateStylesForCollapsedChange()
+    {
+        // don't run any transitions until after the compnent has rendered.
+        if (_hasRendered)
+        {
+            await SetCollapsingStyleAsync();
+        }
+        else
+        {
+            SetStableStateStyles();
         }
     }
 }
