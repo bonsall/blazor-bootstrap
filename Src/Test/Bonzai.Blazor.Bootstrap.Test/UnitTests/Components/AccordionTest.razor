@@ -119,9 +119,8 @@
             }
             else
             {
-#pragma warning disable BL0005
-                cut.FindComponent<AccordionItem>().Instance.Expanded = true;
-#pragma warning restore BL0005
+                cut.FindComponent<AccordionItem>().SetParametersAndRender(
+                    parameters => parameters.Add(x => x.Expanded, true));
             }
         });
 
