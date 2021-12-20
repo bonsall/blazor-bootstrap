@@ -9,6 +9,8 @@ namespace Bonzai.Blazor.Bootstrap.Js
     {
         Task<decimal> GetScrollHeight(ElementReference elementReference);
 
+        Task<decimal> GetScrollWidth(ElementReference elementReference);
+
         Task AddEventListenerAsync(ElementReference elementReference, object objectReference, string eventName, string methodToCall);
 
         Task<BoundingClientRect> GetBoundingClientRect(ElementReference elementReference);
@@ -33,6 +35,12 @@ namespace Bonzai.Blazor.Bootstrap.Js
         {
             var jsReference = await _bonzaiBootstrapJsReference;
             return await jsReference.InvokeAsync<decimal>("getScrollHeight", elementReference);
+        }
+
+        public async Task<decimal> GetScrollWidth(ElementReference elementReference)
+        {
+            var jsReference = await _bonzaiBootstrapJsReference;
+            return await jsReference.InvokeAsync<decimal>("getScrollWidth", elementReference);
         }
 
         public async Task AddEventListenerAsync(ElementReference elementReference, object objectReference, string eventName, string methodToCall)

@@ -4,7 +4,8 @@
 <div @attributes="AdditionalAttributes"
      class="@Classes"
      @ref="CollapseElement"
-     style="@_collapseStyles">@ChildContent</div>
+     style="@_collapseStyles"
+     aria-expanded="@Collapsed.ToString().ToLower()">@ChildContent</div>
 
 @code {
     private string _collapseClasses;
@@ -29,7 +30,12 @@
     [Parameter]
     public EventCallback<bool> CollapsedChanged { get; set; }
 
-    protected override string DefaultClass => _collapseClasses;
+    [Parameter]
+    public bool Horizontal { get; set; }
+
+    protected override string DefaultClass => Horizontal
+        ? $"collapse-horizontal {_collapseClasses}"
+        : _collapseClasses;
 
     [Inject]
     private IBootstrapJsService _jsService { get; set; }
@@ -97,7 +103,7 @@
         else
         {
             _collapseClasses = "collapsing";
-            AfterRenderAsync(SetContainerScrollHeight);
+            AfterRenderAsync(SetContainerScrollDimension);
         }
     }
 
@@ -109,17 +115,33 @@
         StateHasChanged();
     }
 
-    async Task SetContainerScrollHeight()
+    async Task SetContainerScrollDimension()
     {
-        var height = await _jsService.GetScrollHeight(CollapseElement);
-        _collapseStyles = $"height: {height}px;";
+        if(Horizontal)
+        {
+            var width = await _jsService.GetScrollWidth(CollapseElement);
+            SetCollapseWidth(width, await _jsService.GetScrollHeight(CollapseElement));
+        }
+        else
+        {
+            var height = await _jsService.GetScrollHeight(CollapseElement);
+            SetCollapseHeight(height);
+        }
+
         StateHasChanged();
     }
 
     async Task SetElementHeightFromBoundingRect()
     {
         var boundingRect = await _jsService.GetBoundingClientRect(CollapseElement);
-        _collapseStyles = $"height: {boundingRect.Height}px;";
+        if(Horizontal)
+        {
+            SetCollapseWidth(boundingRect.Width, boundingRect.Height);
+        }
+        else
+        {
+            SetCollapseHeight(boundingRect.Height);
+        }
     }
 
     private async Task SetCollapsedInternal(bool collapsed)
@@ -154,5 +176,13 @@
         {
             SetStableStateStyles();
         }
+    }
+
+    void SetCollapseHeight(decimal height) =>
+        _collapseStyles = $"height: {height}px;";
+
+    void SetCollapseWidth(decimal width, decimal height)
+    {
+        _collapseStyles = $"width: {width}px;";
     }
 }

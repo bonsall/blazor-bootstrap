@@ -4,6 +4,10 @@ function getScrollHeight(element) {
    return element.scrollHeight;
 }
 
+function getScrollWidth(element) {
+   return element.scrollWidth;
+}
+
 function addEventListener(element, event, objectReference, methodToCall) {
    if (element === null) return;
 
@@ -43,4 +47,4 @@ function getBoundingClientRect(element) {
    return element.getBoundingClientRect();
 }
 
-export { getScrollHeight, addEventListener, removeEventListener, getBoundingClientRect, reflow }
+export { getScrollHeight, addEventListener, removeEventListener, getBoundingClientRect, reflow, getScrollWidth }

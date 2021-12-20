@@ -1,15 +1,135 @@
-﻿@page "/components/collapse"
+﻿@using Bonzai.Blazor.Bootstrap.Documentation.Client.Pages.Examples.Collapse
+ 
+@page "/components/collapse"
 
-<Btn OnClick="ToggleCollapse">
-    Toggle
-</Btn>
+@inherits DocsBase
 
-<Collapse @bind-Collapsed="_collapsed"
-          class="bg-primary mt-5">
-    This is a test.
-</Collapse>
+<ComponentDoc Type="typeof(Collapse)"
+              Description="A container that can hide or show content.">
+    <Properties>
+        <AdditionalAttributes />
+        <ChildContent />
+        <ParameterDescription Name="@nameof(Collapse.Collapsed)"
+                              Type="@typeof(bool)">
+            Controls whether or not the content of the collapse is displayed. Use <code>false</code> to show the content.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Collapse.CollapsedChanged)"
+                              Type="@typeof(EventCallback<bool>)">
+            An action to excute when the value of collapsed is changed.
+        </ParameterDescription>
+        <ParameterDescription Name="@nameof(Collapse.Horizontal)"
+                              Type="@typeof(bool)">
+            Set to true to cause the collapse to open and close using it's width instead of it's height.
+            <b>The width of your child element must be set in order for this animation to work properly.</b>
+        </ParameterDescription>
+    </Properties>
+    <Methods>
+        <MethodItem TSource="Collapse"
+                    MethodExpression="x => x.SetCollapsedAsync(default)">
+            <Description>
+                Hides or displays the content of the container by updating the Collapsed property.
+            </Description>
+            <Parameters>
+                <MethodParameterItem Name="collapsed"
+                                     Type="typeof(bool)">
+                    false to display the content.
+                </MethodParameterItem>
+            </Parameters>
+        </MethodItem>
+        <MethodItem TSource="Collapse"
+                    MethodExpression="x => x.SetStableStateStylesAndUpdateState()">
+            <Description>
+                This is meant to be called by javascript after the transition animation completes.
+                You should not use this method for any reason.
+            </Description>
+        </MethodItem>
+    </Methods>
+</ComponentDoc>
+<ExampleHeading />
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Bind to the <PropertyReference Name="@nameof(Collapse.Collapsed)" /> property to control when to dispay the content.
+    </Description>
+    <LiveExample>
+        <BindToCollapse />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <Btn OnClick=""ToggleCollapse"">Toggle Content</Btn>
+    </Column>
+</Row>
+<Row class=""mt-2"">
+    <Column>
+        <Collapse Collapsed=""IsCollapsed"">
+            ...
+        </Collapse>
+    </Column>
+</Row>
 
 @code {
-    bool _collapsed = true;
-    void ToggleCollapse() => _collapsed = !_collapsed;
+    bool IsCollapsed { get; set; }
+
+    void ToggleCollapse() => IsCollapsed = !IsCollapsed;
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Use the <PropertyReference Name="@nameof(Collapse.SetCollapsedAsync)" /> method to control the display of the collapse content.
+    </Description>
+    <LiveExample>
+        <SetCollapsedAsync />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <Btn OnClick=""ToggleCollapse"">Toggle Content</Btn>
+    </Column>
+</Row>
+<Row class=""mt-2"">
+    <Column>
+        <Collapse @ref=""Collapse"">
+            ...
+        </Collapse>
+    </Column>
+</Row>
+
+@code {
+    Collapse Collapse { get; set; }
+
+    async Task ToggleCollapse() => await Collapse.SetCollapsedAsync(!Collapse.Collapsed);
+}")</Code>
+</Example>
+
+<Example ExampleNumber="ExampleNumber">
+    <Description>
+        Set <PropertyReference Name="@nameof(Collapse.Horizontal)" /> to <code>true</code> for sideways animation.
+    </Description>
+    <LiveExample>
+        <Horizontal />
+    </LiveExample>
+    <Code>@(@"<Row>
+    <Column>
+        <Btn OnClick=""ToggleCollapse"">Toggle Content</Btn>
+    </Column>
+</Row>
+<Row class=""mt-2"">
+    <Column>
+        <Collapse Collapsed=""IsCollapsed""
+                  Horizontal=""true"">
+            <div style=""width: 500px;"">
+                ...
+            </div>
+        </Collapse>
+    </Column>
+</Row>
+
+@code {
+    bool IsCollapsed { get; set; }
+
+    void ToggleCollapse() => IsCollapsed = !IsCollapsed;
+}")</Code>
+</Example>
+
+@code {
+
 }

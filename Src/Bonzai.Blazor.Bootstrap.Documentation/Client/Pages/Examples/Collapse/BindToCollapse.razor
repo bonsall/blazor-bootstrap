@@ -1,0 +1,20 @@
+﻿<Row>
+    <Column>
+        <Btn OnClick="ToggleCollapse">Toggle Content</Btn>
+    </Column>
+</Row>
+<Row class="mt-2">
+    <Column>
+        <Collapse Collapsed="IsCollapsed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam laoreet, odio in molestie commodo, massa velit imperdiet neque, ut lobortis sapien velit in diam. Sed viverra velit sit amet nulla interdum rhoncus. Suspendisse sed nulla quis augue aliquam vehicula. Praesent accumsan eu eros nec cursus. Praesent semper finibus eros, a consequat dolor scelerisque eget. Donec mauris leo, aliquet vel malesuada sit amet, malesuada euismod ipsum. Ut nec diam porttitor, tristique erat nec, bibendum enim. Praesent neque libero, pellentesque et feugiat vitae, rutrum eget augue. Curabitur augue lorem, auctor sed faucibus ac, porttitor id urna. Nullam sed varius leo. Cras tincidunt ut tortor sollicitudin convallis. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id erat aliquam, suscipit sapien convallis, eleifend justo. Donec ac elit dapibus, dictum odio vel, egestas metus.
+
+            Pellentesque blandit ultrices dolor eget blandit. Donec at elit libero. Donec iaculis rutrum libero. Duis aliquam et est non euismod. Aenean volutpat viverra nulla sed euismod. Phasellus sed pulvinar tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce vel nisl et sem pretium dictum nec ac libero. Nunc blandit blandit odio, eu viverra urna tempor nec. Vestibulum mollis eu augue sit amet maximus.
+        </Collapse>
+    </Column>
+</Row>
+
+@code {
+    bool IsCollapsed { get; set; }
+
+    void ToggleCollapse() => IsCollapsed = !IsCollapsed;
+}

@@ -128,7 +128,7 @@
     }
 
     [Fact]
-    public async Task CollapsedChangedToFalse_AddsCollapsingClassBeforeSettingStyle()
+    public void CollapsedChangedToFalse_AddsCollapsingClassBeforeSettingStyle()
     {
         // arrange
         var cut = RenderComponent(
@@ -153,7 +153,6 @@
         // arrange
         var cut = RenderComponent(
             @<Collapse Collapsed="true"></Collapse>);
-        //await cut.InvokeAsync(async () => await cut.Instance.SetExpandedAsync(false));
         cut.OnAfterRender += AssertAddsCollapsingClassBeforeSettingStyle;
 
         // act
@@ -162,6 +161,41 @@
         // assert
         var collapse = FindParentDiv(cut);
         Assert.True(!string.IsNullOrWhiteSpace(collapse.GetAttribute("style")));
+    }
+
+    [Theory]
+    [InlineData(true, "width")]
+    [InlineData(false, "height")]
+    public async Task CollpasedChangedToFalse_UpdatesProperDimension(bool horizontal, string expectedDimension)
+    {
+        var cut = RenderComponent(@<Collapse Horizontal="horizontal"
+                                             Collapsed="true" />);
+
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(false));
+
+        var collapse = FindParentDiv(cut);
+        Assert.Contains(expectedDimension, collapse.GetAttribute("style"));
+    }
+
+    [Theory]
+    [InlineData(true, "width")]
+    [InlineData(false, "height")]
+    public async Task CollpasedChangedToTrue_UpdatesProperDimension(bool horizontal, string expectedDimension)
+    {
+        var cut = RenderComponent(@<Collapse Horizontal="horizontal"
+                                             Collapsed="false" />);
+
+        EventHandler assertCorrectStyleUsed = null;
+        assertCorrectStyleUsed = (object sender, EventArgs args) =>
+        {
+            var collapse = FindParentDiv(cut);
+            Assert.Contains(expectedDimension, collapse.GetAttribute("style"));
+            cut.OnAfterRender -= assertCorrectStyleUsed;
+        };
+        cut.OnAfterRender += assertCorrectStyleUsed;
+
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(true));
+
     }
 
     private void AssertAddsCollapsingClassBeforeSettingStyle(object sender, EventArgs args)
