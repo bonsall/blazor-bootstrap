@@ -68,4 +68,31 @@
         var tabItem = cut.Find(".nav-link");
         Assert.Equal(expectedAriaSelected, tabItem.GetAttribute("aria-selected"));
     }
+
+    [Fact]
+    public void TabPaneInstanceSet_AriaControlsAttributeHasTabPaneId()
+    {
+        // TabPane requires a BootstrapJsService
+        new MockBootstrapJsService(Services);
+
+        // Need to pass tabList like this to avoid compiler errors.
+        RenderFragment<IReadOnlyCollection<TabPane>> tabList = tabPanes =>
+            @<TabList>
+                @foreach (var pane in tabPanes)
+                {
+                    <TabItem TabPane="pane">@pane.Title</TabItem>
+                }
+            </TabList>;
+        var cut = Render<TabContainer>(
+            @<TabContainer Tabs="tabList">
+                <ChildContent>
+                    <TabPane id="unit-test"></TabPane>
+                </ChildContent>
+            </TabContainer>);
+
+        var tabItem = cut.Find(".nav-link");
+        var tabPane = cut.Find(".tab-pane");
+
+        Assert.Equal(tabPane.GetAttribute("id"), tabItem.GetAttribute("aria-controls"));
+    }
 }

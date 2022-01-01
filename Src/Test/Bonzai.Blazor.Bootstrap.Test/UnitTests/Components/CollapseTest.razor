@@ -1,0 +1,245 @@
+﻿@inherits TestBase<Collapse>
+
+@code {
+    MockBootstrapJsService _mockBootstrapJsService;
+    public CollapseTest()
+    {
+        _mockBootstrapJsService = new MockBootstrapJsService(Services);
+        _mockBootstrapJsService.SetupGetBoundingClientRect(new BoundingClientRect());
+    }
+
+    [Fact]
+    public void RendersDivWithCollapseClass()
+    {
+        var cut = RenderComponent(@<Collapse></Collapse>);
+
+        var div = cut.Find("div");
+
+        Assert.Contains("collapse", div.ClassList);
+    }
+
+    [Fact]
+    public void InitialRender_SetsCollapseClasses_DoesNotSetCollapseStyles()
+    {
+        var cut = RenderComponent(
+            @<Collapse>
+            </Collapse>
+        );
+
+        AssertBodyHasNoStyle(cut);
+
+        Assert.True(
+            FindCollapseDiv(cut).ClassList.Contains("collapse show".Split(" ")));
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(
+            @<Collapse class="@ExpectedClassName"></Collapse>);
+
+        var element = FindCollapseDiv(cut);
+        Assert.Contains(ExpectedClassName, element.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnElement()
+    {
+        var cut = RenderComponent(
+            @<Collapse data-unit-test="custom value"></Collapse>);
+
+        var element = FindCollapseDiv(cut);
+        Assert.NotNull(element.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void CollapseChildContentIsRenderedInElement()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(
+            @<Collapse>@ExpectedContent</Collapse>);
+
+        var element = FindCollapseDiv(cut);
+        Assert.Equal(ExpectedContent, element.TextContent);
+    }
+
+    // Specific updates need to be rendered in a particular order in order for the animation to execute.
+    //  1. Height is set on collapsible div
+    //  2. "collapse show" classes are replaced by "collapsing class"
+    //  3. Height is removed from collapsible div.
+    [Fact]
+    public void CollapsedIsUpdatedToTrue_StartsTransitionToCollapsedState()
+    {
+        var cut = RenderComponent(@<Collapse />);
+
+        cut.SetParametersAndRender(parameters => parameters.Add(x => x.Collapsed, true));
+
+        var div = cut.Find("div");
+        Assert.Contains("collapsing", div.ClassList);
+        Assert.Null(div.GetAttribute("style"));
+    }
+
+    [Fact]
+    public void CollapsedIsUpdatedToFalse_StartsTransitionToExpandedState()
+    {
+        var cut = RenderComponent(@<Collapse Collapsed="true" />);
+
+        cut.SetParametersAndRender(parameters => parameters.Add(x => x.Collapsed, false));
+
+        var div = cut.Find("div");
+        Assert.Contains("collapsing", div.ClassList);
+    }
+
+    // The following tests ensure that the collapsable div is updated in the correct order to display the animation.
+    [Fact]
+    public void CollapsedChangedToTrue_WaitsForStyleSetBeforeAddingCollapsingClass()
+    {
+        // arrange
+        var cut = RenderComponent(
+            @<Collapse></Collapse>);
+        cut.OnAfterRender += AssertWaitedForStyleSetBeforeAddingCollapseClass;
+
+        // act
+        cut.SetParametersAndRender(parameters => parameters.Add(item => item.Collapsed, true));
+
+        // assert
+        cut.WaitForState(() =>
+        {
+            var collapse = FindParentDiv(cut);
+            return collapse.ClassList.Contains("collapsing");
+        });
+    }
+
+    [Fact]
+    public async Task SetCollapsedAsyncTrue_WaitsForStyleSetBeforeAddingCollapsingClass()
+    {
+        // arrange
+        var cut = RenderComponent(
+            @<Collapse></Collapse>);
+        cut.OnAfterRender += AssertWaitedForStyleSetBeforeAddingCollapseClass;
+
+        // act
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(true));
+
+        // assert
+        var collapse = FindParentDiv(cut);
+        Assert.True(collapse.ClassList.Contains("collapsing"));
+    }
+
+    [Fact]
+    public void CollapsedChangedToFalse_AddsCollapsingClassBeforeSettingStyle()
+    {
+        // arrange
+        var cut = RenderComponent(
+            @<Collapse Collapsed="true"></Collapse>);
+        
+        cut.OnAfterRender += AssertAddsCollapsingClassBeforeSettingStyle;
+
+        // act
+        cut.SetParametersAndRender(parameters => parameters.Add(item => item.Collapsed, false));
+
+        // assert
+        cut.WaitForState(() =>
+        {
+            var collapse = FindParentDiv(cut);
+            return !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        });
+    }
+
+    [Fact]
+    public async Task CollapseChangedToFalse_AddsCollapsingClassBeforeSettingStyle()
+    {
+        // arrange
+        var cut = RenderComponent(
+            @<Collapse Collapsed="true"></Collapse>);
+        cut.OnAfterRender += AssertAddsCollapsingClassBeforeSettingStyle;
+
+        // act
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(false));
+
+        // assert
+        var collapse = FindParentDiv(cut);
+        Assert.True(!string.IsNullOrWhiteSpace(collapse.GetAttribute("style")));
+    }
+
+    [Theory]
+    [InlineData(true, "width")]
+    [InlineData(false, "height")]
+    public async Task CollpasedChangedToFalse_UpdatesProperDimension(bool horizontal, string expectedDimension)
+    {
+        var cut = RenderComponent(@<Collapse Horizontal="horizontal"
+                                             Collapsed="true" />);
+
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(false));
+
+        var collapse = FindParentDiv(cut);
+        Assert.Contains(expectedDimension, collapse.GetAttribute("style"));
+    }
+
+    [Theory]
+    [InlineData(true, "width")]
+    [InlineData(false, "height")]
+    public async Task CollpasedChangedToTrue_UpdatesProperDimension(bool horizontal, string expectedDimension)
+    {
+        var cut = RenderComponent(@<Collapse Horizontal="horizontal"
+                                             Collapsed="false" />);
+
+        EventHandler assertCorrectStyleUsed = null;
+        assertCorrectStyleUsed = (object sender, EventArgs args) =>
+        {
+            var collapse = FindParentDiv(cut);
+            Assert.Contains(expectedDimension, collapse.GetAttribute("style"));
+            cut.OnAfterRender -= assertCorrectStyleUsed;
+        };
+        cut.OnAfterRender += assertCorrectStyleUsed;
+
+        await cut.InvokeAsync(async () => await cut.Instance.SetCollapsedAsync(true));
+
+    }
+
+    private void AssertAddsCollapsingClassBeforeSettingStyle(object sender, EventArgs args)
+    {
+        var cut = (IRenderedComponent<Collapse>) sender;
+        var collapse = FindParentDiv(cut);
+
+        var styleIsSet = !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        var collapseClassAdded = collapse.ClassList.Contains("collapsing");
+
+        if (styleIsSet) throw new Exception("the style was set before collapsing class was added");
+
+        if (collapseClassAdded)
+        {
+            cut.OnAfterRender -= AssertAddsCollapsingClassBeforeSettingStyle;
+        }
+    }
+
+    private void AssertWaitedForStyleSetBeforeAddingCollapseClass(object sender, EventArgs args)
+    {
+        var cut = (IRenderedComponent<Collapse>)sender;
+        var collapse = FindParentDiv(cut);
+
+        var styleIsSet = !string.IsNullOrWhiteSpace(collapse.GetAttribute("style"));
+        var collapseClassAdded = collapse.ClassList.Contains("collapsing");
+
+        if (collapseClassAdded) throw new Exception("collapsing class was added before the style was set");
+
+        if (styleIsSet)
+        {
+            cut.OnAfterRender -= AssertWaitedForStyleSetBeforeAddingCollapseClass;
+        }
+    }
+
+    private void AssertBodyHasNoStyle(IRenderedComponent<Collapse> cut)
+    {
+        Assert.Null(
+            FindCollapseDiv(cut).GetAttribute("style")
+        );
+    }
+
+    private IElement FindCollapseDiv(IRenderedComponent<Collapse> cut) =>
+        cut.Find(".collapse");
+
+    private IElement FindParentDiv(IRenderedComponent<Collapse> cut) =>
+        cut.Find("div");
+}

@@ -1,0 +1,81 @@
+﻿@inherits TestBase<CarouselItem>
+
+@code {
+    const string ClassName = "carousel-item";
+
+    public CarouselItemTest()
+    {
+        new MockBootstrapJsService(Services);
+    }
+
+    [Fact]
+    public void RendersDivWithCarouselItemClasses()
+    {
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem></CarouselItem>
+            </Carousel>);
+
+        var carousel = FindCarouselItem(cut);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem class="@ExpectedClassName"></CarouselItem>
+            </Carousel>);
+
+        var carousel = FindCarouselItem(cut);
+        Assert.Contains(ExpectedClassName, carousel.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnAnchor()
+    {
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem data-unit-test="custom value"></CarouselItem>
+            </Carousel>);
+
+        var carousel = FindCarouselItem(cut);
+        Assert.NotNull(carousel.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInCarouselItem()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem>@ExpectedContent</CarouselItem>
+            </Carousel>);
+
+        var carousel = FindCarouselItem(cut);
+        Assert.Equal(ExpectedContent, carousel.TextContent);
+    }
+
+    [Fact]
+    public void CarouselIsNotSet_ThrowsException()
+    {
+        Assert.Throws<InvalidOperationException>(
+            () => RenderComponent(@<CarouselItem />));
+    }
+
+    [Fact]
+    public void CarouselItemIsActive_ActiveClassAdded()
+    {
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem Active="true"></CarouselItem>
+            </Carousel>);
+
+        var carouselItem = FindCarouselItem(cut);
+        Assert.Contains("active", carouselItem.ClassList);
+    }
+
+    IElement FindCarouselItem(IRenderedComponent<CarouselItem> cut) =>
+        cut.Find($"div.{ClassName}");
+}

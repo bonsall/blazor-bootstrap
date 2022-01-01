@@ -1,0 +1,127 @@
+﻿@inherits BootstrapContainerBase
+@implements IDisposable
+
+
+<div @attributes="AdditionalAttributes"
+     class="@Classes"
+     @ref="ItemContainer">
+    @ChildContent
+</div>
+
+@code {
+    DotNetObjectReference<object> _objectReference;
+    string _animationClasses;
+
+    [Parameter]
+    public bool Active { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> ActiveChanged { get; set; }
+
+    [Parameter]
+    public double Interval { get; set; } = 5000;
+
+    [Parameter]
+    public int? Order { get; set; }
+
+    [CascadingParameter]
+    public Carousel Carousel { get; set; }
+
+    [Inject]
+    private IBootstrapJsService BootstrapJsService { get; set; }
+
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classNameBuilder = new ClassNameBuilder("carousel-item");
+
+            if (Active)
+            {
+                classNameBuilder.AddClassName("active");
+            }
+
+            if(!string.IsNullOrWhiteSpace(_animationClasses))
+            {
+                classNameBuilder.AddClassName(_animationClasses);
+            }
+
+            return classNameBuilder.GetClassNames();
+        }
+    }
+
+    private ElementReference ItemContainer { get; set; }
+
+    public void Dispose()
+    {
+        _objectReference?.Dispose();
+    }
+
+    public async Task SetActive(bool active)
+    {
+        Active = active;
+        await ActiveChanged.InvokeAsync(active);
+    }
+
+    public async Task MakeActive() =>
+        await SetActive(true);
+
+    [JSInvokable]
+    public async Task SetStableStyles()
+    {
+        await SetActive(!Active);
+        _objectReference.Dispose();
+        _objectReference = null;
+        _animationClasses = null;
+        StateHasChanged();
+    }
+
+    internal async Task SlideOutNext()
+    {
+        await AddTransitionEndListener();
+        _animationClasses = "carousel-item-start";
+    }
+
+    internal async Task SlideInNext()
+    {
+        await AddTransitionEndListener();
+        _animationClasses = "carousel-item-next";
+
+        AfterRenderAsync(async () =>
+        {
+            await BootstrapJsService.ReflowAsync(ItemContainer);
+            _animationClasses += " carousel-item-start";
+            await Carousel.EndShowNextSlide();
+        });
+    }
+
+    internal async Task SlideOutPrevious()
+    {
+        await AddTransitionEndListener();
+        _animationClasses = "carousel-item-end";
+    }
+
+    internal async Task SlideInPrevious()
+    {
+        await AddTransitionEndListener();
+        _animationClasses = "carousel-item-end carousel-item-prev";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        if (Carousel == null) throw new InvalidOperationException($"{nameof(Carousel)} is a required parameter.");
+
+        await Carousel.RegisterCarouselItem(this);
+    }
+
+    async Task AddTransitionEndListener()
+    {
+        _objectReference = await BootstrapJsService.AddEventListenerAsync(
+            ItemContainer,
+            this,
+            "transitionend",
+            nameof(SetStableStyles));
+    }
+}

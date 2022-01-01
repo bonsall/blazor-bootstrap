@@ -8,10 +8,7 @@ using System.Threading.Tasks;
 
 namespace Bonzai.Blazor.Bootstrap.Components
 {
-    // Need to set this upto use "collapsing" class to transition to/from a collapsed state.
-    // Also need to figure out why it's not seeing the inherited properties
-
-    public partial class AccordionItem : BootstrapComponentBase, IAsyncDisposable
+    public partial class AccordionItem : BootstrapComponentBase, IDisposable
     {
         public AccordionItem()
         {
@@ -32,23 +29,8 @@ namespace Bonzai.Blazor.Bootstrap.Components
         [Parameter]
         public string CollapseClasses { get; set; }
 
-        private bool _expanded;
-
         [Parameter]
-        public bool Expanded
-        {
-            get => _expanded;
-            set
-            {
-                if (_expanded == value)
-                    return;
-
-                _expanded = value;
-#pragma warning disable CS4014
-                UpdateStylesForExpandedChange(true);
-#pragma warning restore CS4014
-            }
-        }
+        public bool Expanded { get; set; }
 
         [Parameter]
         public EventCallback<bool> ExpandedChanged { get; set; }
@@ -62,9 +44,6 @@ namespace Bonzai.Blazor.Bootstrap.Components
         [CascadingParameter(Name = "Accordion")]
         public Accordion Accordion { get; set; }
 
-        [Inject]
-        private IBootstrapJsService _jsService { get; set; }
-
         public string BodyId { get; }
 
         public string HeaderId { get; }
@@ -72,34 +51,6 @@ namespace Bonzai.Blazor.Bootstrap.Components
         protected override string DefaultClass { get; } = "accordion-item";
 
         internal Guid Id { get; }
-
-        private ElementReference BodyElement { get; set; }
-
-        private string _accordionStateClass;
-
-        private string _accordionBodyStyle;
-
-        private bool _isTransitioning;
-
-        private bool _hasRendered;
-
-        private bool _isSynchronousUpdate;
-
-        private string AllBodyClasses
-        {
-            get
-            {
-                var classNameBuilder = new ClassNameBuilder("accordion-collapse");
-                classNameBuilder.AddClassName(_accordionStateClass);
-
-                if (!string.IsNullOrWhiteSpace(CollapseClasses))
-                {
-                    classNameBuilder.AddClassName(CollapseClasses);
-                }
-
-                return classNameBuilder.GetClassNames();
-            }
-        }
 
         private string AllButtonClasses
         {
@@ -121,12 +72,19 @@ namespace Bonzai.Blazor.Bootstrap.Components
             }
         }
 
-        public async ValueTask DisposeAsync()
+        string ExpandableClasses
         {
-            Accordion.RemoveAccordionItem(this);
-            await _jsService.RemoveEventListenerAsync(BodyElement,
-                "transitionend",
-                nameof(SetStableStateStylesAndUpdateState));
+            get
+            {
+                var classNameBuilder = new ClassNameBuilder("accordion-collapse");
+
+                if(!string.IsNullOrWhiteSpace(CollapseClasses))
+                {
+                    classNameBuilder.AddClassName(CollapseClasses);
+                }
+
+                return classNameBuilder.GetClassNames();
+            }
         }
 
         public async Task SetExpandedAsync(bool expanded)
@@ -138,39 +96,9 @@ namespace Bonzai.Blazor.Bootstrap.Components
             StateHasChanged();
         }
 
-        private async Task SetCollapsingStyle()
+        public void Dispose()
         {
-            _isTransitioning = !_isSynchronousUpdate;
-
-            if (Expanded)
-            {
-                _accordionStateClass = "collapsing";
-            }
-            else
-            {
-                var boundingRect = await _jsService.GetBoundingClientRect(BodyElement);
-                _accordionBodyStyle = $"height: {boundingRect.Height}px;";
-            }
-        }
-
-        [JSInvokable]
-        public void SetStableStateStylesAndUpdateState()
-        {
-            SetStableStateStyles();
-            StateHasChanged();
-        }
-
-        private void SetStableStateStyles()
-        {
-            _accordionBodyStyle = null;
-            if (Expanded)
-            {
-                _accordionStateClass = "collapse show";
-            }
-            else
-            {
-                _accordionStateClass = "collapse";
-            }
+            Accordion.RemoveAccordionItem(this);
         }
 
         protected override void OnInitialized()
@@ -182,42 +110,22 @@ namespace Bonzai.Blazor.Bootstrap.Components
                 throw new ArgumentNullException(nameof(Accordion), $"{typeof(AccordionItem)} was rendered outside of an {typeof(Accordion)}");
             }
             Accordion.RegisterAccordionItem(this);
-            SetStableStateStyles();
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+        public override async Task SetParametersAsync(ParameterView parameters)
         {
-            _hasRendered = true;
-            await base.OnAfterRenderAsync(firstRender);
+            bool expandedChanged = parameters.TryGetValue<bool>(nameof(Expanded), out var expanded)
+                && expanded != Expanded;
+            
+            await base.SetParametersAsync(parameters);
 
-            await _jsService.AddEventListenerAsync(BodyElement, this, "transitionend", nameof(SetStableStateStylesAndUpdateState));
-
-            if (_isSynchronousUpdate)
+            if(expandedChanged)
             {
-                _isSynchronousUpdate = false;
-                _isTransitioning = true;
-                StateHasChanged();
-                return;
-            }
-
-            if (_isTransitioning)
-            {
-                if (Expanded)
-                {
-                    var height = await _jsService.GetScrollHeight(BodyElement);
-                    _accordionBodyStyle = $"height: {height}px;";
-                }
-                else
-                {
-                    await _jsService.ReflowAsync(BodyElement);
-                    _accordionStateClass = "collapsing";
-                    _accordionBodyStyle = null;
-                }
-
-                _isTransitioning = false;
-                StateHasChanged();
+                Expanded = expanded;
+                await RegisterExpandedWithAccordion();
             }
         }
+
 
         private async Task AccordionButtonClick(MouseEventArgs mouseEvent)
         {
@@ -227,10 +135,9 @@ namespace Bonzai.Blazor.Bootstrap.Components
 
         private async Task SetExpandedInternal(bool expanded)
         {
-            _expanded = expanded;
+            Expanded = expanded;
             await ExpandedChanged.InvokeAsync(expanded);
-
-            await UpdateStylesForExpandedChange();
+            await RegisterExpandedWithAccordion();
         }
 
         private async Task RegisterExpandedWithAccordion()
@@ -241,19 +148,5 @@ namespace Bonzai.Blazor.Bootstrap.Components
             }
         }
 
-        private async Task UpdateStylesForExpandedChange(bool isSynchronousUpdate = false)
-        {
-            // don't run any transitions until after the compnent has rendered.
-            if (_hasRendered)
-            {
-                _isSynchronousUpdate = isSynchronousUpdate;
-                await SetCollapsingStyle();
-                await RegisterExpandedWithAccordion();
-            }
-            else
-            {
-                SetStableStateStyles();
-            }
-        }
     }
 }

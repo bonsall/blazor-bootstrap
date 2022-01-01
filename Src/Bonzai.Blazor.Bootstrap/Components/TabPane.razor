@@ -25,6 +25,23 @@
 
     private ElementReference TabPaneElement { get; set; }
 
+    protected override string DefaultClass
+    {
+        get
+        {
+            var classBuilder = new ClassNameBuilder("tab-pane");
+
+            if(Animated)
+            {
+                classBuilder.AddClassName("fade");
+            }
+
+            classBuilder.AddClassName(_displayClasses);
+
+            return classBuilder.GetClassNames();
+        }
+    }
+
     /// <summary>
     /// Do not use this method. This is only meant to be called
     /// by JS interop.
@@ -51,23 +68,6 @@
         if (TabContainer == null) return;
 
         TabContainer.RemoveTab(this);
-    }
-
-    protected override string DefaultClass
-    {
-        get
-        {
-            var classBuilder = new ClassNameBuilder("tab-pane");
-
-            if(Animated)
-            {
-                classBuilder.AddClassName("fade");
-            }
-
-            classBuilder.AddClassName(_displayClasses);
-
-            return classBuilder.GetClassNames();
-        }
     }
 
     protected override async Task OnInitializedAsync()

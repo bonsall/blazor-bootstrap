@@ -11,15 +11,14 @@
             @Header
         </button>
     </h2>
-    <div class="@AllBodyClasses"
-         id="@BodyId"
-         aria-labelledby="@HeaderId"
-         @ref="BodyElement"
-         style="@_accordionBodyStyle">
+    <Collapse class="@ExpandableClasses"
+              id="@BodyId"
+              aria-labelledby="@HeaderId"
+              Collapsed="!Expanded">
         <div class="accordion-body">
             @Body
         </div>
-    </div>
+    </Collapse>
 </div>
 
 @code {
