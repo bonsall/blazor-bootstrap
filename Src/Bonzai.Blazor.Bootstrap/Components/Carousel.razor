@@ -1,0 +1,100 @@
+﻿@using System.Timers;
+
+@inherits BootstrapContainerBase
+@implements IDisposable
+
+<div @attributes="AdditionalAttributes" class="@Classes">
+    <div class="carousel-inner">
+        <CascadingValue Value="this">
+            @ChildContent
+        </CascadingValue>
+    </div>
+</div>
+
+@code {
+    private Timer _timer;
+    private int _activeIndex;
+
+    protected override string DefaultClass => "carousel slide";
+
+    internal SortedList<int, CarouselItem> CarouselItems { get; set; } = new();
+
+    CarouselItem ActiveItem => CarouselItems.Values[_activeIndex];
+
+    CarouselItem NextItem => CarouselItems.Values[CalculateNextIndex()];
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    public async Task ShowNextSlide()
+    {
+        await NextItem.SlideInNext();
+    }
+
+    public async Task ShowNextSlideAndRender()
+    {
+        await ShowNextSlide();
+        StateHasChanged();
+    }
+
+    internal async Task EndShowNextSlide()
+    {
+        await ActiveItem.SlideOutNext();
+
+        _activeIndex = CalculateNextIndex();
+
+        ResetTimer();
+        StateHasChanged();
+    }
+
+    internal async Task RegisterCarouselItem(CarouselItem carouselItem)
+    {
+        if (carouselItem.Order.HasValue)
+        {
+            CarouselItems.Add(carouselItem.Order.Value, carouselItem);
+        }
+        else
+        {
+            CarouselItems.Add(CarouselItems.Count, carouselItem);
+        }
+
+        if(carouselItem.Active)
+        {
+            _activeIndex = CarouselItems.IndexOfValue(carouselItem);
+        }
+        else if(_activeIndex == 0 && !ActiveItem.Active)
+        {
+            await ActiveItem.MakeActive();
+        }
+
+        AfterRenderOnce(ResetTimer);
+    }
+
+    int CalculateNextIndex()
+    {
+        var nextIndex = _activeIndex + 1;
+        if (nextIndex == CarouselItems.Count)
+        {
+            return 0;
+        }
+
+        return nextIndex;
+    }
+
+    private async void TimerElapsed(object sender, ElapsedEventArgs elapsedEvent)
+    {
+        await ShowNextSlide();
+        StateHasChanged();
+    }
+
+    void ResetTimer()
+    {
+        //_timer?.Dispose();
+        //_timer = new Timer(ActiveItem.Interval);
+        //_timer.Elapsed += TimerElapsed;
+        //_timer.AutoReset = false;
+        //_timer.Start();
+    }
+}

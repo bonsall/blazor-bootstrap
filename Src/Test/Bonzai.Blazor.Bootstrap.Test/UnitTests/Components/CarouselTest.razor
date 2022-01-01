@@ -1,0 +1,138 @@
+﻿@inherits TestBase<Carousel>
+
+@code {
+    private const string ClassName1 = "carousel";
+    private const string ClassName2 = "slide";
+
+    public CarouselTest()
+    {
+        new MockBootstrapJsService(Services);
+    }
+
+    [Fact]
+    public void RendersDivWithCarouselClasses()
+    {
+        var cut = RenderComponent(@<Carousel></Carousel>);
+
+        var carousel = FindCarousel(cut);
+        AssertContainsClasses(carousel);
+    }
+
+    [Fact]
+    public void ClassAttributeAppendedToClassList()
+    {
+        const string ExpectedClassName = "unit-test";
+        var cut = RenderComponent(@<Carousel class="@ExpectedClassName"></Carousel>);
+
+        var carousel = FindCarousel(cut);
+        AssertContainsClasses(carousel);
+        Assert.Contains(ExpectedClassName, carousel.ClassList);
+    }
+
+    [Fact]
+    public void AdditionalAttributesRenderedOnAnchor()
+    {
+        var cut = RenderComponent(@<Carousel data-unit-test="custom value"></Carousel>);
+
+        var carousel = FindCarousel(cut);
+        Assert.NotNull(carousel.GetAttribute("data-unit-test"));
+    }
+
+    [Fact]
+    public void ChildContentIsRenderedInCarousel()
+    {
+        const string ExpectedContent = "unit test";
+        var cut = RenderComponent(@<Carousel>@ExpectedContent</Carousel>);
+
+        var carousel = FindCarousel(cut);
+        Assert.Equal(ExpectedContent, carousel.TextContent);
+    }
+
+    [Fact]
+    public void RendersCarouselInnerDiv()
+    {
+        var cut = RenderComponent(@<Carousel></Carousel>);
+
+        var carousel = cut.Find(".carousel-inner");
+    }
+
+    [Fact]
+    public void ChildCarouselItemsAreAddedToCarouselItemsList()
+    {
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem />
+            </Carousel>);
+
+        Assert.Single(cut.Instance.CarouselItems);
+    }
+
+    [Fact]
+    public void NoCarouselItemsActive_FirstCarouselItemIsMadeActive()
+    {
+        CarouselItem carouselItem1 = null;
+        CarouselItem carouselItem2 = null;
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem @ref="carouselItem1" />
+                <CarouselItem @ref="carouselItem2" />
+            </Carousel>);
+
+        Assert.True(carouselItem1.Active);
+        Assert.False(carouselItem2.Active);
+    }
+
+    [Fact]
+    public void CarouselItemOrderIsNotSet_UsesOrderItemsWereAdded()
+    {
+        CarouselItem carouselItem1 = null;
+        CarouselItem carouselItem2 = null;
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem @ref="carouselItem1" />
+                <CarouselItem @ref="carouselItem2" />
+            </Carousel>);
+
+        Assert.Equal(carouselItem1, cut.Instance.CarouselItems[0]);
+        Assert.Equal(carouselItem2, cut.Instance.CarouselItems[1]);
+    }
+
+    [Fact]
+    public void CarouselItemOrderIsSet_OrdersItemsBasedOnValue()
+    {
+        CarouselItem carouselItem1 = null;
+        CarouselItem carouselItem2 = null;
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem Order="1" @ref="carouselItem1" />
+                <CarouselItem Order="0" @ref="carouselItem2" />
+            </Carousel>);
+
+        Assert.Equal(carouselItem1, cut.Instance.CarouselItems[1]);
+        Assert.Equal(carouselItem2, cut.Instance.CarouselItems[0]);
+    }
+
+    [Fact]
+    public async Task ShowNextSlideExecuted_StartsAnimationToShowNextSlide()
+    {
+        var cut = RenderComponent(
+            @<Carousel>
+                <CarouselItem />
+                <CarouselItem />
+            </Carousel>);
+
+        await cut.InvokeAsync(cut.Instance.ShowNextSlideAndRender);
+
+        cut.Find(".carousel-item.carousel-item-start");
+        cut.Find(".carousel-item.carousel-item-start.carousel-item-start");
+    }
+
+    void AssertContainsClasses(IElement carousel)
+    {
+        Assert.Contains(ClassName1, carousel.ClassList);
+        Assert.Contains(ClassName2, carousel.ClassList);
+    }
+
+    IElement FindCarousel(IRenderedComponent<Carousel> cut) =>
+        cut.Find("div");
+}
