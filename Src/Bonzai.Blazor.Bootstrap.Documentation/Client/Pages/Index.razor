@@ -1,5 +1,27 @@
 ﻿@page "/"
 
+<h1 class="display-1">Hello World</h1>
+<h3>_1_Practice</h3>
+
+<select class="dropdown" name="Text colours" @bind-="@SelectColourID">
+    <option class="text-primary" value="primary">Primary</option>
+    <option class="text-secondary" value="secondary">Secondary</option>
+    <option class="text-success" value="success">Success</option>
+    <option class="text-danger" value="danger">Danger</option>
+    <option class="text-warning bg-dark" value="warning">Warning</option>
+    <option class="text-info bg-dark" value="info">Info</option>
+    <option class="text-light bg-dark" value="light">Light</option>
+    <option class="text-dark" value="dark">Dark</option>
+    <option class="text-body" value="body">Body</option>
+    <option class="text-muted" value="muted">Muted</option>
+    <option class="text-white bg-dark" value="white">White</option>
+    <option class="text-black-50" value="black_50">Black_50</option>
+    <option class="text-white-50 bg-dark" value="white_50">White_50</option>
+
+</select>
+
+<p>@SelectColourID</p>
+
 <div class="row">
     <div class="col">
         <EditForm Model="Model">
@@ -13,6 +35,14 @@
     private IndexModel Model { get; set; } = new IndexModel();
 
     string Input { get; set; }
+
+    string selectColourID = "SciubaDuba";
+
+    string SelectColourID
+    {
+        get => selectColourID;
+        set {selectColourID = value;}
+    }
 
     private class IndexModel { }
 }
