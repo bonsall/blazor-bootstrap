@@ -3,24 +3,24 @@
 <h1 class="display-1">Hello World</h1>
 <h3>_1_Practice</h3>
 
-<select class="dropdown" name="Text colours" @bind-="@SelectColourID">
-    <option class="text-primary" value="primary">Primary</option>
-    <option class="text-secondary" value="secondary">Secondary</option>
-    <option class="text-success" value="success">Success</option>
-    <option class="text-danger" value="danger">Danger</option>
-    <option class="text-warning bg-dark" value="warning">Warning</option>
-    <option class="text-info bg-dark" value="info">Info</option>
-    <option class="text-light bg-dark" value="light">Light</option>
-    <option class="text-dark" value="dark">Dark</option>
-    <option class="text-body" value="body">Body</option>
-    <option class="text-muted" value="muted">Muted</option>
-    <option class="text-white bg-dark" value="white">White</option>
-    <option class="text-black-50" value="black_50">Black_50</option>
-    <option class="text-white-50 bg-dark" value="white_50">White_50</option>
+<select class="dropdown" 
+        name="Text_colours" 
+        id="dd"
+        onchange="r"> 
+
+        @foreach (var template in templates)
+         {
+           <option class="@template.Item1" value=@template.Item2> @template.Item3 </option>
+         }
 
 </select>
 
-<p>@SelectColourID</p>
+<asp:DropDownList id="d">
+    @foreach (var template in templates)
+         {
+           <option class="@template.Item1" value=@template.Item2> @template.Item3 </option>
+         }
+</asp:DropDownList>
 
 <div class="row">
     <div class="col">
@@ -36,13 +36,33 @@
 
     string Input { get; set; }
 
-    string selectColourID = "SciubaDuba";
+    (int, int) x = (1, 1);
 
-    string SelectColourID
+    List<(string, string, string)> templates = new List<(string, string, string)>() 
+    { ("text-primary", "primary", "Primary"),
+      ("text-secondary", "secondary", "Secondary"),
+      ("text-success","success","Success"),
+      ("text-danger","danger","Danger"),
+      ("text-warning bg-dark","warning","Warning"),
+      ("text-info bg-dark","info","Info"),
+      ("text-light bg-dark","light","Light"),
+      ("text-dark","dark","Dark"),
+      ("text-body","body","Body"),
+      ("text-muted","muted","Muted"),
+      ("text-white bg-dark","white","White"),
+      ("text-black-50","black_50","Black_50"),
+      ("text-white-50 bg-dark","white_50","White_50"), };
+    
+    string SelectedString = "";
+
+    string text_primary = "text-primary";
+
+    void r(object sender, ChangeEventArgs e)
     {
-        get => selectColourID;
-        set {selectColourID = value;}
+        
     }
 
-    private class IndexModel { }
+    private class IndexModel{}
+
+   
 }
