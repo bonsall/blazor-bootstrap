@@ -1,21 +1,5 @@
 ﻿@page "/"
 
-<h1 class="@helloWorld_class" id="helloWorld_text"> Hello World </h1>
-<h3>_1_Practice</h3>
- 
-<select name="Text_colours" 
-        id="dd"
-        @onchange="r"> 
-
-        @foreach (var template in templates)
-         {
-           <option class="@template.Item1" value=@template.Item2> @template.Item3 </option>
-         }
-
-</select>
-
-<p>@ciupa</p>
-
 <div class="row">
     <div class="col">
         <EditForm Model="Model">
@@ -25,53 +9,11 @@
     </div>
 </div>
 
-@code{
+@code
+{
     private IndexModel Model { get; set; } = new IndexModel();
 
     string Input { get; set; }
 
-    string ciupa = "ZubaDuba";
-
-    (int, int) x = (1, 1);
-
-    List<(string, string, string)> templates = new List<(string, string, string)>() 
-    { ("text-primary", "primary", "Primary"),
-      ("text-secondary", "secondary", "Secondary"),
-      ("text-success","success","Success"),
-      ("text-danger","danger","Danger"),
-      ("text-warning bg-dark","warning","Warning"),
-      ("text-info bg-dark","info","Info"),
-      ("text-light bg-dark","light","Light"),
-      ("text-dark","dark","Dark"),
-      ("text-body","body","Body"),
-      ("text-muted","muted","Muted"),
-      ("text-white bg-dark","white","White"),
-      ("text-black-50","black_50","Black_50"),
-      ("text-white-50 bg-dark","white_50","White_50"), };
-
-    string helloWorld_class = "display-1";
-
-
-    private void r()
-    {
-        Console.Write("Ciubba");
-        ciupa = "MMA";
-    }
-
-    private void StringColourChange(/*ChangeEventArgs e*/)
-    {
-        ciupa = "MMA";
-        //foreach (var option in templates)
-        //{
-        //    if (option.Item2 == e.Value.ToString())
-        //    {
-        //        helloWorld_class = "display-1" + templates[templates.IndexOf(option)].Item1;
-        //        break;
-        //    }
-        //}
-    }
-
     private class IndexModel{}
-
-   
 }
