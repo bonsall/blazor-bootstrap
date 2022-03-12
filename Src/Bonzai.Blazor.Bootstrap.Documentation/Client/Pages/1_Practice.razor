@@ -1,0 +1,129 @@
+﻿@page "/hello-world"
+
+
+<body class="@page_class vw-100 vh-100">
+
+    <h1 class="@helloWorld_class display-1"> Hello World </h1>
+
+    <div>
+        
+        <!-- Dropdown -->
+        <select name="TextColour_dropdown" 
+                @onchange="StringColourChange">
+
+            <!-- an '<option>' is created for each tuple of properties in the list textOptionProperties. -->
+            @foreach (var properties in textOptionProperties)
+            {
+                 <option class="@properties.TextColourClass"
+                         value="@properties.Value">
+                         @properties.Text
+                         </option>
+            }
+             
+        </select>
+
+        <!-- Dropdown -->
+        <select name="BgColour_dropdown" 
+                @onchange="BackgroundColourChange">
+            
+            <!-- an '<option>' is created for each tuple of properties in the list backgroundOptionProperties. -->
+            @foreach (var properties in backgroundOptionProperties)
+             {
+                 <option class="@properties.BackgroundColourClass"
+                         value="@properties.Value">
+                         @properties.Text
+                         </option>
+             }
+             
+        </select>
+
+    </div>
+</body>
+
+@code{
+
+    // Properties of each option are stored in tuples. 
+    // Tuples are stored in a list.
+    // Each tuple stores the class, value and text of an '<option>'.
+    List<(string TextColourClass, string Value, string Text)> textOptionProperties = new List<(string, string, string)>() { 
+            ("text-primary", "primary", "Primary"),
+            ("text-secondary", "secondary", "Secondary"),
+            ("text-success","success","Success"),
+            ("text-danger","danger","Danger"),
+            ("text-warning bg-dark","warning","Warning"),
+            ("text-info bg-dark","info","Info"),
+            ("text-light bg-dark","light","Light"),
+            ("text-dark","dark","Dark"),
+            ("text-body","body","Body"),
+            ("text-muted","muted","Muted"),
+            ("text-white bg-dark","white","White"),
+            ("text-black-50","black_50","Black_50"),
+            ("text-white-50 bg-dark","white_50","White_50"), };
+
+    // Accesses the class of h1.
+    string helloWorld_class = "display-1";
+
+    /// <summary>
+    /// Changes colour of text in h1.
+    /// </summary>
+    /// 
+    /// <param name="e">
+    /// '<option>' that triggered the function.
+    /// </param>
+    void StringColourChange(ChangeEventArgs e)
+    {
+        // For each '<option>' in textOptionProperties.
+        foreach (var optionProperties in textOptionProperties)
+        {
+            // If the value of the '<option>' selected is equal to the value of the current optionProperties (tuple)...
+            if (optionProperties.Value == e.Value.ToString())
+            {
+                // Then h1 is displayed with the same text colour of the '<option>' clicked.
+                helloWorld_class = textOptionProperties[textOptionProperties.IndexOf(optionProperties)].TextColourClass;
+
+                // Once the if statement is complete, the code breaks out of the loop.
+                break;
+            }
+        }
+    }
+
+    // Properties of each option are stored in tuples. 
+    // Tuples are stored in a list.
+    // Each tuple stores the class, value and background of an '<option>'.
+    List<(string BackgroundColourClass, string Value, string Text)> backgroundOptionProperties = new List<(string, string, string)>() { 
+        ("bg-primary", "primary", "Primary"),
+        ("bg-secondary", "secondary", "Secondary"),
+        ("bg-success","success","Success"),
+        ("bg-danger","danger","Danger"),
+        ("bg-warning","warning","Warning"),
+        ("bg-info","info","Info"),
+        ("bg-light","light","Light"),
+        ("bg-dark","dark","Dark"), };
+
+    // Accesses the class of body.
+    string page_class = "bg-primary";
+
+    /// <summary>
+    /// Changes colour of background of page.
+    /// </summary>
+    /// 
+    /// <param name="e">
+    /// '<option>' that triggered the function.
+    /// </param>
+    void BackgroundColourChange(ChangeEventArgs e)
+    {
+        // For each '<option>' in backgroundOptionProperties.
+        foreach (var option in backgroundOptionProperties)
+        {
+            // If the value of the '<option>' selected is equal to the value of the current optionProperties (tuple)...
+            if (option.Value == e.Value.ToString())
+            {
+                // Then page background is changed to the background colour of the '<option>' clicked.
+                page_class = backgroundOptionProperties[backgroundOptionProperties.IndexOf(option)].BackgroundColourClass;
+
+                // Once the if statement is complete, the code breaks out of the loop.
+                break;
+            }
+        }
+    }
+}
