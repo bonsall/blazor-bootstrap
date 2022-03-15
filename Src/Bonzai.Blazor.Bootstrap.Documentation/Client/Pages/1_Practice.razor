@@ -1,0 +1,86 @@
+﻿@page "/hello-world"
+
+
+<body class="@PageClass vw-100 vh-100">
+
+    <h1 class="@HelloWorldClass display-1"> Hello World </h1>
+
+    <div>
+        
+        <!-- Dropdown -->
+        <select name="TextColour_dropdown" 
+                @bind=HelloWorldClass>
+
+            <!-- an '<option>' is created for each tuple of properties in the list textOptionProperties. -->
+            @foreach (var properties in TextOptionProperties)
+            {
+                 <option class="@properties.TextColourClass"
+                         value="@properties.TextColourClass">
+                         @properties.Text
+                         </option>
+            }
+             
+        </select>
+
+        <!-- Dropdown -->
+        <select name="BgColour_dropdown" 
+                @bind=PageClass>
+            
+            <!-- an '<option>' is created for each tuple of properties in the list backgroundOptionProperties. -->
+            @foreach (var properties in BackgroundOptionProperties)
+             {
+                 <option class="@properties.BackgroundColourClass"
+                         value="@properties.BackgroundColourClass">
+                         @properties.Text
+                         </option>
+             }
+             
+        </select>
+
+    </div>
+</body>
+
+@code{
+
+    #region Properties
+
+    // Properties of each option are stored in tuples. 
+    // Tuples are stored in a list.
+    // Each tuple stores the class, value and text of an '<option>'. 
+    List<(string TextColourClass, string Text)> TextOptionProperties { get; set; } = new List<(string, string)>() {
+            ("text-primary", "Primary"),
+            ("text-secondary", "Secondary"),
+            ("text-success", "Success"),
+            ("text-danger", "Danger"),
+            ("text-warning bg-dark", "Warning"),
+            ("text-info bg-dark", "Info"),
+            ("text-light bg-dark", "Light"),
+            ("text-dark", "Dark"),
+            ("text-body", "Body"),
+            ("text-muted", "Muted"),
+            ("text-white bg-dark", "White"),
+            ("text-black-50", "Black_50"),
+            ("text-white-50 bg-dark", "White_50"), };
+
+    // Properties of each option are stored in tuples. 
+    // Tuples are stored in a list.
+    // Each tuple stores the class, value and background of an '<option>'.
+    List<(string BackgroundColourClass, string Text)> BackgroundOptionProperties { get; set; } = new List<(string, string)>() {  
+        ("bg-primary", "Primary"),
+        ("bg-secondary", "Secondary"),
+        ("bg-success", "Success"),
+        ("bg-danger", "Danger"),
+        ("bg-warning", "Warning"),
+        ("bg-info", "Info"),
+        ("bg-light", "Light"),
+        ("bg-dark", "Dark"), }; 
+
+    // Accesses the class of h1.
+    string HelloWorldClass { get; set; }
+
+    // Accesses the class of body.
+    string PageClass { get; set; } = "bg-primary";  
+
+    #endregion
+
+}
